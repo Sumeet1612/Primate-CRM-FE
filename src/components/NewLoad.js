@@ -21,25 +21,44 @@ function NewLoad() {
     netMargin: "",
     invoicingDate: "",
     paymentDate: "",
-    broker:""
+    broker: "",
+    sharedWith: [],
   });
-  
-const history=useNavigate()
+
+  const handleMultipleBrokers = (e) => {
+    let value = e.target.value;
+    let feildName = e.target.name;
+  };
+
+  const history = useNavigate();
 
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
-   
+
     setSendData((state) => {
-        return { ...state, [feildName]: value };
-      });
+      return { ...state, [feildName]: value };
+    });
 
     if (feildName === "shipperRate" || feildName === "carrierRate") {
       setSendData((state) => {
         let netMarginValue = state.shipperRate - state.carrierRate;
-        return { ...state, netMargin: netMarginValue  };
+        return { ...state, netMargin: netMarginValue };
       });
     }
+  };
+  const [additionalBrokers, setAdditionalBrokers] = useState(0);
+
+  const undoBroker = () => {
+    setAdditionalBrokers((ab) => {
+      return ab - 1;
+    });
+  };
+
+  const manageBrokers = () => {
+    setAdditionalBrokers((ab) => {
+      return ab + 1;
+    });
   };
 
   const handleSubmit = () => {
@@ -47,26 +66,28 @@ const history=useNavigate()
     console.log(sendData);
     localStorage.setItem("sendData", JSON.stringify(sendData));
     setSendData({
-        loadNumber: "",
-        shipperName: "",
-        pickupLocation: "",
-        deliveryLocation: "",
-        bookingDate: "",
-        pickupDate: "",
-        deliveryDate: "",
-        loadDescription: "",
-        carrierMC: "",
-        carrierName: "",
-        carrierPOC: "",
-        carrierPhone: "",
-        carrierEmail: "",
-        shipperRate: 0,
-        carrierRate: 0,
-        netMargin: "",
-        invoicingDate: "",
-        paymentDate: "",
-      })
-      history("/edit")
+      loadNumber: "",
+      shipperName: "",
+      pickupLocation: "",
+      deliveryLocation: "",
+      bookingDate: "",
+      pickupDate: "",
+      deliveryDate: "",
+      loadDescription: "",
+      carrierMC: "",
+      carrierName: "",
+      carrierPOC: "",
+      carrierPhone: "",
+      carrierEmail: "",
+      shipperRate: 0,
+      carrierRate: 0,
+      netMargin: "",
+      invoicingDate: "",
+      paymentDate: "",
+      broker: "",
+      sharedWith: [],
+    });
+    history("/edit");
   };
 
   return (
@@ -128,6 +149,39 @@ const history=useNavigate()
         value={sendData.loadDescription}
         onChange={handleChange}
       />
+
+      <input
+        type="text"
+        placeholder="Broker"
+        name="broker"
+        value={sendData.broker}
+        onChange={handleChange}
+      />
+
+      {additionalBrokers ? (
+        Array.from(Array(additionalBrokers)).map((c, index) => {
+          return (
+            <>
+              <select name="sharedWith" onChnage={handleMultipleBrokers}>
+                <option value="Sahil">Sahil</option>
+                <option value="Sumeet">Sumeet</option>
+              </select>
+              <input
+                type="text"
+                placeholder="sharedPercentage"
+                name="sharedWith_Percentage"
+                onChnage={handleMultipleBrokers}
+              />
+              <button onClick={undoBroker}> x </button>
+              <br />
+            </>
+          );
+        })
+      ) : (
+        <br />
+      )}
+
+      <button onClick={manageBrokers}>Add Broker</button>
       <input
         type="text"
         placeholder="Carrier MC Number"
