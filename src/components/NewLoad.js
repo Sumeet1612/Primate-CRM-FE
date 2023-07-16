@@ -25,6 +25,27 @@ function NewLoad() {
     sharedWith: [],
   });
 
+  const [availableBrokers]=useState([{
+    id:0,
+    name:"Please Select Broker"
+  },
+    {
+    id:1,
+    name:"Sumeet"
+  },
+  {
+    id:2,
+    name:"Sahil"
+  },
+  {
+    id:3,
+    name:"Shubham"
+  },
+  {
+    id:4,
+    name:"Sandeep"
+  }])
+
   const handleMultipleBrokers = (e,index) => {
     let value = e.target.value;
     let feildName = e.target.name;
@@ -176,9 +197,11 @@ function NewLoad() {
           return (
             <div key={index}>
               <select name="sharedWithName" onChange={(e)=>handleMultipleBrokers(e,index)}>
-                <option vaue="none">Please select Broker</option>
-                <option value="Sahil" >Sahil</option>
-                <option value="Sumeet">Sumeet</option>
+                {availableBrokers.map((ab)=>{
+                  return(
+                    <option key={ab.id} value={ab.name}> {ab.name}</option>
+                  )
+                })}
               </select>
               <input
                 type="text"
