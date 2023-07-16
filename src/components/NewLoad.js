@@ -25,9 +25,17 @@ function NewLoad() {
     sharedWith: [],
   });
 
-  const handleMultipleBrokers = (e) => {
+  const handleMultipleBrokers = (e,index) => {
     let value = e.target.value;
     let feildName = e.target.name;
+    const updatedBrokers=[...additionalBrokers]
+    updatedBrokers[index][feildName]=value;
+    setAdditionalBrokers(()=>{
+      return updatedBrokers;
+    })
+    setSendData((prevState)=>{
+      return {...prevState,sharedWith:additionalBrokers}
+    })
   };
 
   const history = useNavigate();
@@ -47,18 +55,23 @@ function NewLoad() {
       });
     }
   };
-  const [additionalBrokers, setAdditionalBrokers] = useState(0);
+  const [additionalBrokers, setAdditionalBrokers] = useState([]);
 
   const undoBroker = () => {
-    setAdditionalBrokers((ab) => {
-      return ab - 1;
-    });
+    setAdditionalBrokers((state)=>{
+      let x= [...state]
+      x.pop()
+      return x;
+    })
   };
 
   const manageBrokers = () => {
-    setAdditionalBrokers((ab) => {
-      return ab + 1;
-    });
+    setAdditionalBrokers((state)=>{
+      return [...state, {
+        sharedWithName:"",
+        sharedWithPercentage:""
+      }]
+    })
   };
 
   const handleSubmit = () => {
@@ -159,28 +172,28 @@ function NewLoad() {
       />
 
       {additionalBrokers ? (
-        Array.from(Array(additionalBrokers)).map((c, index) => {
+        additionalBrokers.map((ab,index) => {
           return (
-            <>
-              <select name="sharedWith" onChnage={handleMultipleBrokers}>
-                <option value="Sahil">Sahil</option>
+            <div key={index}>
+              <select name="sharedWithName" onChange={(e)=>handleMultipleBrokers(e,index)}>
+                <option vaue="none">Please select Broker</option>
+                <option value="Sahil" >Sahil</option>
                 <option value="Sumeet">Sumeet</option>
               </select>
               <input
                 type="text"
                 placeholder="sharedPercentage"
-                name="sharedWith_Percentage"
-                onChnage={handleMultipleBrokers}
+                name="sharedWithPercentage"
+                onChange={(e)=>handleMultipleBrokers(e,index)}
               />
               <button onClick={undoBroker}> x </button>
               <br />
-            </>
+            </div>
           );
         })
       ) : (
         <br />
       )}
-
       <button onClick={manageBrokers}>Add Broker</button>
       <input
         type="text"
