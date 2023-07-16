@@ -21,6 +21,7 @@ function NewLoad() {
     netMargin: "",
     invoicingDate: "",
     paymentDate: "",
+    broker:""
   });
   
 const history=useNavigate()
