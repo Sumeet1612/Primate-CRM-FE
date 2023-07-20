@@ -3,6 +3,7 @@ import './App.css';
 import NewLoad from './components/NewLoad';
 import EditLoad from './components/EditLoad';
 import Home from './components/Home';
+import Shippers from './components/Shippers'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route exact path="/" element={<Home/>}/>
       <Route path = "New" element = {<NewLoad/>}/>
       <Route path = "Edit" element = {<EditLoad/>}/>
+      <Route path = "Shippers" element = {<Shippers/>}/>
     </Routes>
     </BrowserRouter>
     </div>

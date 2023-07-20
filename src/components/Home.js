@@ -9,8 +9,7 @@ const handleNavigation=()=>{
 
 return(
     <>
-    <h1> Home Page1</h1>
-    <h2>Test</h2>
+    <h1> Home Page</h1>
     <label onClick={handleNavigation}>Create New Load</label>
     </>
 )
