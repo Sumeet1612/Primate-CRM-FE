@@ -9,7 +9,6 @@ function Shippers() {
     shipperEmail: "",
   });
 
-
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
