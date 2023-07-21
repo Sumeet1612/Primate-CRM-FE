@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Shippers() {
@@ -9,10 +8,7 @@ function Shippers() {
     shipperPhoneNumber: "",
     shipperEmail: "",
   });
-  const nav = useNavigate();
-  const handleNavigation = () => {
-    nav("/shippers");
-  };
+
 
   const handleChange = (e) => {
     let value = e.target.value;
