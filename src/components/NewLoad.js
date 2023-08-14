@@ -21,24 +21,78 @@ function NewLoad() {
     netMargin: "",
     invoicingDate: "",
     paymentDate: "",
+    broker: "",
+    sharedWith: [],
   });
-  
-const history=useNavigate()
+
+  const [availableBrokers]=useState([{
+    id:0,
+    name:"Please Select Broker"
+  },
+    {
+    id:1,
+    name:"Sumeet"
+  },
+  {
+    id:2,
+    name:"Sahil"
+  },
+  {
+    id:3,
+    name:"Shubham"
+  },
+  {
+    id:4,
+    name:"Sandeep"
+  }])
+
+  const handleMultipleBrokers = (e,index) => {
+    let value = e.target.value;
+    let feildName = e.target.name;
+    const updatedBrokers=[...additionalBrokers]
+    updatedBrokers[index][feildName]=value;
+    setAdditionalBrokers(()=>{
+      return updatedBrokers;
+    })
+    setSendData((prevState)=>{
+      return {...prevState,sharedWith:additionalBrokers}
+    })
+  };
+
+  const history = useNavigate();
 
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
-   
+
     setSendData((state) => {
-        return { ...state, [feildName]: value };
-      });
+      return { ...state, [feildName]: value };
+    });
 
     if (feildName === "shipperRate" || feildName === "carrierRate") {
       setSendData((state) => {
         let netMarginValue = state.shipperRate - state.carrierRate;
-        return { ...state, netMargin: netMarginValue  };
+        return { ...state, netMargin: netMarginValue };
       });
     }
+  };
+  const [additionalBrokers, setAdditionalBrokers] = useState([]);
+
+  const undoBroker = () => {
+    setAdditionalBrokers((state)=>{
+      let x= [...state]
+      x.pop()
+      return x;
+    })
+  };
+
+  const manageBrokers = () => {
+    setAdditionalBrokers((state)=>{
+      return [...state, {
+        sharedWithName:"",
+        sharedWithPercentage:""
+      }]
+    })
   };
 
   const handleSubmit = () => {
@@ -46,26 +100,28 @@ const history=useNavigate()
     console.log(sendData);
     localStorage.setItem("sendData", JSON.stringify(sendData));
     setSendData({
-        loadNumber: "",
-        shipperName: "",
-        pickupLocation: "",
-        deliveryLocation: "",
-        bookingDate: "",
-        pickupDate: "",
-        deliveryDate: "",
-        loadDescription: "",
-        carrierMC: "",
-        carrierName: "",
-        carrierPOC: "",
-        carrierPhone: "",
-        carrierEmail: "",
-        shipperRate: 0,
-        carrierRate: 0,
-        netMargin: "",
-        invoicingDate: "",
-        paymentDate: "",
-      })
-      history("/edit")
+      loadNumber: "",
+      shipperName: "",
+      pickupLocation: "",
+      deliveryLocation: "",
+      bookingDate: "",
+      pickupDate: "",
+      deliveryDate: "",
+      loadDescription: "",
+      carrierMC: "",
+      carrierName: "",
+      carrierPOC: "",
+      carrierPhone: "",
+      carrierEmail: "",
+      shipperRate: 0,
+      carrierRate: 0,
+      netMargin: "",
+      invoicingDate: "",
+      paymentDate: "",
+      broker: "",
+      sharedWith: [],
+    });
+    history("/edit");
   };
 
   return (
@@ -127,6 +183,41 @@ const history=useNavigate()
         value={sendData.loadDescription}
         onChange={handleChange}
       />
+
+      <input
+        type="text"
+        placeholder="Broker"
+        name="broker"
+        value={sendData.broker}
+        onChange={handleChange}
+      />
+
+      {additionalBrokers ? (
+        additionalBrokers.map((ab,index) => {
+          return (
+            <div key={index}>
+              <select name="sharedWithName" onChange={(e)=>handleMultipleBrokers(e,index)}>
+                {availableBrokers.map((ab)=>{
+                  return(
+                    <option key={ab.id} value={ab.name}> {ab.name}</option>
+                  )
+                })}
+              </select>
+              <input
+                type="text"
+                placeholder="sharedPercentage"
+                name="sharedWithPercentage"
+                onChange={(e)=>handleMultipleBrokers(e,index)}
+              />
+              <button onClick={undoBroker}> x </button>
+              <br />
+            </div>
+          );
+        })
+      ) : (
+        <br />
+      )}
+      <button onClick={manageBrokers}>Add Broker</button>
       <input
         type="text"
         placeholder="Carrier MC Number"

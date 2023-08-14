@@ -20,6 +20,8 @@ function EditLoad() {
     netMargin: "",
     invoicingDate: "",
     paymentDate: "",
+    broker: "",
+    sharedWith: [],
   });
   useEffect(() => {
     setData((state) => {
@@ -163,12 +165,11 @@ function EditLoad() {
         readOnly
       />
 
-<input
+      <input
         type="date"
         placeholder="Invoicing  Date"
         name="invoicingDate"
         value={data.invoicingDate}
-        
       />
 
       <input
@@ -176,8 +177,37 @@ function EditLoad() {
         placeholder="Payment  Date"
         name="paymentDate"
         value={data.paymentDate}
-        
       />
+
+      <input
+        type="text"
+        placeholder="Broker"
+        name="broker"
+        value={data.broker}
+      />
+
+      {data.sharedWith ? (
+        data.sharedWith.map((d, index) => {
+          return (
+            <div key={index}>
+              <input
+                type="text"
+                name="sharedWithName"
+                value={d.sharedWithName}
+                readOnly
+              />
+              <input
+                type="text"
+                name="sharedWithPercentage"
+                value={d.sharedWithPercentage}
+                readOnly
+              />
+            </div>
+          );
+        })
+      ) : (
+        <br />
+      )}
 
       <button onClick={handleSubmit}> Submit From </button>
     </div>
