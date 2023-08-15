@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Primate-CRM-FE/static/css/main.9aea55f1.css",
-    "main.js": "/Primate-CRM-FE/static/js/main.f56f4d85.js",
+    "main.js": "/Primate-CRM-FE/static/js/main.6e09c328.js",
     "static/js/787.920d0757.chunk.js": "/Primate-CRM-FE/static/js/787.920d0757.chunk.js",
     "index.html": "/Primate-CRM-FE/index.html",
     "main.9aea55f1.css.map": "/Primate-CRM-FE/static/css/main.9aea55f1.css.map",
-    "main.f56f4d85.js.map": "/Primate-CRM-FE/static/js/main.f56f4d85.js.map",
+    "main.6e09c328.js.map": "/Primate-CRM-FE/static/js/main.6e09c328.js.map",
     "787.920d0757.chunk.js.map": "/Primate-CRM-FE/static/js/787.920d0757.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9aea55f1.css",
-    "static/js/main.f56f4d85.js"
+    "static/js/main.6e09c328.js"
   ]
 }
