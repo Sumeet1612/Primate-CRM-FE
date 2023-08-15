@@ -6,9 +6,9 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 
 export const SidebarData = [
-  { title: "Home", icon: <HomeIcon />, path: "/" },
-  { title: "Shippers", icon: <EngineeringIcon />, path: "/shippers" },
-  { title: "Loads", icon: <AirportShuttleIcon />, path: "/new" },
-  { title: "Profile", icon: <AccountBoxIcon />, path: "/profile" },
-  { title: "Invoice", icon: <ReceiptIcon />, path: "/invoice" },
+  { title: "Home", icon: <HomeIcon />, path: "Primate-CRM-FE/" },
+  { title: "Shippers", icon: <EngineeringIcon />, path: "Primate-CRM-FE/shippers" },
+  { title: "Loads", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/new" },
+  { title: "Profile", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/profile" },
+  { title: "Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice" },
 ];

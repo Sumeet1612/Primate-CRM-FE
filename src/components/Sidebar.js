@@ -7,7 +7,6 @@ function Sidebar() {
   return (
     <div className="Sidebar">
       <ul>
-        {console.log(SidebarData)}
         {SidebarData.map((val, key) => (
           <li
             key={key}

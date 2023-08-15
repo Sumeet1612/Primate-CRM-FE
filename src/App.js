@@ -14,13 +14,13 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<AuthLayout />}>
-            <Route path="/login" element={<Login />} />
+            <Route path="Primate-CRM-FE/login" element={<Login />} />
           </Route>
           <Route element={<RootLayout />}>
-            <Route exact path="/" element={<Home />} />
-            <Route path="New" element={<NewLoad />} />
-            <Route path="Edit" element={<EditLoad />} />
-            <Route path="Shippers" element={<Shippers />} />
+            <Route exact path="Primate-CRM-FE/" element={<Home />} />
+            <Route path="Primate-CRM-FE/New" element={<NewLoad />} />
+            <Route path="Primate-CRM-FE/Edit" element={<EditLoad />} />
+            <Route path="Primate-CRM-FE/Shippers" element={<Shippers />} />
           </Route>
         </Routes>
       </BrowserRouter>
