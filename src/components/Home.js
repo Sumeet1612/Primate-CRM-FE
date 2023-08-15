@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import "../App.css";
 
 function Home(){
 
@@ -7,11 +8,18 @@ const handleNavigation=()=>{
     nav("/new")
 }
 
+const handleShipperNavigation=()=>{
+    nav("/shippers")
+}
+
+
+
 return(
-    <>
+    <div className="PageLayout">
     <h1> Home Page</h1>
     <label onClick={handleNavigation}>Create New Load</label>
-    </>
+    <button onClick ={handleShipperNavigation} > Shippers </button>
+    </div>
 )
 }
 

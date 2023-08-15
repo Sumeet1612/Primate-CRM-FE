@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios  from 'axios'
 
 function NewLoad() {
+  const baseApiUrl= process.env.REACT_APP_BASE_URL_API;
   const [sendData, setSendData] = useState({
     loadNumber: "",
     shipperName: "",
@@ -14,7 +16,7 @@ function NewLoad() {
     carrierMC: "",
     carrierName: "",
     carrierPOC: "",
-    carrierPhone: "",
+    carrierContact: "",
     carrierEmail: "",
     shipperRate: 0,
     carrierRate: 0,
@@ -22,9 +24,9 @@ function NewLoad() {
     invoicingDate: "",
     paymentDate: "",
     broker: "",
-    sharedWith: [],
+    additionalBroker: [],
   });
-
+  
   const [availableBrokers]=useState([{
     id:0,
     name:"Please Select Broker"
@@ -55,7 +57,7 @@ function NewLoad() {
       return updatedBrokers;
     })
     setSendData((prevState)=>{
-      return {...prevState,sharedWith:additionalBrokers}
+      return {...prevState,additionalBroker:additionalBrokers}
     })
   };
 
@@ -89,8 +91,8 @@ function NewLoad() {
   const manageBrokers = () => {
     setAdditionalBrokers((state)=>{
       return [...state, {
-        sharedWithName:"",
-        sharedWithPercentage:""
+        brokerId:"",
+        sharedPercentage:""
       }]
     })
   };
@@ -98,7 +100,20 @@ function NewLoad() {
   const handleSubmit = () => {
     console.log("button clicked");
     console.log(sendData);
-    localStorage.setItem("sendData", JSON.stringify(sendData));
+
+    axios.post(`${baseApiUrl}/users/addLoad`,
+        sendData).then(res => {
+          if(res.status===417){
+            alert("Server error")
+          }
+          else{
+            console.log(res);
+          }
+        }).catch((err => {
+            console.log(err)
+        }))
+
+
     setSendData({
       loadNumber: "",
       shipperName: "",
@@ -111,7 +126,7 @@ function NewLoad() {
       carrierMC: "",
       carrierName: "",
       carrierPOC: "",
-      carrierPhone: "",
+      carrierContact: "",
       carrierEmail: "",
       shipperRate: 0,
       carrierRate: 0,
@@ -119,9 +134,9 @@ function NewLoad() {
       invoicingDate: "",
       paymentDate: "",
       broker: "",
-      sharedWith: [],
+      additionalBroker: [],
     });
-    history("/edit");
+    history("Primate-CRM-FE/edit");
   };
 
   return (
@@ -196,17 +211,17 @@ function NewLoad() {
         additionalBrokers.map((ab,index) => {
           return (
             <div key={index}>
-              <select name="sharedWithName" onChange={(e)=>handleMultipleBrokers(e,index)}>
+              <select name="brokerId" onChange={(e)=>handleMultipleBrokers(e,index)}>
                 {availableBrokers.map((ab)=>{
                   return(
-                    <option key={ab.id} value={ab.name}> {ab.name}</option>
+                    <option key={ab.id} value={ab.id}> {ab.name}</option>
                   )
                 })}
               </select>
               <input
                 type="text"
                 placeholder="sharedPercentage"
-                name="sharedWithPercentage"
+                name="sharedPercentage"
                 onChange={(e)=>handleMultipleBrokers(e,index)}
               />
               <button onClick={undoBroker}> x </button>
@@ -242,8 +257,8 @@ function NewLoad() {
       <input
         type="text"
         placeholder="Carrier Phone Number"
-        name="carrierPhone"
-        value={sendData.carrierPhone}
+        name="carrierContact"
+        value={sendData.carrierContact}
         onChange={handleChange}
       />
       <input
