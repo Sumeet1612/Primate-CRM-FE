@@ -1,6 +1,9 @@
 import axios from "axios";
 
 const baseApiUrl = process.env.REACT_APP_BASE_URL_API;
+const headers={
+    XApiKey: "AuthTokenCheck",
+  }
 
 export const handleApiError=(err)=>{
     if (err?.response?.status === 401) {
@@ -17,9 +20,7 @@ export const callLogin = (data) => {
     method: "post",
     url: `${baseApiUrl}/users/login`,
     data,
-    headers: {
-      XApiKey: "AuthTokenCheck",
-    },
+    headers: headers,
   });
 };
 
@@ -28,9 +29,7 @@ export const createLoad = (data) => {
     method: "post",
     url: `${baseApiUrl}/users/addLoad`,
     data,
-    headers: {
-      XApiKey: "AuthTokenCheck",
-    },
+    headers: headers,
   });
 };
 
@@ -38,9 +37,7 @@ export const loadActiveBrokers=()=>{
     return axios({
         method:"get",
         url:`${baseApiUrl}/admin/activeBrokers`,
-        headers: {
-            XApiKey: "AuthTokenCheck",
-          }
+        headers: headers
     });
 }
 
@@ -48,8 +45,6 @@ export const getLoadOnId=(loadNumber)=>{
     return axios({
         method:'get',
         url:`${baseApiUrl}/users/load/${loadNumber}`,
-        headers: {
-            XApiKey: "AuthTokenCheck",
-          }
+        headers: headers
     });
 }

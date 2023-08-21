@@ -32,7 +32,6 @@ function EditLoad() {
     getLoadOnId(id)
     .then((res)=>{
       if(res.status===200){
-        console.log(res.data)
       setData((state) => {
         return { ...state, ...res.data };
       });
