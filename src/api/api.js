@@ -3,9 +3,9 @@ import axios from "axios";
 const baseApiUrl = process.env.REACT_APP_BASE_URL_API;
 
 export const handleApiError=(err)=>{
-    if (err.response.status === 401) {
+    if (err?.response?.status === 401) {
         alert("Authentication failed.");
-      } else if (err.response.status === 417) {
+      } else if (err?.response?.status === 417) {
         alert("Server error");
       } else {
         alert("Some error occurred. Please retry. If issue persists please contact the Admin");
