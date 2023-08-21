@@ -43,3 +43,13 @@ export const loadActiveBrokers=()=>{
           }
     });
 }
+
+export const getLoadOnId=(loadNumber)=>{
+    return axios({
+        method:'get',
+        url:`${baseApiUrl}/users/load/${loadNumber}`,
+        headers: {
+            XApiKey: "AuthTokenCheck",
+          }
+    });
+}

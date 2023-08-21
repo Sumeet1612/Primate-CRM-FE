@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Shippers from "./components/Shippers";
 import Login from "./components/Login";
 import "./App.css";
+import SearchLoad from "./components/SearchLoad";
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           <Route element={<RootLayout />}>
             <Route exact path="Primate-CRM-FE/" element={<Home />} />
             <Route path="Primate-CRM-FE/New" element={<NewLoad />} />
-            <Route path="Primate-CRM-FE/Edit" element={<EditLoad />} />
+            <Route path="Primate-CRM-FE/editLoad/:id" element={<EditLoad />} />
+            <Route path="Primate-CRM-FE/searchLoad" element={<SearchLoad />} />
             <Route path="Primate-CRM-FE/Shippers" element={<Shippers />} />
           </Route>
         </Routes>
