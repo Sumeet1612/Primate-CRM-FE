@@ -5,7 +5,7 @@ import NewLoad from "./components/Loads/NewLoad";
 import EditLoad from "./components/Loads/EditLoad";
 import Home from "./components/Home";
 import Shippers from "./components/Shippers";
-import Login from "./components/Login";
+import Login from "./components/Brokers/Login";
 import SearchLoad from "./components/SearchLoad";
 import ViewLoads from "./components/Loads/ViewLoads";
 import "./App.css";
