@@ -8,7 +8,7 @@ const handleSearch=()=>{
     navigate(`/Primate-CRM-FE/editLoad/${loadNumber}`)
 }
   return (
-    <div>
+    <div className="PageLayout">
         <h1>Search for a load</h1>
         <label>Enter Load Number</label>
         <input type='text' onChange={(event)=>setloadNumber(event.target.value)}/>

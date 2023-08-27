@@ -73,3 +73,20 @@ export const getLoadForBroker =(brokerId)=>{
     headers:headers
   })
 }
+
+export const uploadAgencyData=(data)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/admin/uploadAgencyData`,
+    data,
+    headers:headers
+  })
+}
+
+export const processInvoices=()=>{
+  return axios({
+    method:'patch',
+    url:`${baseApiUrl}/admin/processInvoices`,
+    headers:headers
+  })
+}

@@ -8,16 +8,18 @@ function Home(){
 
     const [loggedIn, setLoggedIn]=  useState(false);
     const nav= useNavigate();
-useEffect(()=>{
-    if(sessionStorage.getItem("role")){
-        setLoggedIn(true);
+    useEffect(()=>{
+        if(sessionStorage.getItem("Role")){
+            setLoggedIn(true);
+        }
+    },[])
+    
+    const logout=()=>{
+        sessionStorage.removeItem("UserId");
+        sessionStorage.removeItem("Role");
+        setLoggedIn(false);
+        alert("Logged Out");
     }
-},[])
-const logout=()=>{
-    sessionStorage.removeItem("UserId")
-    sessionStorage.removeItem("Role")
-    alert("Logged Out");
-}
 
 return(
     <div className="PageLayout">
