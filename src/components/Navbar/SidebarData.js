@@ -16,13 +16,6 @@ export const SidebarUserData = [
 ];
 
 export const SidebarAdminData = [
-  { title: "Home", icon: <HomeIcon />, path: "Primate-CRM-FE/" },
-  { title: "Shippers", icon: <EngineeringIcon />, path: "Primate-CRM-FE/shippers" },
-  { title: "Create Load", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/new" },
-  { title: "View Loads", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/viewLoads" },
-  { title: "Profile", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/profile" },
-  { title: "Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice" },
-  { title: "Login", icon: <ReceiptIcon />, path: "Primate-CRM-FE/login" },
   { title: "Register", icon: <ReceiptIcon />, path: "Primate-CRM-FE/register" },
   { title: "Agency System", icon: <ReceiptIcon />, path: "Primate-CRM-FE/agency" },
 ];

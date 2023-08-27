@@ -11,8 +11,9 @@ function Sidebar() {
     let roleId=sessionStorage.getItem("Role")
 
     if(parseInt(roleId)===1){
-      setData(()=>{return SidebarAdminData.filter(x=>x.title !=="Login")})
+      setData(()=>{return SidebarUserData.concat(...SidebarAdminData).filter(x=>x.title!=="Login")})
     }
+    
     else if(userId > 0){
       setData(()=>{return SidebarUserData.filter(x=>x.title !=="Login")})
     }
