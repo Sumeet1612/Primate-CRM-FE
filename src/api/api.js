@@ -24,6 +24,15 @@ export const callLogin = (data) => {
   });
 };
 
+export const register=(data)=>{
+  return axios({
+    method:"post",
+    url:`${baseApiUrl}/admin/register`,
+    data,
+    headers:headers
+  });
+};
+
 export const createLoad = (data) => {
   return axios({
     method: "post",

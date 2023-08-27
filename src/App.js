@@ -8,6 +8,7 @@ import Shippers from "./components/Shippers";
 import Login from "./components/Brokers/Login";
 import SearchLoad from "./components/SearchLoad";
 import ViewLoads from "./components/Loads/ViewLoads";
+import SignUp from "./components/Brokers/SignUp";
 import "./App.css";
 
 function App() {
@@ -20,7 +21,8 @@ function App() {
           </Route>
           <Route element={<RootLayout />}>
             <Route exact path="Primate-CRM-FE/" element={<Home />} />
-            <Route path="Primate-CRM-FE/New" element={<NewLoad />} />
+            <Route exact path="Primate-CRM-FE/register" element={<SignUp/>} />
+            <Route path="Primate-CRM-FE/new" element={<NewLoad />} />
             <Route path="Primate-CRM-FE/editLoad/:id" element={<EditLoad />} />
             <Route path="Primate-CRM-FE/viewLoads" element={<ViewLoads />} />
             <Route path="Primate-CRM-FE/searchLoad" element={<SearchLoad />} />
