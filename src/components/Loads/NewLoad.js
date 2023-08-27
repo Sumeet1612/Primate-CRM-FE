@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createLoad, handleApiError, loadActiveBrokers } from "../api/api";
+import LinearProgress from '@mui/material/LinearProgress';
+import { createLoad, handleApiError, loadActiveBrokers } from "../../api/api";
 
 function NewLoad() {
   const [sendData, setSendData] = useState({
@@ -151,7 +152,7 @@ function NewLoad() {
   return (
     <div className="PageLayout">
       <h1>Add Info for a New Load</h1>
-      { isLoading ? <h2>Loading...</h2> :<div>
+      { isLoading ? <LinearProgress/> :<div>
       <input
         type="text"
         placeholder="Enter Load Number"

@@ -1,13 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthLayout from "./Layouts/AuthLayout";
 import RootLayout from "./Layouts/RootLayout";
-import NewLoad from "./components/NewLoad";
-import EditLoad from "./components/EditLoad";
+import NewLoad from "./components/Loads/NewLoad";
+import EditLoad from "./components/Loads/EditLoad";
 import Home from "./components/Home";
 import Shippers from "./components/Shippers";
 import Login from "./components/Login";
-import "./App.css";
 import SearchLoad from "./components/SearchLoad";
+import ViewLoads from "./components/Loads/ViewLoads";
+import "./App.css";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route exact path="Primate-CRM-FE/" element={<Home />} />
             <Route path="Primate-CRM-FE/New" element={<NewLoad />} />
             <Route path="Primate-CRM-FE/editLoad/:id" element={<EditLoad />} />
+            <Route path="Primate-CRM-FE/viewLoads" element={<ViewLoads />} />
             <Route path="Primate-CRM-FE/searchLoad" element={<SearchLoad />} />
             <Route path="Primate-CRM-FE/Shippers" element={<Shippers />} />
           </Route>

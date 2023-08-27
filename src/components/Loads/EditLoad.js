@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getLoadOnId, handleApiError  } from "../api/api";
+import { getLoadOnId, handleApiError  } from "../../api/api";
 import { useParams } from "react-router";
 
 function EditLoad() {

@@ -56,3 +56,11 @@ export const getBrokerOnId=(brokerId)=>{
     headers:headers
   })
 }
+
+export const getLoadForBroker =(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/getLoadsForBroker/${brokerId}`,
+    headers:headers
+  })
+}
