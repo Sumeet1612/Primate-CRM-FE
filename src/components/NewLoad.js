@@ -22,25 +22,29 @@ function NewLoad() {
     netMargin: "",
     invoicingDate: "",
     paymentDate: "",
-    broker: "",
+    brokerId: "",
     additionalBroker: [],
   });
   const [availableBrokers, setAvailableBrokers] = useState([]);
-  const [brokerName, setBrokerName] = useState("hello");
+  const [brokerName, setBrokerName] = useState("XXX");
+  const [isLoading, setIsLoading]=useState(false);
+
   const history = useNavigate();
-  useEffect(() => {
+  useEffect(() => {    
     console.log("start test");
     if (sessionStorage.getItem("UserId")) {
+      setIsLoading(true)
       loadActiveBrokers()
         .then((res) => {
           setAvailableBrokers(res.data);
+          setIsLoading(false)
         })
         .catch((err) => {
           console.log(err);
           handleApiError(err);
         });
       setSendData((state) => {
-        return { ...state, broker: sessionStorage.getItem("UserId") };
+        return { ...state, brokerId: sessionStorage.getItem("UserId") };
       });
     }
   }, []);
@@ -111,6 +115,7 @@ function NewLoad() {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
+          if(res.data?.additionalBrokersCreated && res.data?.loadCreated){
           alert("Load created successfully");
           setSendData({
             loadNumber: "",
@@ -131,10 +136,11 @@ function NewLoad() {
             netMargin: "",
             invoicingDate: "",
             paymentDate: "",
-            broker: "",
+            brokerId: "",
             additionalBroker: [],
           });
           history("/Primate-CRM-FE/");
+        }
         }
       })
       .catch((err) => {
@@ -143,8 +149,9 @@ function NewLoad() {
   };
 
   return (
-    <div>
+    <div className="PageLayout">
       <h1>Add Info for a New Load</h1>
+      { isLoading ? <h2>Loading...</h2> :<div>
       <input
         type="text"
         placeholder="Enter Load Number"
@@ -205,7 +212,7 @@ function NewLoad() {
       <input
         type="text"
         placeholder="Broker"
-        name="broker"
+        name="brokerId"
         value={brokerName}
         readOnly
       />
@@ -218,10 +225,10 @@ function NewLoad() {
                 name="brokerId"
                 onChange={(e) => handleMultipleBrokers(e, index)}
               >
+                <option value="">Select an option</option>
                 {availableBrokers.map((ab) => {
                   return (
                     <option key={ab.id} value={ab.id}>
-                      {" "}
                       {ab.userName}
                     </option>
                   );
@@ -300,6 +307,7 @@ function NewLoad() {
       />
 
       <button onClick={handleSubmit}> Submit From </button>
+      </div>}
     </div>
   );
 }

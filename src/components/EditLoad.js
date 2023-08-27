@@ -51,7 +51,7 @@ function EditLoad() {
   }
 
   return (
-    <div>
+    <div className="PageLayout">
       <h1>Edit Info for a New Load</h1>
       <input
         type="text"

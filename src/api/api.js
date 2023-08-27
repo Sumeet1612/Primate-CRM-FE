@@ -1,8 +1,8 @@
 import axios from "axios";
-
 const baseApiUrl = process.env.REACT_APP_BASE_URL_API;
+const apiKey = process.env.REACT_APP_API_KEY
 const headers={
-    XApiKey: "AuthTokenCheck",
+    XApiKey: apiKey
   }
 
 export const handleApiError=(err)=>{
@@ -47,4 +47,12 @@ export const getLoadOnId=(loadNumber)=>{
         url:`${baseApiUrl}/users/load/${loadNumber}`,
         headers: headers
     });
+}
+
+export const getBrokerOnId=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/broker/${brokerId}`,
+    headers:headers
+  })
 }

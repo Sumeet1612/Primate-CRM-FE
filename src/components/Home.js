@@ -9,10 +9,8 @@ const handleNavigation=()=>{
 }
 
 const handleShipperNavigation=()=>{
-    nav("/shippers")
+    nav("/Primate-CRM-FE/shippers")
 }
-
-
 
 return(
     <div className="PageLayout">
