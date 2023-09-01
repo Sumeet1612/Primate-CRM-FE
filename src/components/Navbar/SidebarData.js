@@ -5,10 +5,17 @@ import AirportShuttleIcon from "@mui/icons-material/AirportShuttle";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 
-export const SidebarData = [
+export const SidebarUserData = [
   { title: "Home", icon: <HomeIcon />, path: "Primate-CRM-FE/" },
   { title: "Shippers", icon: <EngineeringIcon />, path: "Primate-CRM-FE/shippers" },
-  { title: "Loads", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/new" },
+  { title: "Create Load", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/new" },
+  { title: "View Loads", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/viewLoads" },
   { title: "Profile", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/profile" },
   { title: "Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice" },
+  { title: "Login", icon: <ReceiptIcon />, path: "Primate-CRM-FE/login" },
+];
+
+export const SidebarAdminData = [
+  { title: "Register", icon: <ReceiptIcon />, path: "Primate-CRM-FE/register" },
+  { title: "Agency System", icon: <ReceiptIcon />, path: "Primate-CRM-FE/agency" },
 ];

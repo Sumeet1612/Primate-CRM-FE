@@ -32,7 +32,7 @@ function Shippers() {
   };
 
   return (
-    <>
+    <div className="PageLayout">
       <h1>Manage your Shippers</h1>
       <div>
         <input
@@ -77,7 +77,7 @@ function Shippers() {
 
         <button onClick={handleSubmit}> Add Shipper </button>
       </div>
-    </>
+    </div>
   );
 }
 export default Shippers;

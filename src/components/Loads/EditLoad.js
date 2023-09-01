@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { getLoadOnId, handleApiError  } from "../../api/api";
+import { useParams } from "react-router";
 
 function EditLoad() {
   const [data, setData] = useState({
@@ -6,36 +8,50 @@ function EditLoad() {
     shipperName: "",
     pickupLocation: "",
     deliveryLocation: "",
-    bookingDate: "",
     pickupDate: "",
     deliveryDate: "",
     loadDescription: "",
     carrierMC: "",
     carrierName: "",
     carrierPOC: "",
-    carrierPhone: "",
+    carrierContact: "",
     carrierEmail: "",
     shipperRate: 0,
     carrierRate: 0,
-    netMargin: "",
-    invoicingDate: "",
+    margin: "",
+    invoiceDate: "",
     paymentDate: "",
-    broker: "",
-    sharedWith: [],
+    brokerName: "",
+    brokerId:"",
+    createdOn:"",
+    additionalBroker: [],
   });
+  const {id}= useParams();
+
   useEffect(() => {
-    setData((state) => {
-      let storedData = JSON.parse(localStorage.getItem("sendData"));
-      return { ...state, ...storedData };
-    });
-  }, []);
+    getLoadOnId(id)
+    .then((res)=>{
+      if(res.status===200){
+      setData((state) => {
+        return { ...state, ...res.data };
+      });
+    }
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    })
+
+  }, [id]);
 
   const handleSubmit = () => {
     console.log(data);
   };
+  const handleEdit=(event)=>{
+    console.log(event.target.value)
+  }
 
   return (
-    <div>
+    <div className="PageLayout">
       <h1>Edit Info for a New Load</h1>
       <input
         type="text"
@@ -73,7 +89,7 @@ function EditLoad() {
         type="date"
         placeholder="Booking  Date"
         name="bookingDate"
-        value={data.bookingDate}
+        value={data.createdOn.toString().slice(0,10)}
         readOnly
       />
 
@@ -81,7 +97,7 @@ function EditLoad() {
         type="date"
         placeholder="Pickup Date"
         name="pickupDate"
-        value={data.pickupDate}
+        value={data.pickupDate.toString().slice(0,10)}
         readOnly
       />
 
@@ -89,7 +105,7 @@ function EditLoad() {
         type="date"
         placeholder="Delivery Date"
         name="deliveryDate"
-        value={data.deliveryDate}
+        value={data.deliveryDate.toString().slice(0,10)}
         readOnly
       />
 
@@ -129,7 +145,7 @@ function EditLoad() {
         type="text"
         placeholder="Carrier Phone Number"
         name="carrierPhone"
-        value={data.carrierPhone}
+        value={data.carrierContact}
         readOnly
       />
 
@@ -161,15 +177,16 @@ function EditLoad() {
         type="text"
         placeholder="Net Margin"
         name="netMargin"
-        value={data.netMargin}
+        value={data.margin}
         readOnly
       />
 
       <input
         type="date"
         placeholder="Invoicing  Date"
-        name="invoicingDate"
-        value={data.invoicingDate}
+        name="invoiceDate"
+        value={data.invoiceDate ? data.invoiceDate : ""}
+        onChange={handleEdit}
       />
 
       <input
@@ -177,29 +194,31 @@ function EditLoad() {
         placeholder="Payment  Date"
         name="paymentDate"
         value={data.paymentDate}
+        onChange={handleEdit}
       />
 
       <input
         type="text"
         placeholder="Broker"
         name="broker"
-        value={data.broker}
+        value={data.brokerName}
+        readOnly
       />
 
-      {data.sharedWith ? (
-        data.sharedWith.map((d, index) => {
+      {data.additionalBroker ? (
+        data.additionalBroker.map((d, index) => {
           return (
             <div key={index}>
               <input
                 type="text"
                 name="sharedWithName"
-                value={d.sharedWithName}
+                value={d.brokerName}
                 readOnly
               />
               <input
                 type="text"
                 name="sharedWithPercentage"
-                value={d.sharedWithPercentage}
+                value={d.sharedPercentage}
                 readOnly
               />
             </div>

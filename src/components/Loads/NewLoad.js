@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios  from 'axios'
+import LinearProgress from '@mui/material/LinearProgress';
+import { createLoad, handleApiError, loadActiveBrokers } from "../../api/api";
 
 function NewLoad() {
-  const baseApiUrl= process.env.REACT_APP_BASE_URL_API;
   const [sendData, setSendData] = useState({
     loadNumber: "",
     shipperName: "",
@@ -23,45 +23,55 @@ function NewLoad() {
     netMargin: "",
     invoicingDate: "",
     paymentDate: "",
-    broker: "",
+    brokerId: "",
     additionalBroker: [],
   });
-  
-  const [availableBrokers]=useState([{
-    id:0,
-    name:"Please Select Broker"
-  },
-    {
-    id:1,
-    name:"Sumeet"
-  },
-  {
-    id:2,
-    name:"Sahil"
-  },
-  {
-    id:3,
-    name:"Shubham"
-  },
-  {
-    id:4,
-    name:"Sandeep"
-  }])
-
-  const handleMultipleBrokers = (e,index) => {
-    let value = e.target.value;
-    let feildName = e.target.name;
-    const updatedBrokers=[...additionalBrokers]
-    updatedBrokers[index][feildName]=value;
-    setAdditionalBrokers(()=>{
-      return updatedBrokers;
-    })
-    setSendData((prevState)=>{
-      return {...prevState,additionalBroker:additionalBrokers}
-    })
-  };
+  const [availableBrokers, setAvailableBrokers] = useState([]);
+  const [brokerName, setBrokerName] = useState("XXX");
+  const [isLoading, setIsLoading]=useState(false);
 
   const history = useNavigate();
+  useEffect(() => {    
+    console.log("start test");
+    if (sessionStorage.getItem("UserId")) {
+      setIsLoading(true)
+      loadActiveBrokers()
+        .then((res) => {
+          setAvailableBrokers(res.data);
+          setIsLoading(false)
+        })
+        .catch((err) => {
+          console.log(err);
+          handleApiError(err);
+        });
+      setSendData((state) => {
+        return { ...state, brokerId: sessionStorage.getItem("UserId") };
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (availableBrokers.length > 0) {
+      setBrokerName(() => {
+        return availableBrokers.filter(
+          (x) => x.id === parseInt(sessionStorage.getItem("UserId"))
+        )[0].userName;
+      });
+    }
+  }, [availableBrokers]);
+
+  const handleMultipleBrokers = (e, index) => {
+    let value = e.target.value;
+    let feildName = e.target.name;
+    const updatedBrokers = [...additionalBrokers];
+    updatedBrokers[index][feildName] = value;
+    setAdditionalBrokers(() => {
+      return updatedBrokers;
+    });
+    setSendData((prevState) => {
+      return { ...prevState, additionalBroker: additionalBrokers };
+    });
+  };
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -81,67 +91,68 @@ function NewLoad() {
   const [additionalBrokers, setAdditionalBrokers] = useState([]);
 
   const undoBroker = () => {
-    setAdditionalBrokers((state)=>{
-      let x= [...state]
-      x.pop()
+    setAdditionalBrokers((state) => {
+      let x = [...state];
+      x.pop();
       return x;
-    })
+    });
   };
 
   const manageBrokers = () => {
-    setAdditionalBrokers((state)=>{
-      return [...state, {
-        brokerId:"",
-        sharedPercentage:""
-      }]
-    })
+    setAdditionalBrokers((state) => {
+      return [
+        ...state,
+        {
+          brokerId: "",
+          sharedPercentage: "",
+        },
+      ];
+    });
   };
 
   const handleSubmit = () => {
-    console.log("button clicked");
     console.log(sendData);
-
-    axios.post(`${baseApiUrl}/users/addLoad`,
-        sendData).then(res => {
-          if(res.status===417){
-            alert("Server error")
-          }
-          else{
-            console.log(res);
-          }
-        }).catch((err => {
-            console.log(err)
-        }))
-
-
-    setSendData({
-      loadNumber: "",
-      shipperName: "",
-      pickupLocation: "",
-      deliveryLocation: "",
-      bookingDate: "",
-      pickupDate: "",
-      deliveryDate: "",
-      loadDescription: "",
-      carrierMC: "",
-      carrierName: "",
-      carrierPOC: "",
-      carrierContact: "",
-      carrierEmail: "",
-      shipperRate: 0,
-      carrierRate: 0,
-      netMargin: "",
-      invoicingDate: "",
-      paymentDate: "",
-      broker: "",
-      additionalBroker: [],
-    });
-    history("Primate-CRM-FE/edit");
+    createLoad(sendData)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          if(res.data?.additionalBrokersCreated && res.data?.loadCreated){
+          alert("Load created successfully");
+          setSendData({
+            loadNumber: "",
+            shipperName: "",
+            pickupLocation: "",
+            deliveryLocation: "",
+            bookingDate: "",
+            pickupDate: "",
+            deliveryDate: "",
+            loadDescription: "",
+            carrierMC: "",
+            carrierName: "",
+            carrierPOC: "",
+            carrierContact: "",
+            carrierEmail: "",
+            shipperRate: 0,
+            carrierRate: 0,
+            netMargin: "",
+            invoicingDate: "",
+            paymentDate: "",
+            brokerId: "",
+            additionalBroker: [],
+          });
+          history("/Primate-CRM-FE/");
+        }
+        }
+      })
+      .catch((err) => {
+        handleApiError(err);
+      });
   };
 
   return (
-    <div>
+    <div className="PageLayout">
       <h1>Add Info for a New Load</h1>
+      { isLoading ? <LinearProgress/> :<div>
       <input
         type="text"
         placeholder="Enter Load Number"
@@ -202,27 +213,33 @@ function NewLoad() {
       <input
         type="text"
         placeholder="Broker"
-        name="broker"
-        value={sendData.broker}
-        onChange={handleChange}
+        name="brokerId"
+        value={brokerName}
+        readOnly
       />
 
       {additionalBrokers ? (
-        additionalBrokers.map((ab,index) => {
+        additionalBrokers.map((ab, index) => {
           return (
             <div key={index}>
-              <select name="brokerId" onChange={(e)=>handleMultipleBrokers(e,index)}>
-                {availableBrokers.map((ab)=>{
-                  return(
-                    <option key={ab.id} value={ab.id}> {ab.name}</option>
-                  )
+              <select
+                name="brokerId"
+                onChange={(e) => handleMultipleBrokers(e, index)}
+              >
+                <option value="">Select an option</option>
+                {availableBrokers.map((ab) => {
+                  return (
+                    <option key={ab.id} value={ab.id}>
+                      {ab.userName}
+                    </option>
+                  );
                 })}
               </select>
               <input
                 type="text"
                 placeholder="sharedPercentage"
                 name="sharedPercentage"
-                onChange={(e)=>handleMultipleBrokers(e,index)}
+                onChange={(e) => handleMultipleBrokers(e, index)}
               />
               <button onClick={undoBroker}> x </button>
               <br />
@@ -291,6 +308,7 @@ function NewLoad() {
       />
 
       <button onClick={handleSubmit}> Submit From </button>
+      </div>}
     </div>
   );
 }
