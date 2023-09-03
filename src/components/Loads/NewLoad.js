@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
-import { createLoad, handleApiError, loadActiveBrokers } from "../../api/api";
+import { createLoad, getAllShippers, handleApiError, loadActiveBrokers } from "../../api/api";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -14,7 +14,7 @@ import "./load.css";
 function NewLoad() {
   const [sendData, setSendData] = useState({
     loadNumber: "",
-    shipperId: "",
+    shipperId: '0',
     pickupLocation: "",
     deliveryLocation: "",
     bookingDate: "",
@@ -199,17 +199,17 @@ function NewLoad() {
             onChange={handleChange}
           />
 
-          <TextField
-            required
-            sx={{ height: "80px", width: "30%", mr: "5%" }}
-            InputLabelProps={{ style: { fontSize: 15 } }}
-            type="text"
-            id="shipperName"
-            label="Enter Shipper Name"
-            name="shipperName"
-            value={sendData.shipperName}
-            onChange={handleChange}
-          />
+          <Select name="shipperId"
+          sx={{ height: "55px", width: "30%",  mr: "5%" }}
+      value={sendData.shipperId}
+          onChange={handleChange}>
+          <MenuItem value='0'>Select Shipper</MenuItem>
+            {shippers.map(s=>{
+              return(
+                <MenuItem key={s.id} value= {s.id}>{s.shipperName}</MenuItem>
+              )
+            })}
+          </Select>
 
           <TextField
             required
@@ -368,14 +368,14 @@ function NewLoad() {
                     value={additionalBroker.sharedPercentage}
                     onChange={(e) => handleMultipleBrokers(e, index)}
                   />
-                  <button
+                  <Button variant="contained" color="error"
                     onClick={() => {
                       undoBroker(index);
                     }}
                   >
                     {" "}
-                    x{" "}
-                  </button>
+                    X {" "}
+                  </Button>
                   <br />
                 </div>
               );
