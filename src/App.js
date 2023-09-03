@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import AuthLayout from "./Layouts/AuthLayout";
 import RootLayout from "./Layouts/RootLayout";
 import NewLoad from "./components/Loads/NewLoad";
@@ -15,23 +17,35 @@ import "./App.css";
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route element={<AuthLayout />}>
-            <Route path="Primate-CRM-FE/login" element={<Login />} />
-          </Route>         
-          <Route element={<RootLayout />}>
-            <Route exact path="Primate-CRM-FE/" element={<Home />} />
-            <Route exact path="Primate-CRM-FE/register" element={<SignUp/>} />
-            <Route path="Primate-CRM-FE/new" element={<NewLoad />} />
-            <Route path="Primate-CRM-FE/editLoad/:id" element={<EditLoad />} />
-            <Route path="Primate-CRM-FE/viewLoads" element={<ViewLoads />} />
-            <Route path="Primate-CRM-FE/searchLoad" element={<SearchLoad />} />
-            <Route path="Primate-CRM-FE/Shippers" element={<Shippers />} />
-            <Route path="Primate-CRM-FE/agency" element={<AgencyForm />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<AuthLayout />}>
+              <Route path="Primate-CRM-FE/login" element={<Login />} />
+            </Route>
+            <Route element={<RootLayout />}>
+              <Route exact path="Primate-CRM-FE/" element={<Home />} />
+              <Route
+                exact
+                path="Primate-CRM-FE/register"
+                element={<SignUp />}
+              />
+              <Route path="Primate-CRM-FE/new" element={<NewLoad />} />
+              <Route
+                path="Primate-CRM-FE/editLoad/:id"
+                element={<EditLoad />}
+              />
+              <Route path="Primate-CRM-FE/viewLoads" element={<ViewLoads />} />
+              <Route
+                path="Primate-CRM-FE/searchLoad"
+                element={<SearchLoad />}
+              />
+              <Route path="Primate-CRM-FE/Shippers" element={<Shippers />} />
+              <Route path="Primate-CRM-FE/agency" element={<AgencyForm />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </LocalizationProvider>
     </div>
   );
 }
