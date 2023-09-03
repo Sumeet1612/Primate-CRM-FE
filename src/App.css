@@ -1,32 +1,32 @@
-*{
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100;400&display=swap");
+
+* {
   padding: 0;
   margin: 0;
-  
 }
 .App {
   text-align: left;
   height: 100vh;
   width: 100vw;
+  font-family: 'Lexend Deca', sans-serif;
+  box-sizing: border-box;
 }
-#test1{
-  color:blue
+#test1 {
+  color: blue;
 }
 
-
-li{
+li {
   text-align: left;
   list-style-type: none;
   padding-top: 10px;
   padding-bottom: 10px;
   font: bold;
   font-size: xx-large;
-  border: 1px solid red;
+  border: 1px solid black;
 }
 
-
-
 .Sidebar {
-  background-color:grey;
+  background-color: black;
   color: white;
   width: 20%;
   height: 100%;
@@ -39,19 +39,30 @@ li{
   overflow-y: auto;
 }
 
+.Sidebar ul li a{
+  width: 90%;
+  display: flex;
+  
+}
+
+.Sidebar ul li a svg{
+  padding-right: 10px;
+}
+
 .Sidebar a {
   color: white;
   text-decoration: none;
   padding: 10px;
-  margin: 5px 0;
   transition: background-color 0.3s ease;
+  font-size: large;
 }
 
 .Sidebar a:hover {
-  background-color: #555;
+  background-color: #226792;
+  border-radius: 5px;
 }
 
 .PageLayout {
-  margin-left: 25%; /* Adjust this value based on the width of your left-nav */
+  margin-left: 24%; /* Adjust this value based on the width of your left-nav */
   padding: 20px;
 }
