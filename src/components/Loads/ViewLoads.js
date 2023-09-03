@@ -1,24 +1,26 @@
-import { useEffect, useState } from "react";
-import { getLoadForBroker, handleApiError } from "../../api/api";
-import './load.css'
-import PreviewIcon from '@mui/icons-material/Preview';
+import React, { useEffect, useState } from 'react';
+import { AgGridReact } from 'ag-grid-react';
 import LinearProgress from '@mui/material/LinearProgress';
-import { useNavigate } from "react-router-dom";
 
-function ViewLoads(){
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { getLoadForBroker, handleApiError } from '../../api/api';
+import { useNavigate } from 'react-router';
+
+function ViewLoads() {
 
     const nav= useNavigate();
-    const [isLoading, setIsLoading]= useState(false)
-    const [loads,setLoads] = useState();
+    const [loads,setLoads] =useState([]);
+    const [filteredloads,setFilteredLoads] =useState([]);
+    const [isloading, setIsLoading]= useState(false);
     useEffect(()=>{
         let brokerId= parseInt(sessionStorage.getItem("UserId"));
         if (brokerId>0){
-            console.log("API calling")
-            setIsLoading(true)
+            setIsLoading(true);
             getLoadForBroker(brokerId)
             .then((res)=>{
-                console.log(res);
                 setLoads(res.data)
+                setFilteredLoads(res.data)
                 setIsLoading(false)
             })
             .catch((err)=>{
@@ -28,77 +30,81 @@ function ViewLoads(){
         }
     },[])
 
-    const editLoad=(loadId)=>{
-        console.log(loadId);
-        nav(`/Primate-CRM-FE/editLoad/${loadId}`)
+    const [columnDefs] = useState([
+    {field:"loadNumber",filter: true, sortable: true}
+    ,{field:"loadDescription",filter: true, sortable: true}
+    ,{ field:"shipperName",filter: true, sortable: true}
+    ,{ field:"pickupLocation",filter: true, sortable: true}
+    ,{ field:"deliveryLocation",filter: true, sortable: true}
+    ,{field:"pickupDate",filter: true, sortable: true}
+    ,{ field:"deliveryDate",filter: true, sortable: true}
+    ,{ field:"brokerName",filter: true, sortable: true}
+    ,{field:"selfRate",filter: true, sortable: true}
+    ,{field:"carrierMC",filter: true, sortable: true}
+    ,{field:"carrierName",filter: true, sortable: true}
+    ,{ field:"carrierPOC",filter: true, sortable: true}
+    ,{ field:"carrierContact",filter: true, sortable: true}
+    ,{field:"carrierEmail",filter: true, sortable: true}
+    ,{ field:"paymentStatusId",filter: true, sortable: true}
+    ,{field:"shipperRate",filter: true, sortable: true}
+    ,{ field:"carrierRate",filter: true, sortable: true}
+    ,{field:"margin",filter: true, sortable: true}
+    ,{ field:"invoiceDate",filter: true, sortable: true}
+    ,{field:"mismatched",filter: true, sortable: true}
+    ,{field:"createdOn",filter: true, sortable: true}
+    ,{field:"updatedOn",filter: true, sortable: true}]);
+
+    const handleCell=(cellEvent)=>{
+        let loadId=cellEvent?.data?.loadNumber;
+        if(cellEvent?.colDef?.field==="loadNumber"){ 
+            if(window.confirm("Do you want to View/Edit the Load?")){
+            nav(`/Primate-CRM-FE/editLoad/${loadId}`)
+            }
+        }
     }
 
-    return(
+    const handleViewChange=(viewId)=>{
+        if(viewId==='0'){
+            setFilteredLoads(loads)
+        }
+        else if(viewId==='1'){
+            setFilteredLoads(loads.filter(x=>x.invoiceDate!==null))
+        }
+        else if(viewId==='2'){
+            setFilteredLoads(loads.filter(x=>x.paymentStatusId===2))
+        }
+        else if(viewId==='3'){
+            setFilteredLoads(loads.filter(x=>x.paymentStatusId===3))
+        }
+        else if(viewId==='4'){
+            setFilteredLoads(loads.filter(x=>x.invoiceDate===null))
+        }
+        else if(viewId==='5'){
+            setFilteredLoads(loads.filter(x=>x.mismatch))
+        }
+    }
+
+    return (
         <div className="PageLayout">
-            <h1>View Loads</h1>
-            {isLoading?<LinearProgress/>:
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Loadnumber</th>
-                            <th>Description</th>
-                            <th>Shipper Name</th>
-                            <th>Pickup Location</th>
-                            <th>Delivery Location</th>
-                            <th>Pickup Date</th>
-                            <th>Delivery Date</th>
-                            <th>Broker</th>
-                            <th>Self rate</th>
-                            <th>Carrier Name</th>
-                            <th>Carrier POC</th>
-                            <th>Carrier Contact</th>
-                            <th>Carrier Email</th>
-                            <th>Payment Status</th>
-                            <th>Shipper Rate</th>
-                            <th>Carrier Rate</th>
-                            <th>Margin</th>
-                            <th>Invoice Date</th>
-                            <th>Mismatched</th>
-                            <th>Created On</th>
-                            <th>Last Modified</th>
-                            <th>ACTION</th>
-                       </tr>
-                    </thead>
-                    <tbody>
-                        {loads?.map((ld)=>{
-                            return(
-                                <tr key={ld.loadNumber}>
-                                    <td>{ld.loadNumber}</td>
-                                    <td>{ld.loadDescription}</td>
-                                    <td>{ld.shipperName}</td>
-                                    <td>{ld.pickupLocation}</td>
-                                    <td>{ld.deliveryLocation}</td>
-                                    <td>{ld.pickupDate}</td>
-                                    <td>{ld.deliveryDate}</td>
-                                    <td>{ld.brokerName}</td>
-                                    <td>{ld.selfRate}</td>
-                                    <td>{ld.carrierName}</td>
-                                    <td>{ld.carrierPOC}</td>
-                                    <td>{ld.carrierContact}</td>
-                                    <td>{ld.carrierEmail}</td>
-                                    <td>{ld.paymentStatusId}</td>
-                                    <td>{ld.shipperRate}</td>
-                                    <td>{ld.carrierRate}</td>
-                                    <td>{ld.margin}</td>
-                                    <td>{ld.invoiceDate}</td>
-                                    <td>{ld.mismatched?"Mismatch":"NA"}</td>
-                                    <td>{ld.createdOn}</td>
-                                    <td>{ld.updatedOn}</td>
-                                    <td onClick={()=>editLoad(ld.loadNumber)}> <PreviewIcon/></td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>}
+        <label> Select View</label>
+        <select onChange={(event)=>handleViewChange(event.target.value)}>
+            <option value="0">All Loads</option>
+            <option value="1">Invoiced Load</option>
+            <option value="2">Loads with Payment Requested</option>
+            <option value="3">Loads with Payment Processed</option>
+            <option value="4">Not Invoiced Load</option>
+            <option value="5">Loads with Rate Discrepancy</option>
+        </select>
+        {isloading ? <LinearProgress/> :
+        <div className="ag-theme-alpine" style={{height: 550, width: 950}}>
+            <AgGridReact
+                rowData={filteredloads}
+                columnDefs={columnDefs}
+                onCellClicked={(x)=>handleCell(x)}>
+            </AgGridReact>
+        </div>}
         </div>
-    )
-}
+    );
+};
 
 export default ViewLoads;

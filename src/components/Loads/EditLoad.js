@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getLoadOnId, handleApiError  } from "../../api/api";
+import { editLoad, getLoadOnId, handleApiError  } from "../../api/api";
 import { useParams } from "react-router";
+import LinearProgress from '@mui/material/LinearProgress';
 
 function EditLoad() {
   const [data, setData] = useState({
@@ -20,39 +21,108 @@ function EditLoad() {
     carrierRate: 0,
     margin: "",
     invoiceDate: "",
-    paymentDate: "",
     brokerName: "",
     brokerId:"",
     createdOn:"",
     additionalBroker: [],
   });
+  const [isEditable,setIsEditable]= useState(true);
+  const [isLoading,setIsLoading]= useState(false);
+  const [init,setInit]= useState([]);
+
   const {id}= useParams();
 
   useEffect(() => {
+    setIsLoading(true);
     getLoadOnId(id)
     .then((res)=>{
       if(res.status===200){
       setData((state) => {
         return { ...state, ...res.data };
       });
+
+      setInit(res.data);
+
+      if(res.data?.paymentStatusId !==1){
+        setIsEditable(false);
+      }
+      else{
+        setIsEditable(true)
+      }
+      setIsLoading(false)
     }
     })
     .catch((err)=>{
       handleApiError(err);
+      setIsLoading(false)
     })
-
-  }, [id]);
+  }, [id,isEditable]);
 
   const handleSubmit = () => {
-    console.log(data);
+    const payload=[];
+    Object.keys(data).forEach(e=>{
+      if(data[e]!==init[e]){
+        payload.push(
+          {
+            "path": `/${e}`,
+            "op": "replace",
+            "value": `${data[e]}`
+          }
+        )
+      }
+    })
+    console.log(payload)
+
+    editLoad(init.loadNumber,payload)
+    .then((res)=>{
+      console.log(res)
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    })
   };
-  const handleEdit=(event)=>{
-    console.log(event.target.value)
+
+  const handlePayment=()=>{
+    let payload=[
+      {
+        "path": "/paymentStatusId",
+        "op": "replace",
+        "value": 2
+      }
+    ]
+    console.log(payload);
+
+    editLoad(init.loadNumber,payload)
+    .then((res)=>{
+      console.log(res)
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    });
+
+    setIsEditable(false);
+  }
+
+  const handleEdit=(e)=>{
+    let value = e.target.value;
+    let feildName = e.target.name;
+    setData((state) => {
+      return { ...state, [feildName]: value };
+    });
+
+    if (feildName === "shipperRate" || feildName === "carrierRate") {
+      setData((state) => {
+        let netMarginValue = state.shipperRate - state.carrierRate;
+        return { ...state, margin: netMarginValue };
+      });
+    }
   }
 
   return (
     <div className="PageLayout">
       <h1>Edit Info for a New Load</h1>
+      { isLoading ? <LinearProgress/> :<div>
+
       <input
         type="text"
         placeholder="Enter Load Number"
@@ -74,7 +144,8 @@ function EditLoad() {
         placeholder="Enter Pickup Location"
         name="pickupLocation"
         value={data.pickupLocation}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -82,13 +153,14 @@ function EditLoad() {
         placeholder="Enter Delivery Location"
         name="deliveryLocation"
         value={data.deliveryLocation}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
         type="date"
         placeholder="Booking  Date"
-        name="bookingDate"
+        name="createdOn"
         value={data.createdOn.toString().slice(0,10)}
         readOnly
       />
@@ -98,7 +170,8 @@ function EditLoad() {
         placeholder="Pickup Date"
         name="pickupDate"
         value={data.pickupDate.toString().slice(0,10)}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -106,7 +179,8 @@ function EditLoad() {
         placeholder="Delivery Date"
         name="deliveryDate"
         value={data.deliveryDate.toString().slice(0,10)}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -114,7 +188,8 @@ function EditLoad() {
         placeholder="Load Description"
         name="loadDescription"
         value={data.loadDescription}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -122,7 +197,8 @@ function EditLoad() {
         placeholder="Carrier MC Number"
         name="carrierMC"
         value={data.carrierMC}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -130,7 +206,8 @@ function EditLoad() {
         placeholder="Carrier Name"
         name="carrierName"
         value={data.carrierName}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -138,15 +215,17 @@ function EditLoad() {
         placeholder="Carrier POC"
         name="carrierPOC"
         value={data.carrierPOC}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
         type="text"
         placeholder="Carrier Phone Number"
-        name="carrierPhone"
+        name="carrierContact"
         value={data.carrierContact}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -154,7 +233,8 @@ function EditLoad() {
         placeholder="Carrier Email Address"
         name="carrierEmail"
         value={data.carrierEmail}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -162,7 +242,8 @@ function EditLoad() {
         placeholder="Shipper Rate"
         name="shipperRate"
         value={data.shipperRate}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
@@ -170,13 +251,14 @@ function EditLoad() {
         placeholder="Carrier Rate"
         name="carrierRate"
         value={data.carrierRate}
-        readOnly
+        onChange={handleEdit}
+        readOnly={!isEditable}
       />
 
       <input
         type="text"
         placeholder="Net Margin"
-        name="netMargin"
+        name="margin"
         value={data.margin}
         readOnly
       />
@@ -185,16 +267,8 @@ function EditLoad() {
         type="date"
         placeholder="Invoicing  Date"
         name="invoiceDate"
-        value={data.invoiceDate ? data.invoiceDate : ""}
-        onChange={handleEdit}
-      />
-
-      <input
-        type="date"
-        placeholder="Payment  Date"
-        name="paymentDate"
-        value={data.paymentDate}
-        onChange={handleEdit}
+        value={data.invoiceDate ? data.invoiceDate.toString().slice(0,10) : ""}
+        readOnly
       />
 
       <input
@@ -228,8 +302,12 @@ function EditLoad() {
         <br />
       )}
 
-      <button onClick={handleSubmit}> Submit From </button>
+      <button onClick={handleSubmit} disabled={!isEditable}> Submit From </button>
+      <button hidden={!isEditable} onClick={handlePayment}>Request for Payment</button>
+      <br/>
+      {!isEditable? <h3>Payment is already {init.paymentStatusId===2 ? "Requested": "Processed"}</h3>: <></>}
+      </div>}
     </div>
-  );
+  )
 }
 export default EditLoad;

@@ -1,12 +1,13 @@
 import { useState } from "react";
+import { addShipper, handleApiError } from "../api/api";
 
 function Shippers() {
   const [shipperData, setShipperData] = useState({
     shipperName: "",
-    shipperAddress: "",
-    shipperPOC: "",
-    shipperPhoneNumber: "",
-    shipperEmail: "",
+    address: "",
+    poc: "",
+    contact: "",
+    email: "",
   });
 
   const handleChange = (e) => {
@@ -19,16 +20,26 @@ function Shippers() {
   };
 
   const handleSubmit = () => {
-    console.log("button clicked");
-    console.log(shipperData);
-    localStorage.setItem("shipperData", JSON.stringify(shipperData));
-    setShipperData({
-      shipperName: "",
-      shipperAddress: "",
-      shipperPOC: "",
-      shipperPhoneNumber: "",
-      shipperEmail: "",
-    });
+    addShipper(shipperData)
+    .then((res)=>{
+      if(res.status===208){
+        alert("The Shipper already exists!!")
+      }
+      else if(res.status===200){
+        alert("Shipper Added !!");
+        setShipperData({
+          shipperName: "",
+          address: "",
+          poc: "",
+          contact: "",
+          email: ""
+      });
+      }
+    })
+    .catch((err)=>{
+      console.log(err);
+      handleApiError(err);
+    })
   };
 
   return (
@@ -46,32 +57,32 @@ function Shippers() {
         <input
           type="text"
           placeholder="Enter Address"
-          name="shipperAddress"
-          value={shipperData.shipperAddress}
+          name="address"
+          value={shipperData.address}
           onChange={handleChange}
         />
 
         <input
           type="text"
           placeholder="Enter Shippper POC"
-          name="shipperPOC"
-          value={shipperData.shipperPOC}
+          name="poc"
+          value={shipperData.poc}
           onChange={handleChange}
         />
 
         <input
           type="text"
           placeholder="Enter Phone Nummber"
-          name="shipperPhoneNumber"
-          value={shipperData.shipperPhoneNumber}
+          name="contact"
+          value={shipperData.contact}
           onChange={handleChange}
         />
 
         <input
           type="email"
           placeholder="Shipper Email Address"
-          name="shipperEmail"
-          value={shipperData.shipperEmail}
+          name="email"
+          value={shipperData.email}
           onChange={handleChange}
         />
 

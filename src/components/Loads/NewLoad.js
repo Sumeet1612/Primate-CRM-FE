@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LinearProgress from '@mui/material/LinearProgress';
-import { createLoad, handleApiError, loadActiveBrokers } from "../../api/api";
+import TextField from '@mui/material/TextField';
+import { createLoad, getAllShippers, handleApiError, loadActiveBrokers } from "../../api/api";
 
 function NewLoad() {
   const [sendData, setSendData] = useState({
     loadNumber: "",
-    shipperName: "",
+    shipperId: "",
     pickupLocation: "",
     deliveryLocation: "",
     bookingDate: "",
@@ -27,14 +28,26 @@ function NewLoad() {
     additionalBroker: [],
   });
   const [availableBrokers, setAvailableBrokers] = useState([]);
+  const [shippers, setShippers] = useState([]);
   const [brokerName, setBrokerName] = useState("XXX");
   const [isLoading, setIsLoading]=useState(false);
 
   const history = useNavigate();
-  useEffect(() => {    
-    console.log("start test");
+
+  useEffect(() => {
     if (sessionStorage.getItem("UserId")) {
       setIsLoading(true)
+
+      //load shippers in dropdown
+      getAllShippers()
+      .then((res)=>{
+        setShippers(res.data);
+      })
+      .catch((err)=>{
+        handleApiError(err)
+      });
+
+      //load all active brokers in drowndown fro additional broker names
       loadActiveBrokers()
         .then((res) => {
           setAvailableBrokers(res.data);
@@ -44,9 +57,11 @@ function NewLoad() {
           console.log(err);
           handleApiError(err);
         });
-      setSendData((state) => {
-        return { ...state, brokerId: sessionStorage.getItem("UserId") };
-      });
+      
+        //auto set current loggedIn user as the load creater
+        setSendData((state) => {
+          return { ...state, brokerId: sessionStorage.getItem("UserId") };
+        });
     }
   }, []);
 
@@ -76,7 +91,6 @@ function NewLoad() {
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
-
     setSendData((state) => {
       return { ...state, [feildName]: value };
     });
@@ -114,13 +128,12 @@ function NewLoad() {
     console.log(sendData);
     createLoad(sendData)
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
           if(res.data?.additionalBrokersCreated && res.data?.loadCreated){
           alert("Load created successfully");
           setSendData({
             loadNumber: "",
-            shipperName: "",
+            shipperId: "",
             pickupLocation: "",
             deliveryLocation: "",
             bookingDate: "",
@@ -153,66 +166,69 @@ function NewLoad() {
     <div className="PageLayout">
       <h1>Add Info for a New Load</h1>
       { isLoading ? <LinearProgress/> :<div>
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Enter Load Number"
+        label="Enter Load Number"
         name="loadNumber"
         value={sendData.loadNumber}
         onChange={handleChange}
       />
-      <input
+
+      <select name="shipperId" onChange={handleChange}>
+      <option value='0'>Select Shipper</option>
+        {shippers.map(s=>{
+          return(
+            <option key={s.id} value= {s.id}>{s.shipperName}</option>
+          )
+        })}
+      </select>
+
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Enter Shipper Name"
-        name="shipperName"
-        value={sendData.shipperName}
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        placeholder="Enter Pickup Location"
+        label="Enter Pickup Location"
         name="pickupLocation"
         value={sendData.pickupLocation}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Enter Delivery Location"
+        label="Enter Delivery Location"
         name="deliveryLocation"
         value={sendData.deliveryLocation}
         onChange={handleChange}
       />
       <input
         type="date"
-        placeholder="Booking  Date"
+        label="Booking  Date"
         name="bookingDate"
         value={sendData.bookingDate}
         onChange={handleChange}
       />
       <input
         type="date"
-        placeholder="Pickup Date"
+        label="Pickup Date"
         name="pickupDate"
         value={sendData.pickupDate}
         onChange={handleChange}
       />
       <input
         type="date"
-        placeholder="Delivery Date"
+        label="Delivery Date"
         name="deliveryDate"
         value={sendData.deliveryDate}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Load Description"
+        label="Load Description"
         name="loadDescription"
         value={sendData.loadDescription}
         onChange={handleChange}
       />
 
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Broker"
+        label="Broker"
         name="brokerId"
         value={brokerName}
         readOnly
@@ -235,9 +251,9 @@ function NewLoad() {
                   );
                 })}
               </select>
-              <input
+              <TextField id="outlined-basic"
                 type="text"
-                placeholder="sharedPercentage"
+                label="sharedPercentage"
                 name="sharedPercentage"
                 onChange={(e) => handleMultipleBrokers(e, index)}
               />
@@ -250,58 +266,58 @@ function NewLoad() {
         <br />
       )}
       <button onClick={manageBrokers}>Add Broker</button>
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Carrier MC Number"
+        label="Carrier MC Number"
         name="carrierMC"
         value={sendData.carrierMC}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Carrier Name"
+        label="Carrier Name"
         name="carrierName"
         value={sendData.carrierName}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Carrier POC"
+        label="Carrier POC"
         name="carrierPOC"
         value={sendData.carrierPOC}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Carrier Phone Number"
+        label="Carrier Phone Number"
         name="carrierContact"
         value={sendData.carrierContact}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="email"
-        placeholder="Carrier Email Address"
+        label="Carrier Email Address"
         name="carrierEmail"
         value={sendData.carrierEmail}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Shipper Rate"
+        label="Shipper Rate"
         name="shipperRate"
         value={sendData.shipperRate}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Carrier Rate"
+        label="Carrier Rate"
         name="carrierRate"
         value={sendData.carrierRate}
         onChange={handleChange}
       />
-      <input
+      <TextField id="outlined-basic"
         type="text"
-        placeholder="Net Margin"
+        label="Net Margin"
         name="netMargin"
         value={sendData.netMargin}
         readOnly
