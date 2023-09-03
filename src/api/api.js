@@ -90,3 +90,29 @@ export const processInvoices=()=>{
     headers:headers
   })
 }
+
+export const getAllShippers=()=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/shippers`,
+    headers:headers
+  })
+}
+
+export const addShipper=(data)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/users/createShipper`,
+    data:data,
+    headers:headers
+  })
+}
+
+export const editLoad= (loadNumber,load)=>{
+  return axios({
+    method:'patch',
+    url:`${baseApiUrl}/users/updateLoad/${loadNumber}`,
+    data:load,
+    headers:headers
+  })
+}

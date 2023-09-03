@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
-import { createLoad, handleApiError, loadActiveBrokers } from "../../api/api";
+import { createLoad, getAllShippers, handleApiError, loadActiveBrokers } from "../../api/api";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -14,7 +14,7 @@ import "./load.css";
 function NewLoad() {
   const [sendData, setSendData] = useState({
     loadNumber: "",
-    shipperName: "",
+    shipperId: '0',
     pickupLocation: "",
     deliveryLocation: "",
     bookingDate: "",
@@ -35,14 +35,26 @@ function NewLoad() {
     additionalBroker: [],
   });
   const [availableBrokers, setAvailableBrokers] = useState([]);
+  const [shippers, setShippers] = useState([]);
   const [brokerName, setBrokerName] = useState("XXX");
   const [isLoading, setIsLoading] = useState(false);
 
   const history = useNavigate();
+
   useEffect(() => {
-    console.log("start test");
     if (sessionStorage.getItem("UserId")) {
-      setIsLoading(true);
+      setIsLoading(true)
+
+      //load shippers in dropdown
+      getAllShippers()
+      .then((res)=>{
+        setShippers(res.data);
+      })
+      .catch((err)=>{
+        handleApiError(err)
+      });
+
+      //load all active brokers in drowndown fro additional broker names
       loadActiveBrokers()
         .then((res) => {
           setAvailableBrokers(res.data);
@@ -52,9 +64,11 @@ function NewLoad() {
           console.log(err);
           handleApiError(err);
         });
-      setSendData((state) => {
-        return { ...state, brokerId: sessionStorage.getItem("UserId") };
-      });
+      
+        //auto set current loggedIn user as the load creater
+        setSendData((state) => {
+          return { ...state, brokerId: sessionStorage.getItem("UserId") };
+        });
     }
   }, []);
 
@@ -84,7 +98,6 @@ function NewLoad() {
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
-
     setSendData((state) => {
       return { ...state, [feildName]: value };
     });
@@ -122,34 +135,33 @@ function NewLoad() {
     console.log(sendData);
     createLoad(sendData)
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
-          if (res.data?.additionalBrokersCreated && res.data?.loadCreated) {
-            alert("Load created successfully");
-            setSendData({
-              loadNumber: "",
-              shipperName: "",
-              pickupLocation: "",
-              deliveryLocation: "",
-              bookingDate: "",
-              pickupDate: "",
-              deliveryDate: "",
-              loadDescription: "",
-              carrierMC: "",
-              carrierName: "",
-              carrierPOC: "",
-              carrierContact: "",
-              carrierEmail: "",
-              shipperRate: 0,
-              carrierRate: 0,
-              netMargin: "",
-              invoicingDate: "",
-              paymentDate: "",
-              brokerId: "",
-              additionalBroker: [],
-            });
-            history("/Primate-CRM-FE/");
-          }
+          if(res.data?.additionalBrokersCreated && res.data?.loadCreated){
+          alert("Load created successfully");
+          setSendData({
+            loadNumber: "",
+            shipperId: "",
+            pickupLocation: "",
+            deliveryLocation: "",
+            bookingDate: "",
+            pickupDate: "",
+            deliveryDate: "",
+            loadDescription: "",
+            carrierMC: "",
+            carrierName: "",
+            carrierPOC: "",
+            carrierContact: "",
+            carrierEmail: "",
+            shipperRate: 0,
+            carrierRate: 0,
+            netMargin: "",
+            invoicingDate: "",
+            paymentDate: "",
+            brokerId: "",
+            additionalBroker: [],
+          });
+          history("/Primate-CRM-FE/");
+        }
         }
       })
       .catch((err) => {
@@ -187,17 +199,17 @@ function NewLoad() {
             onChange={handleChange}
           />
 
-          <TextField
-            required
-            sx={{ height: "80px", width: "30%", mr: "5%" }}
-            InputLabelProps={{ style: { fontSize: 15 } }}
-            type="text"
-            id="shipperName"
-            label="Enter Shipper Name"
-            name="shipperName"
-            value={sendData.shipperName}
-            onChange={handleChange}
-          />
+          <Select name="shipperId"
+          sx={{ height: "55px", width: "30%",  mr: "5%" }}
+      value={sendData.shipperId}
+          onChange={handleChange}>
+          <MenuItem value='0'>Select Shipper</MenuItem>
+            {shippers.map(s=>{
+              return(
+                <MenuItem key={s.id} value= {s.id}>{s.shipperName}</MenuItem>
+              )
+            })}
+          </Select>
 
           <TextField
             required
@@ -356,14 +368,14 @@ function NewLoad() {
                     value={additionalBroker.sharedPercentage}
                     onChange={(e) => handleMultipleBrokers(e, index)}
                   />
-                  <button
+                  <Button variant="contained" color="error"
                     onClick={() => {
                       undoBroker(index);
                     }}
                   >
                     {" "}
-                    x{" "}
-                  </button>
+                    X {" "}
+                  </Button>
                   <br />
                 </div>
               );
