@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import LinearProgress from '@mui/material/LinearProgress';
-
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { getLoadForBroker, handleApiError } from '../../api/api';
@@ -80,7 +79,7 @@ function ViewLoads() {
             setFilteredLoads(loads.filter(x=>x.invoiceDate===null))
         }
         else if(viewId==='5'){
-            setFilteredLoads(loads.filter(x=>x.mismatch))
+            setFilteredLoads(loads.filter(x=>x.mismatched))
         }
     }
 

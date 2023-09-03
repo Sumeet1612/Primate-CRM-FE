@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { addShipper, handleApiError } from "../api/api";
+import { useEffect, useState } from "react";
+import { addShipper, getAllShippers, handleApiError } from "../api/api";
+import { AgGridReact } from 'ag-grid-react';
+import LinearProgress from '@mui/material/LinearProgress';
+import 'ag-grid-community/styles/ag-grid.css';
+import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 function Shippers() {
   const [shipperData, setShipperData] = useState({
@@ -10,6 +14,34 @@ function Shippers() {
     email: "",
   });
 
+  const [viewShippers,setViewShippers]=useState([]);
+  const [isloading,setIsLoading]=useState(false);
+  const [refresh,setRefresh]=useState(false);
+
+  const [colDef]=useState([
+    {field:"id",filter: true, sortable: true},
+    {field:"shipperName",filter: true, sortable: true},
+    {field:"address",filter: true, sortable: true},
+    {field:"poc",filter: true, sortable: true},
+    {field:"contact",filter: true, sortable: true},
+    {field:"email",filter: true, sortable: true},
+    {field:"updatedOn",filter: true, sortable: true}
+  ]);
+
+  useEffect(()=>{
+    setIsLoading(true);
+    getAllShippers()
+    .then((res)=>{
+      if(res.status===200){
+        setViewShippers(res.data);
+      }
+      setIsLoading(false);
+    })
+    .catch((err)=>{
+      handleApiError(err);
+      setIsLoading(false);
+    })
+  },[refresh])
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
@@ -27,17 +59,19 @@ function Shippers() {
       }
       else if(res.status===200){
         alert("Shipper Added !!");
+
         setShipperData({
           shipperName: "",
           address: "",
           poc: "",
           contact: "",
           email: ""
-      });
+        });
+      
+      setRefresh(!refresh)
       }
     })
     .catch((err)=>{
-      console.log(err);
       handleApiError(err);
     })
   };
@@ -45,6 +79,7 @@ function Shippers() {
   return (
     <div className="PageLayout">
       <h1>Manage your Shippers</h1>
+      <br/>
       <div>
         <input
           type="text"
@@ -88,6 +123,15 @@ function Shippers() {
 
         <button onClick={handleSubmit}> Add Shipper </button>
       </div>
+      <br/>
+      <br/>
+      {isloading? <LinearProgress/>:
+      <div className="ag-theme-alpine" style={{height: 550, width: 950}}>
+            <AgGridReact
+                rowData={viewShippers}
+                columnDefs={colDef}>
+            </AgGridReact>
+        </div>}
     </div>
   );
 }

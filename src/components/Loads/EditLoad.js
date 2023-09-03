@@ -71,11 +71,12 @@ function EditLoad() {
         )
       }
     })
-    console.log(payload)
 
     editLoad(init.loadNumber,payload)
     .then((res)=>{
-      console.log(res)
+      if(res.data===true){
+        alert("Load updated !!")
+      }
     })
     .catch((err)=>{
       handleApiError(err);
@@ -169,7 +170,7 @@ function EditLoad() {
         type="date"
         placeholder="Pickup Date"
         name="pickupDate"
-        value={data.pickupDate.toString().slice(0,10)}
+        value={data.pickupDate?.toString().slice(0,10)}
         onChange={handleEdit}
         readOnly={!isEditable}
       />
@@ -178,7 +179,7 @@ function EditLoad() {
         type="date"
         placeholder="Delivery Date"
         name="deliveryDate"
-        value={data.deliveryDate.toString().slice(0,10)}
+        value={data.deliveryDate?.toString().slice(0,10)}
         onChange={handleEdit}
         readOnly={!isEditable}
       />
