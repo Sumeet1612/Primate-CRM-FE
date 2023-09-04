@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
-import { createLoad, getAllShippers, handleApiError, loadActiveBrokers } from "../../api/api";
+import {
+  createLoad,
+  getAllShippers,
+  handleApiError,
+  loadActiveBrokers,
+} from "../../api/api";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -14,7 +19,7 @@ import "./load.css";
 function NewLoad() {
   const [sendData, setSendData] = useState({
     loadNumber: "",
-    shipperId: '0',
+    shipperId: "0",
     pickupLocation: "",
     deliveryLocation: "",
     bookingDate: "",
@@ -43,16 +48,16 @@ function NewLoad() {
 
   useEffect(() => {
     if (sessionStorage.getItem("UserId")) {
-      setIsLoading(true)
+      setIsLoading(true);
 
       //load shippers in dropdown
       getAllShippers()
-      .then((res)=>{
-        setShippers(res.data);
-      })
-      .catch((err)=>{
-        handleApiError(err)
-      });
+        .then((res) => {
+          setShippers(res.data);
+        })
+        .catch((err) => {
+          handleApiError(err);
+        });
 
       //load all active brokers in drowndown fro additional broker names
       loadActiveBrokers()
@@ -64,11 +69,11 @@ function NewLoad() {
           console.log(err);
           handleApiError(err);
         });
-      
-        //auto set current loggedIn user as the load creater
-        setSendData((state) => {
-          return { ...state, brokerId: sessionStorage.getItem("UserId") };
-        });
+
+      //auto set current loggedIn user as the load creater
+      setSendData((state) => {
+        return { ...state, brokerId: sessionStorage.getItem("UserId") };
+      });
     }
   }, []);
 
@@ -136,32 +141,32 @@ function NewLoad() {
     createLoad(sendData)
       .then((res) => {
         if (res.status === 200) {
-          if(res.data?.additionalBrokersCreated && res.data?.loadCreated){
-          alert("Load created successfully");
-          setSendData({
-            loadNumber: "",
-            shipperId: "",
-            pickupLocation: "",
-            deliveryLocation: "",
-            bookingDate: "",
-            pickupDate: "",
-            deliveryDate: "",
-            loadDescription: "",
-            carrierMC: "",
-            carrierName: "",
-            carrierPOC: "",
-            carrierContact: "",
-            carrierEmail: "",
-            shipperRate: 0,
-            carrierRate: 0,
-            netMargin: "",
-            invoicingDate: "",
-            paymentDate: "",
-            brokerId: "",
-            additionalBroker: [],
-          });
-          history("/Primate-CRM-FE/");
-        }
+          if (res.data?.additionalBrokersCreated && res.data?.loadCreated) {
+            alert("Load created successfully");
+            setSendData({
+              loadNumber: "",
+              shipperId: "",
+              pickupLocation: "",
+              deliveryLocation: "",
+              bookingDate: "",
+              pickupDate: "",
+              deliveryDate: "",
+              loadDescription: "",
+              carrierMC: "",
+              carrierName: "",
+              carrierPOC: "",
+              carrierContact: "",
+              carrierEmail: "",
+              shipperRate: 0,
+              carrierRate: 0,
+              netMargin: "",
+              invoicingDate: "",
+              paymentDate: "",
+              brokerId: "",
+              additionalBroker: [],
+            });
+            history("/Primate-CRM-FE/");
+          }
         }
       })
       .catch((err) => {
@@ -178,7 +183,7 @@ function NewLoad() {
           marginBottom: "2%",
           padding: "2%",
           width: "86%",
-          fontSize: "25px",
+          fontSize: "20px",
         }}
       >
         Add a New Load
@@ -189,7 +194,7 @@ function NewLoad() {
         <div>
           <TextField
             required
-            sx={{ height: "80px", width: "20%", mr: "5%" }}
+            sx={{ height: "70px", width: "20%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="loadNumber"
@@ -199,21 +204,25 @@ function NewLoad() {
             onChange={handleChange}
           />
 
-          <Select name="shipperId"
-          sx={{ height: "55px", width: "30%",  mr: "5%" }}
-      value={sendData.shipperId}
-          onChange={handleChange}>
-          <MenuItem value='0'>Select Shipper</MenuItem>
-            {shippers.map(s=>{
-              return(
-                <MenuItem key={s.id} value= {s.id}>{s.shipperName}</MenuItem>
-              )
+          <Select
+            name="shipperId"
+            sx={{ height: "55px", width: "30%", mr: "5%", mb:"1%" }}
+            value={sendData.shipperId}
+            onChange={handleChange}
+          >
+            <MenuItem value="0">Select Shipper</MenuItem>
+            {shippers.map((s) => {
+              return (
+                <MenuItem key={s.id} value={s.id}>
+                  {s.shipperName}
+                </MenuItem>
+              );
             })}
           </Select>
 
           <TextField
             required
-            sx={{ height: "80px", width: "30%", mr: "10%" }}
+            sx={{ height: "70px", width: "30%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="loadDescription"
@@ -226,7 +235,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "40%", mr: "10%" }}
+            sx={{ height: "70px", width: "40%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="pickupLocation"
@@ -238,7 +247,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "40%", mr: "10%" }}
+            sx={{ height: "70px", width: "40%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="deliveryLocation"
@@ -250,7 +259,7 @@ function NewLoad() {
           <br />
 
           <DatePicker
-            sx={{ height: "80px", width: "27%", mr: "4.5%" }}
+            sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             required
             id="bookingDate"
             label="Booking Date"
@@ -268,7 +277,7 @@ function NewLoad() {
           />
 
           <DatePicker
-            sx={{ height: "80px", width: "27%", mr: "4.5%" }}
+            sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             required
             id="pickupDate"
             name="pickupDate"
@@ -286,7 +295,7 @@ function NewLoad() {
           />
 
           <DatePicker
-            sx={{ height: "80px", width: "27%", mr: "10%" }}
+            sx={{ height: "70px", width: "27%", mr: "10%", mb:"1%" }}
             required
             id="deliveryDate"
             label="Delivery Date"
@@ -305,7 +314,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "20%", mr: "3%" }}
+            sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="broker"
@@ -320,7 +329,7 @@ function NewLoad() {
             color="success"
             onClick={manageBrokers}
             endIcon={<AddIcon />}
-            sx={{ width: "10%" }}
+            sx={{ width: "10%", mb:"1%" }}
           >
             Add
           </Button>
@@ -341,7 +350,7 @@ function NewLoad() {
               return (
                 <div key={index}>
                   <Select
-                    sx={{ height: "55px", width: "20%", mb: "3%", mr: "4.5%" }}
+                    sx={{ height: "55px", width: "20%", mr: "4.5%", mb:"1%"}}
                     name="brokerId"
                     value={additionalBroker.brokerId}
                     onChange={(e) => handleMultipleBrokers(e, index)}
@@ -360,7 +369,7 @@ function NewLoad() {
                   </Select>
                   <TextField
                     required
-                    sx={{ height: "80px", width: "20%", mr: "3%" }}
+                    sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
                     type="text"
                     id="sharedPercentage"
                     label="Shared Percentage"
@@ -368,13 +377,15 @@ function NewLoad() {
                     value={additionalBroker.sharedPercentage}
                     onChange={(e) => handleMultipleBrokers(e, index)}
                   />
-                  <Button variant="contained" color="error"
+                  <Button
+                    variant="contained"
+                    color="error"
                     onClick={() => {
                       undoBroker(index);
                     }}
                   >
                     {" "}
-                    X {" "}
+                    X{" "}
                   </Button>
                   <br />
                 </div>
@@ -385,7 +396,7 @@ function NewLoad() {
           )}
           <TextField
             required
-            sx={{ height: "80px", width: "20%", mr: "5%" }}
+            sx={{ height: "70px", width: "20%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="carrierMC"
@@ -397,7 +408,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "30%", mr: "5%" }}
+            sx={{ height: "70px", width: "30%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="carrierName"
@@ -409,7 +420,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "30%" }}
+            sx={{ height: "70px", width: "30%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="carrierPOC"
@@ -422,7 +433,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "30%", mr: "5%" }}
+            sx={{ height: "70px", width: "30%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="carrierContact"
@@ -434,7 +445,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "55%" }}
+            sx={{ height: "70px", width: "55%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="email"
             id="carrierEmail"
@@ -447,7 +458,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "27%", mr: "4.5%" }}
+            sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="shipperRate"
@@ -459,7 +470,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "27%", mr: "4.5%" }}
+            sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="carrierRate"
@@ -471,7 +482,7 @@ function NewLoad() {
 
           <TextField
             required
-            sx={{ height: "80px", width: "27%", mr: "4.5%" }}
+            sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
             id="netmargin"

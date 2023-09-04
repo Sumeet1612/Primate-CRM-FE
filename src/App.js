@@ -4,6 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import AuthLayout from "./Layouts/AuthLayout";
 import RootLayout from "./Layouts/RootLayout";
 import NewLoad from "./components/Loads/NewLoad";
+import Profile from "./components/Brokers/Profile";
 import EditLoad from "./components/Loads/EditLoad";
 import Home from "./components/Home";
 import Shippers from "./components/Shippers";
@@ -42,6 +43,7 @@ function App() {
               />
               <Route path="Primate-CRM-FE/Shippers" element={<Shippers />} />
               <Route path="Primate-CRM-FE/agency" element={<AgencyForm />} />
+              <Route path="Primate-CRM-FE/profile" element={<Profile/>}/>
             </Route>
           </Routes>
         </BrowserRouter>
