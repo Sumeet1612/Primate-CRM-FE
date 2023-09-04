@@ -74,14 +74,18 @@ li {
 .BrokerContactInfo1 .info {
   width: 60%;
 }
-.BankDetails{
+.BankDetails {
   display: flex;
 }
 
-.BankDetails .BankInfo{
+.BankDetails .BankInfo {
   width: 70%;
 }
 
-.BankDetails .AddButton{
-  margin-top: 85px;
+.BankDetails .AddButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  justify-content: center;
 }

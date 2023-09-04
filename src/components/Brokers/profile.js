@@ -204,15 +204,86 @@ function Profile() {
             />
           </div>
           <div className="AddButton">
-          <Button
-          variant="contained"
-          color="success"
-          endIcon={<AddIcon />}
-            sx={{ width: "10%", mb:"1%", ml:"70px" }}
-          >Add</Button>
-          <p fontSize="14px">Add another Bank Account</p>
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              endIcon={<AddIcon />}
+              sx={{ mb: "3%", width:"50%" }}
+            >
+                Add
+            </Button>
+            <p fontSize="14px">Add another Bank Account</p>
           </div>
         </div>
+
+        <h2
+          style={{
+            color: "white",
+            backgroundColor: "black",
+            marginBottom: "2%",
+            padding: "0.5%",
+            width: "93%",
+            fontSize: "15px",
+          }}
+        >
+          Miscellaneous Details{" "}
+        </h2>
+
+        <TextField
+          size="small"
+          sx={{ height: "50px", width: "25%", mr: "3%", mb: "1%" }}
+          type="text"
+          label="Phone Bill(USD)"
+          name="phoneBill"
+        />
+
+        <TextField
+          size="small"
+          sx={{ height: "50px", width: "25%", mr: "3%", mb: "1%" }}
+          type="text"
+          label="Commission %"
+          name="naxCommission"
+        />
+
+        <TextField
+          size="small"
+          sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
+          type="text"
+          label="Currency"
+          name="currency"
+        />
+
+        <TextField
+          size="small"
+          sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
+          type="text"
+          label="Exchange Rate"
+          name="exchangeRate"
+        />
+        <br />
+
+        <Button
+          variant="contained"
+          color="secondary"
+          sx={{ width: "20%", mb: "1%", mr:"40%" }}
+        >
+          Save Changes
+        </Button>
+
+        {/* <Button
+          variant="contained"
+          color="inherit"
+          sx={{ width: "20%", mb: "1%", mr:"0%" }}        >
+          Edit Profile
+        </Button> */}
+
+        <Button
+          variant="contained"
+          color="info"
+          sx={{ width: "20%", mb: "1%", mr:"10%" }}        >
+          Change Password
+        </Button>
       </div>
     </>
   );
