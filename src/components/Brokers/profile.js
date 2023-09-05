@@ -202,6 +202,15 @@ function Profile() {
               label="IFSC Code"
               name="codeIFSC"
             />
+
+            <TextField
+              size="small"
+              sx={{ height: "50px", width: "90%", mr: "10%", mb: "1%" }}
+              type="text"
+              label="PAN Number associated with account"
+              name="associatedPAN"
+            />
+
           </div>
           <div className="AddButton">
             <Button
@@ -209,9 +218,9 @@ function Profile() {
               color="success"
               size="large"
               endIcon={<AddIcon />}
-              sx={{ mb: "3%", width:"50%" }}
+              sx={{ mb: "3%", width: "50%" }}
             >
-                Add
+              Add
             </Button>
             <p fontSize="14px">Add another Bank Account</p>
           </div>
@@ -266,7 +275,7 @@ function Profile() {
         <Button
           variant="contained"
           color="secondary"
-          sx={{ width: "20%", mb: "1%", mr:"40%" }}
+          sx={{ width: "20%", mb: "1%", mr: "40%" }}
         >
           Save Changes
         </Button>
@@ -281,7 +290,8 @@ function Profile() {
         <Button
           variant="contained"
           color="info"
-          sx={{ width: "20%", mb: "1%", mr:"10%" }}        >
+          sx={{ width: "20%", mb: "1%", mr: "10%" }}
+        >
           Change Password
         </Button>
       </div>
