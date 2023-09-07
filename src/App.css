@@ -8,7 +8,7 @@
   text-align: left;
   height: 100vh;
   width: 100vw;
-  font-family: 'Lexend Deca', sans-serif;
+  font-family: "Lexend Deca", sans-serif;
   box-sizing: border-box;
 }
 #test1 {
@@ -39,13 +39,12 @@ li {
   overflow-y: auto;
 }
 
-.Sidebar ul li a{
+.Sidebar ul li a {
   width: 90%;
   display: flex;
-  
 }
 
-.Sidebar ul li a svg{
+.Sidebar ul li a svg {
   padding-right: 10px;
 }
 
@@ -65,4 +64,28 @@ li {
 .PageLayout {
   margin-left: 24%; /* Adjust this value based on the width of your left-nav */
   padding: 20px;
+}
+
+.BrokerContactInfo1 {
+  display: flex;
+  align-items: center;
+}
+
+.BrokerContactInfo1 .info {
+  width: 60%;
+}
+.BankDetails {
+  display: flex;
+}
+
+.BankDetails .BankInfo {
+  width: 70%;
+}
+
+.BankDetails .AddButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  justify-content: center;
 }
