@@ -14,7 +14,6 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
-import "./load.css";
 
 function NewLoad() {
   const [sendData, setSendData] = useState({

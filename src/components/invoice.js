@@ -19,6 +19,22 @@ function Invoice() {
         >
           Invoice
         </h1>
+
+        <h1
+          style={{
+            color: "white",
+            backgroundColor: "#00b7aa",
+            marginBottom: "2%",
+            padding: "2%",
+            width: "90%",
+            fontSize: "16px",
+          }}
+        >
+          Past Payments
+        </h1>
+
+
+
       </div>
     </>
   );
