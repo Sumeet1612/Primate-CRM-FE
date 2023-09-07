@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addShipper, getAllShippers, handleApiError } from "../../api/api";
+import { addShipper, getAllShippersForBroker, handleApiError } from "../../api/api";
 import { AgGridReact } from "ag-grid-react";
 import LinearProgress from "@mui/material/LinearProgress";
 import "ag-grid-community/styles/ag-grid.css";
@@ -10,7 +10,9 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 
 function Shippers() {
+  const brokerId= sessionStorage.getItem("UserId");
   const [shipperData, setShipperData] = useState({
+    brokerId:brokerId,
     shipperName: "",
     address: "",
     poc: "",
@@ -26,7 +28,6 @@ function Shippers() {
 
   const handleCell=(cellEvent)=>{
     let shipperId=cellEvent?.data?.id;
-
     if(cellEvent?.colDef?.field==="id"){
       navigation(`/Primate-CRM-FE/Shippers/${shipperId}`)
     }
@@ -46,7 +47,7 @@ function Shippers() {
 
   useEffect(() => {
     setIsLoading(true);
-    getAllShippers()
+    getAllShippersForBroker(brokerId)
       .then((res) => {
         if (res.status === 200) {
           setViewShippers(res.data);
@@ -57,7 +58,8 @@ function Shippers() {
         handleApiError(err);
         setIsLoading(false);
       });
-  }, [refresh]);
+  }, [refresh,brokerId]);
+
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
@@ -76,6 +78,7 @@ function Shippers() {
           alert("Shipper Added !!");
 
           setShipperData({
+            brokerId:brokerId,
             shipperName: "",
             address: "",
             poc: "",

@@ -69,7 +69,7 @@ export const getBrokerOnId=(brokerId)=>{
 export const getLoadForBroker =(brokerId)=>{
   return axios({
     method:'get',
-    url:`${baseApiUrl}/users/getLoadsForBroker/${brokerId}`,
+    url:`${baseApiUrl}/users/loads/ForBroker/${brokerId}`,
     headers:headers
   })
 }
@@ -99,6 +99,23 @@ export const getAllShippers=()=>{
   })
 }
 
+export const getAllShippersForBroker=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/shippers/forBroker/${brokerId}`,
+    headers:headers
+  })
+}
+
+export const getShipper=(shipperId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/shipper/${shipperId}`,
+    headers:headers
+  })
+}
+
+
 export const addShipper=(data)=>{
   return axios({
     method:'post',
@@ -106,6 +123,16 @@ export const addShipper=(data)=>{
     data:data,
     headers:headers
   })
+}
+
+export const editShipper= (id,payload)=>{
+  return axios({
+    method:'patch',
+    url:`${baseApiUrl}/users/editShipper/${id}`,
+    data:payload,
+    headers:headers
+  })
+
 }
 
 export const editLoad= (loadNumber,load)=>{

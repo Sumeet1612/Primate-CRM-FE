@@ -1,11 +1,13 @@
 import TextField from "@mui/material/TextField";
-// import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { editShipper, getShipper, handleApiError } from "../../api/api";
+import { Button } from "@mui/material";
 
 function EditShippers() {
 
     const { id } = useParams();
+    const [init, setInit]= useState([]);
     const [shipperData, setShipperData] = useState({
         shipperName: "",
         address: "",
@@ -16,8 +18,49 @@ function EditShippers() {
       });
 
   useEffect(() => {
-    
-  },[]);
+    getShipper(id)
+    .then((res)=>{
+      if(res.status===200){
+        setShipperData(res.data);
+        setInit(res.data);
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    })
+  },[id]);
+
+  const handleChange=(e)=>{
+    let value = e.target.value;
+    let feildName = e.target.name;
+    setShipperData((state) => {
+      return { ...state, [feildName]: value };
+    });
+  }
+
+
+  const handleSubmit=()=>{
+    const payload = [];
+    Object.keys(shipperData).forEach((e) => {
+      if (shipperData[e] !== init[e]) {
+        payload.push({
+          path: `/${e}`,
+          op: "replace",
+          value: `${shipperData[e]}`,
+        });
+      }
+    });
+
+    editShipper(id,payload)
+    .then((res)=>{
+      if(res.status===200 && res.data===true){
+        alert("Shiiper Modified successfully !!")
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    })
+  }
   
   return (
     <>
@@ -43,6 +86,7 @@ function EditShippers() {
             label="Company Name"
             name="shipperName"
             value={shipperData.shipperName}
+            onChange={handleChange}
           />
 
           <TextField
@@ -52,6 +96,7 @@ function EditShippers() {
             label="Person of Contact"
             name="poc"
             value={shipperData.poc}
+            onChange={handleChange}
           />
 
           <TextField
@@ -61,6 +106,7 @@ function EditShippers() {
             label="Complete Address"
             name="address"
             value={shipperData.address}
+            onChange={handleChange}
           />
 
           <TextField
@@ -70,6 +116,7 @@ function EditShippers() {
             label="Website"
             name="website"
             value={shipperData.website}
+            onChange={handleChange}
           />
 
           <TextField
@@ -79,6 +126,7 @@ function EditShippers() {
             label="Contact Nummber"
             name="contact"
             value={shipperData.contact}
+            onChange={handleChange}
           />
 
           <TextField
@@ -88,18 +136,18 @@ function EditShippers() {
             label="Email"
             name="email"
             value={shipperData.email}
+            onChange={handleChange}
           />
 
-          {/* <Button
+          <Button
             variant="contained"
             color="primary"
-            endIcon={<AddIcon />}
             sx={{ width: "25%", ml: "32.5%" }}
             onClick={handleSubmit}
           >
             {" "}
             Save Changes{" "}
-          </Button> */}
+          </Button>
         </div>
       </div>
     </>

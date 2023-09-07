@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
 import {
   createLoad,
-  getAllShippers,
+  getAllShippersForBroker,
   handleApiError,
   loadActiveBrokers,
 } from "../../api/api";
@@ -16,6 +16,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
 
 function NewLoad() {
+
   const [sendData, setSendData] = useState({
     loadNumber: "",
     shipperId: "0",
@@ -46,11 +47,12 @@ function NewLoad() {
   const history = useNavigate();
 
   useEffect(() => {
-    if (sessionStorage.getItem("UserId")) {
+    const userId= sessionStorage.getItem("UserId");
+    if (userId) {
       setIsLoading(true);
 
       //load shippers in dropdown
-      getAllShippers()
+      getAllShippersForBroker(userId)
         .then((res) => {
           setShippers(res.data);
         })
