@@ -34,15 +34,18 @@ function Shippers() {
   }
 
   const [colDef] = useState([
-    { field: "id", filter: true, sortable: true, tooltipField:'id', width:'75', headerName:'ID' },
-    { field: "shipperName", filter: true, sortable: true, width:"200", tooltipField:'shipperName', headerName:"SHIPPER NAME" },
-    { field: "address", filter: true, sortable: true, width:"325", tooltipField:'address', headerName:"ADDRESS" },
-    { field: "website", filter: true, sortable: true, width:"250", tooltipField:'website', headerName:"WEBSITE" },
-    { field: "poc", filter: true, sortable: true, width:"150", tooltipField:'poc', headerName:"POC" },
-    { field: "contact", filter: true, sortable: true, width:"150", tooltipField:'contact', headerName:"PHONE #" },
-    { field: "email", filter: true, sortable: true,width:"250", tooltipField:'email', headerName:"EMAIL" },
-    { field: "updatedOn", filter: true, sortable: true, width:"150", tooltipField:'updatedOn', headerName:"UPDATED ON"},
-    
+    { field: "id", filter: true, sortable: true, tooltipField:'id', width:'75', headerName:'ID', resizable: true},
+    { field: "shipperName", filter: true, sortable: true, width:"200", tooltipField:'shipperName', headerName:"SHIPPER NAME", resizable: true },
+    { field: "address", filter: true, sortable: true, width:"325", tooltipField:'address', headerName:"ADDRESS" , resizable: true},
+    { field: "website", filter: true, sortable: true, width:"250", tooltipField:'website', headerName:"WEBSITE", resizable: true },
+    { field: "poc", filter: true, sortable: true, width:"150", tooltipField:'poc', headerName:"POC" , resizable: true},
+    { field: "contact", filter: true, sortable: true, width:"150", tooltipField:'contact', headerName:"PHONE #" , resizable: true},
+    { field: "email", filter: true, sortable: true,width:"250", tooltipField:'email', headerName:"EMAIL" , resizable: true},
+    { field: "updatedOn", filter: true, sortable: true, width:"150", headerName:"UPDATED ON", resizable: true,
+    valueFormatter: params=>{
+      let date= new Date(params.value.toString())
+      return date.toLocaleDateString('en-US');
+    }}
   ]);
 
   useEffect(() => {

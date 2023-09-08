@@ -96,7 +96,7 @@ function EditLoad() {
 
     editLoad(init.loadNumber, payload)
       .then((res) => {
-        console.log(res);
+        alert("Payment Requested !!")
       })
       .catch((err) => {
         handleApiError(err);

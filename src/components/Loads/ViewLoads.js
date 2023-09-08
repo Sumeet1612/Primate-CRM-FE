@@ -28,29 +28,40 @@ function ViewLoads() {
     }
   }, []);
 
+  const formatDate=(params)=>{
+    if(params?.value?.toString().slice(0,10) === undefined){
+      return '';
+    }
+    else{
+     let date= new Date(params?.value?.toString());
+     return date.toLocaleDateString('en-US')
+    }
+}
+
   const [columnDefs] = useState([
     { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:'120', headerName:'LOAD #' },
-    // { field: "loadDescription", filter: true, sortable: true },
     { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:'200', headerName:'SHIPPER NAME' },
     { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:'150', headerName:'ORIGIN' },
-    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:'150', headerName:'DESTINATION' },
-    { field: "pickupDate", filter: true, sortable: true, tooltipField:'pickupDate', width:'150', headerName:'PICKUP DATE',  },
-    { field: "deliveryDate", filter: true, sortable: true, tooltipField:'deliveryDate', width:'150', headerName:'DELIVERY DATE' },
+    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:'150', headerName:'DESTINATION'},
+    { field: "pickupDate", filter: 'true', sortable: true, tooltipField:'pickupDate', width:'150', headerName:'PICKUP DATE', 
+    valueFormatter: params=>formatDate(params) },
+    { field: "deliveryDate", filter: 'true', sortable: true, tooltipField:'deliveryDate', width:'150', headerName:'DELIVERY DATE',
+    valueFormatter: params=>formatDate(params) },
     { field: "brokerName", filter: true, sortable: true, width:'120', headerName:'BROKER' }, // We need to display Broker to the Admin, but this coulmn will no be needed in the User section.
-    // { field: "selfRate", filter: true, sortable: true },
     { field: "carrierMC", filter: true, sortable: true, tooltipField:'carrierMC', width:'135', headerName:'CARRIER MC' },
     { field: "carrierName", filter: true, sortable: true, tooltipField:'carrierName', width:'200', headerName:'CARRIER NAME' },
     { field: "carrierPOC", filter: true, sortable: true, tooltipField:'carrierPOC', width:'150', headerName:'CARRIER POC' },
     { field: "carrierContact", filter: true, sortable: true, tooltipField:'carrierContact', width:'150', headerName:'CARRIER PHONE #' },
     { field: "carrierEmail", filter: true, sortable: true, tooltipField:'carrierEmail', width:'250', headerName:'CARRIER EMAIL' },
-    // { field: "paymentStatusId", filter: true, sortable: true },
     { field: "shipperRate", filter: true, sortable: true, tooltipField:'shipperRate', width:'150', headerName:'SHIPPER RATE' },
     { field: "carrierRate", filter: true, sortable: true, tooltipField:'carrierRate', width:'150', headerName:'CARRIER RATE' },
     { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:'120', headerName:'MARGIN' },
-    { field: "invoiceDate", filter: true, sortable: true, tooltipField:'invoiceDate', width:'150', headerName:'INVOICED ON'},
-    // { field: "mismatched", filter: true, sortable: true },
-    // { field: "createdOn", filter: true, sortable: true },
-    { field: "updatedOn", filter: true, sortable: true, tooltipField:'updatedOn', width:'150', headerName:'UPDATED ON' },
+    { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:'150', headerName:'INVOICED ON',
+    valueFormatter: params=>formatDate(params) },
+    { field: "mismatched", filter: true, sortable: true },
+    // { field: "createdOn", filter: 'true', sortable: true, valueFormatter: params=>formatDate(params) },
+    { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:'150', headerName:'UPDATED ON', 
+     valueFormatter: params=>formatDate(params)}
   ]);
 
   const handleCell = (cellEvent) => {

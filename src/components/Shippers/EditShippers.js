@@ -54,7 +54,7 @@ function EditShippers() {
     editShipper(id,payload)
     .then((res)=>{
       if(res.status===200 && res.data===true){
-        alert("Shiiper Modified successfully !!")
+        alert("Shipper Modified successfully !!")
       }
     })
     .catch((err)=>{
