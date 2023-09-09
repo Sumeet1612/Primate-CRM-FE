@@ -86,7 +86,7 @@ function EditShippers() {
             label="Company Name"
             name="shipperName"
             value={shipperData.shipperName}
-            onChange={handleChange}
+            readonly
           />
 
           <TextField

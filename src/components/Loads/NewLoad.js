@@ -41,8 +41,10 @@ function NewLoad() {
   });
   const [availableBrokers, setAvailableBrokers] = useState([]);
   const [shippers, setShippers] = useState([]);
-  const [brokerName, setBrokerName] = useState("XXX");
+  const [loggedInBroker, setloggedInBroker]=useState({userName:'XXX'});
   const [isLoading, setIsLoading] = useState(false);
+  const [additionalBrokers, setAdditionalBrokers] = useState([]);
+  const [errs,setErrs]=useState('');
 
   const history = useNavigate();
 
@@ -60,10 +62,12 @@ function NewLoad() {
           handleApiError(err);
         });
 
-      //load all active brokers in drowndown fro additional broker names
+      //load all active brokers in drowndown for additional broker names
       loadActiveBrokers()
         .then((res) => {
-          setAvailableBrokers(res.data);
+          if(res.status===200){
+            setAvailableBrokers(res.data);
+          }
           setIsLoading(false);
         })
         .catch((err) => {
@@ -80,10 +84,10 @@ function NewLoad() {
 
   useEffect(() => {
     if (availableBrokers.length > 0) {
-      setBrokerName(() => {
+      setloggedInBroker(() => {
         return availableBrokers.filter(
           (x) => x.id === parseInt(sessionStorage.getItem("UserId"))
-        )[0].userName;
+        )[0];
       });
     }
   }, [availableBrokers]);
@@ -93,6 +97,18 @@ function NewLoad() {
     let feildName = e.target.name;
     const updatedBrokers = [...additionalBrokers];
     updatedBrokers[index][feildName] = value;
+    let sum=0;
+    updatedBrokers.forEach(element => {
+      if(element.sharedPercentage > 0){
+        sum+= +element.sharedPercentage;
+        if(sum>loggedInBroker.maxCommision){
+          setErrs('maximum commision exceeded')
+        }
+        else{
+          setErrs('');
+        }
+      }
+    });
     setAdditionalBrokers(() => {
       return updatedBrokers;
     });
@@ -115,12 +131,19 @@ function NewLoad() {
       });
     }
   };
-  const [additionalBrokers, setAdditionalBrokers] = useState([]);
+  
 
   const undoBroker = (index) => {
+    let sum=0;
     setAdditionalBrokers((s) => {
       let arr = [...s];
       arr.splice(index, 1);
+      arr.forEach(x=>{
+        sum+= +x.sharedPercentage
+      })
+      if(sum <= loggedInBroker.maxCommision){
+        setErrs("");
+      }
       return arr;
     });
   };
@@ -321,7 +344,7 @@ function NewLoad() {
             id="broker"
             label="Broker"
             name="brokerId"
-            value={brokerName}
+            value={loggedInBroker?.userName}
             readOnly
           />
 
@@ -346,8 +369,8 @@ function NewLoad() {
           </i>
           <br />
 
-          {additionalBrokers ? (
-            additionalBrokers.map((additionalBroker, index) => {
+          {additionalBrokers ? (<div>
+            {additionalBrokers.map((additionalBroker, index) => {
               return (
                 <div key={index}>
                   <Select
@@ -391,7 +414,9 @@ function NewLoad() {
                   <br />
                 </div>
               );
-            })
+            })}
+            <h6 color="Red">{errs}</h6>
+            </div>
           ) : (
             <br />
           )}

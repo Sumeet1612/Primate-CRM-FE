@@ -145,7 +145,7 @@ function EditLoad() {
             label="Load Number"
             name="loadNumber"
             value={data.loadNumber}
-            readOnly
+            InputProps={{readOnly:true}}
           />
 
           <TextField
@@ -155,7 +155,7 @@ function EditLoad() {
             label="Shipper Name"
             name="shipperName"
             value={data.shipperName}
-            readOnly
+            InputProps={{readOnly:true}}
           />
 
           <TextField
@@ -166,7 +166,7 @@ function EditLoad() {
             name="loadDescription"
             value={data.loadDescription}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -177,7 +177,7 @@ function EditLoad() {
             name="pickupLocation"
             value={data.pickupLocation}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -188,39 +188,16 @@ function EditLoad() {
             name="deliveryLocation"
             value={data.deliveryLocation}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
-
-          {/* <TextField
-            
-            sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="date"
-            label="Booking Date"
-            name="createdOn"
-            value={data.createdOn.toString().slice(0, 10)}
-            readOnly
-          /> */}
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
             label="Booking Date"
             name="createdOn"
             value={dayjs(data.createdOn)}
-            readOnly
+            readOnly={true}
           />
-
-          {/* <TextField
-            
-            sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="date"
-            label="Pickup Date"
-            name="pickupDate"
-            value={data.pickupDate?.toString().slice(0, 10)}
-            onChange={handleEdit}
-            readOnly={!isEditable}
-          /> */}
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
@@ -237,18 +214,6 @@ function EditLoad() {
             }
             readOnly={!isEditable}
           />
-
-          {/* <TextField
-            
-            sx={{ height: "70px", width: "27%", mr: "10%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="date"
-            label="Delivery Date"
-            name="deliveryDate"
-            value={data.deliveryDate?.toString().slice(0, 10)}
-            onChange={handleEdit}
-            readOnly={!isEditable}
-          /> */}
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mr: "10%", mb: "1%" }}
@@ -274,7 +239,7 @@ function EditLoad() {
             name="carrierMC"
             value={data.carrierMC}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -285,7 +250,7 @@ function EditLoad() {
             name="carrierName"
             value={data.carrierName}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -296,7 +261,7 @@ function EditLoad() {
             name="carrierPOC"
             value={data.carrierPOC}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -307,7 +272,7 @@ function EditLoad() {
             name="carrierContact"
             value={data.carrierContact}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -317,8 +282,8 @@ function EditLoad() {
             label="Carrier Email Address"
             name="carrierEmail"
             value={data.carrierEmail}
+            InputProps={{readOnly:!isEditable}}
             onChange={handleEdit}
-            readOnly={!isEditable}
           />
 
           <TextField
@@ -329,7 +294,7 @@ function EditLoad() {
             name="shipperRate"
             value={data.shipperRate}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -340,7 +305,7 @@ function EditLoad() {
             name="carrierRate"
             value={data.carrierRate}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -350,7 +315,7 @@ function EditLoad() {
             label="Net Margin"
             name="margin"
             value={data.margin}
-            readOnly
+            InputProps={{readOnly:true}}
           />
 
           <TextField
@@ -360,28 +325,16 @@ function EditLoad() {
             label="Broker"
             name="broker"
             value={data.brokerName}
-            readOnly
+            InputProps={{readOnly:true}}
           />
 
-          {/* <TextField
-            
-            sx={{ height: "70px", width: "27%", mb: "2%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="date"
-            label="Invoicing Date"
-            name="invoiceDate"
-            value={
-              data.invoiceDate ? data.invoiceDate.toString().slice(0, 10) : ""
-            }
-            readOnly
-          /> */}
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mb: "2%" }}
             label="Invoicing Date"
             name="invoiceDate"
             value={data.invoiceDate ? dayjs(data.invoiceDate) : null}
-            readOnly
+            readOnly={true}
           />
           <br />
 
@@ -397,7 +350,7 @@ function EditLoad() {
                     type="text"
                     name="sharedWithName"
                     value={d.brokerName}
-                    readOnly
+                    InputProps={{readOnly:true}}
                   />
                   <TextField
                     sx={{ height: "70px", width: "20%", mr: "3%", mb: "1%" }}
@@ -407,7 +360,7 @@ function EditLoad() {
                     type="text"
                     name="sharedWithPercentage"
                     value={d.sharedPercentage}
-                    readOnly
+                    InputProps={{readOnly:true}}
                   />
                 </div>
               );
@@ -430,7 +383,7 @@ function EditLoad() {
             variant="contained"
             color="success"
             sx={{ width: "27%" }}
-            hidden={!isEditable}
+            disabled={!isEditable}
             onClick={handlePayment}
           >
             {" "}
@@ -440,7 +393,7 @@ function EditLoad() {
           {!isEditable ? (
             <h3>
               Payment is already{" "}
-              {init.paymentStatusId === 2 ? "Requested" : "Processed"}
+              {init.paymentStatusId === 2 ? "Requested" : init.paymentStatusId===3? "Processed": ""}
             </h3>
           ) : (
             <></>

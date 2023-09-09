@@ -11,6 +11,7 @@ function ViewLoads() {
   const [loads, setLoads] = useState([]);
   const [filteredloads, setFilteredLoads] = useState([]);
   const [isloading, setIsLoading] = useState(false);
+
   useEffect(() => {
     let brokerId = parseInt(sessionStorage.getItem("UserId"));
     if (brokerId > 0) {
@@ -44,7 +45,7 @@ function ViewLoads() {
     { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:'150', headerName:'ORIGIN' },
     { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:'150', headerName:'DESTINATION'},
     { field: "pickupDate", filter: 'true', sortable: true, tooltipField:'pickupDate', width:'150', headerName:'PICKUP DATE', 
-    valueFormatter: params=>formatDate(params) },
+    valueFormatter: params=>formatDate(params)},
     { field: "deliveryDate", filter: 'true', sortable: true, tooltipField:'deliveryDate', width:'150', headerName:'DELIVERY DATE',
     valueFormatter: params=>formatDate(params) },
     { field: "brokerName", filter: true, sortable: true, width:'120', headerName:'BROKER' }, // We need to display Broker to the Admin, but this coulmn will no be needed in the User section.
@@ -58,7 +59,7 @@ function ViewLoads() {
     { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:'120', headerName:'MARGIN' },
     { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:'150', headerName:'INVOICED ON',
     valueFormatter: params=>formatDate(params) },
-    { field: "mismatched", filter: true, sortable: true },
+    { field: "mismatched", filter: true, sortable: true }, 
     // { field: "createdOn", filter: 'true', sortable: true, valueFormatter: params=>formatDate(params) },
     { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:'150', headerName:'UPDATED ON', 
      valueFormatter: params=>formatDate(params)}
