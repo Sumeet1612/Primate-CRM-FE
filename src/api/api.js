@@ -143,3 +143,19 @@ export const editLoad= (loadNumber,load)=>{
     headers:headers
   })
 }
+
+export const deleteLoad= (loadNumber)=>{
+  return axios({
+    method:'delete',
+    url:`${baseApiUrl}/users/remove/load/${loadNumber}`,
+    headers:headers
+  })
+}
+
+export const deleteShipper= (shipperId)=>{
+  return axios({
+    method:'delete',
+    url:`${baseApiUrl}/users/remove/shipper/${shipperId}`,
+    headers:headers
+  })
+}

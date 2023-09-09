@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { editLoad, getLoadOnId, handleApiError } from "../../api/api";
+import { deleteLoad, editLoad, getLoadOnId, handleApiError } from "../../api/api";
 import { useParams } from "react-router";
+import { useNavigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -35,6 +36,7 @@ function EditLoad() {
   const [init, setInit] = useState([]);
 
   const { id } = useParams();
+  const nav= useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
@@ -52,14 +54,19 @@ function EditLoad() {
           } else {
             setIsEditable(true);
           }
-          setIsLoading(false);
+          
         }
+        else if(res.status===204){
+          alert('Load Not Found');
+          nav('/Primate-CRM-FE/viewLoads')
+        }
+        setIsLoading(false);
       })
       .catch((err) => {
         handleApiError(err);
         setIsLoading(false);
       });
-  }, [id, isEditable]);
+  }, [id, isEditable,nav]);
 
   const handleSubmit = () => {
     const payload = [];
@@ -104,6 +111,27 @@ function EditLoad() {
 
     setIsEditable(false);
   };
+
+  const handleDelete=()=>{
+    deleteLoad(data.loadNumber)
+    .then((res)=>{
+      if(res.status===200){
+        if(res.data.message==='Load Deleted: True'){
+          alert('Load Deleted !!')
+          nav('/Primate-CRM-FE/viewLoads')
+        }
+        else if(res.data?.message==='Cannot Delete Load as it is already proceesed for payment'){
+          alert(res.data.message);
+        }
+        else{
+          alert('Some went wrong. Please retry.')
+        }
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err)
+    })
+  }
 
   const handleEdit = (e) => {
     let value = e.target.value;
@@ -371,12 +399,23 @@ function EditLoad() {
 
           <Button
             variant="contained"
-            sx={{ width: "20%", mr: "43%" }}
+            sx={{ width: "20%"}}
             onClick={handleSubmit}
             disabled={!isEditable}
           >
             {" "}
             Submit From{" "}
+          </Button>
+
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ width: "20%" }}
+            onClick={handleDelete}
+            disabled={!isEditable}
+          >
+            {" "}
+            DELETE LOAD{" "}
           </Button>
 
           <Button

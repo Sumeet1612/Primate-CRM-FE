@@ -1,12 +1,13 @@
 import TextField from "@mui/material/TextField";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { editShipper, getShipper, handleApiError } from "../../api/api";
+import { useNavigate, useParams } from "react-router-dom";
+import { editShipper, getShipper, handleApiError, deleteShipper } from "../../api/api";
 import { Button } from "@mui/material";
 
 function EditShippers() {
 
     const { id } = useParams();
+    const nav= useNavigate();
     const [init, setInit]= useState([]);
     const [shipperData, setShipperData] = useState({
         shipperName: "",
@@ -24,11 +25,15 @@ function EditShippers() {
         setShipperData(res.data);
         setInit(res.data);
       }
+      else if(res.status===204){
+        alert('Shipper Not Found');
+        nav('/Primate-CRM-FE/shippers')
+      }
     })
     .catch((err)=>{
       handleApiError(err);
     })
-  },[id]);
+  },[id,nav]);
 
   const handleChange=(e)=>{
     let value = e.target.value;
@@ -38,6 +43,26 @@ function EditShippers() {
     });
   }
 
+  const handleDelete=()=>{
+    deleteShipper(id)
+    .then((res)=>{
+      if(res.status===200){
+        if((res.data.message==='Deleted Status : True')){
+          alert('Shipper Deleted !!')
+          nav('/Primate-CRM-FE/shippers')
+        }
+        else if(res.data?.message==='Cannot Delete Shipper as it is associated with some load'){
+          alert('Cannot delete shipper as it is used in some load')
+        }
+        else{
+          alert('Something went Wrong. Please retry.')
+        }
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err)
+    })
+  }
 
   const handleSubmit=()=>{
     const payload = [];
@@ -86,7 +111,7 @@ function EditShippers() {
             label="Company Name"
             name="shipperName"
             value={shipperData.shipperName}
-            readonly
+            readOnly
           />
 
           <TextField
@@ -147,6 +172,17 @@ function EditShippers() {
           >
             {" "}
             Save Changes{" "}
+          </Button>
+
+          <Button
+            variant="contained"
+            color="error"
+            sx={{ width: "25%", ml: "32.5%" }}
+            onClick={handleDelete}
+          >
+            {" "}
+            
+            REMOVE SHIPPER{" "}
           </Button>
         </div>
       </div>

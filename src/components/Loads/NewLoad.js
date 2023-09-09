@@ -135,16 +135,17 @@ function NewLoad() {
 
   const undoBroker = (index) => {
     let sum=0;
-    setAdditionalBrokers((s) => {
-      let arr = [...s];
-      arr.splice(index, 1);
-      arr.forEach(x=>{
-        sum+= +x.sharedPercentage
-      })
-      if(sum <= loggedInBroker.maxCommision){
-        setErrs("");
-      }
-      return arr;
+    let arr = [...additionalBrokers];
+    arr.splice(index, 1);
+    arr.forEach(x=>{
+      sum+= +x.sharedPercentage
+    })
+    if(sum <= loggedInBroker.maxCommision){
+      setErrs("");
+    }
+    setAdditionalBrokers(arr);
+    setSendData((prevState) => {
+      return { ...prevState, additionalBroker: arr };
     });
   };
 
