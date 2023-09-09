@@ -73,29 +73,45 @@ function Shippers() {
   };
 
   const handleSubmit = () => {
-    addShipper(shipperData)
-      .then((res) => {
-        if (res.status === 208) {
-          alert("The Shipper already exists!!");
-        } else if (res.status === 200) {
-          alert("Shipper Added !!");
+    //validate that no filed is left empty
+    let validationError = false;
+    Object.keys(shipperData).every(fe=>{
+      if(shipperData[fe]===''){
+        validationError= true;
+        return false;
+      }
+      return true;
+    })
 
-          setShipperData({
-            brokerId:brokerId,
-            shipperName: "",
-            address: "",
-            poc: "",
-            contact: "",
-            email: "",
-            website:"",
-          });
+    //if validated, then call api to create shipper
+    if(!validationError){
+      addShipper(shipperData)
+        .then((res) => {
+          if (res.status === 208) {
+            alert("The Shipper already exists!!");
+          } else if (res.status === 200) {
+            alert("Shipper Added !!");
 
-          setRefresh(!refresh);
-        }
-      })
-      .catch((err) => {
-        handleApiError(err);
-      });
+            setShipperData({
+              brokerId:brokerId,
+              shipperName: "",
+              address: "",
+              poc: "",
+              contact: "",
+              email: "",
+              website:"",
+            });
+
+            setRefresh(!refresh);
+          }
+        })
+        .catch((err) => {
+          handleApiError(err);
+        });
+    }
+    else{
+      alert('Please Complete the form to proceed')
+    }
   };
 
   return (

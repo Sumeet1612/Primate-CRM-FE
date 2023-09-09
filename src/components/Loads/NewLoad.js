@@ -34,8 +34,6 @@ function NewLoad() {
     shipperRate: 0,
     carrierRate: 0,
     netMargin: "",
-    invoicingDate: "",
-    paymentDate: "",
     brokerId: "",
     additionalBroker: [],
   });
@@ -162,41 +160,69 @@ function NewLoad() {
   };
 
   const handleSubmit = () => {
-    console.log(sendData);
-    createLoad(sendData)
-      .then((res) => {
-        if (res.status === 200) {
-          if (res.data?.additionalBrokersCreated && res.data?.loadCreated) {
-            alert("Load created successfully");
-            setSendData({
-              loadNumber: "",
-              shipperId: "",
-              pickupLocation: "",
-              deliveryLocation: "",
-              bookingDate: "",
-              pickupDate: "",
-              deliveryDate: "",
-              loadDescription: "",
-              carrierMC: "",
-              carrierName: "",
-              carrierPOC: "",
-              carrierContact: "",
-              carrierEmail: "",
-              shipperRate: 0,
-              carrierRate: 0,
-              netMargin: "",
-              invoicingDate: "",
-              paymentDate: "",
-              brokerId: "",
-              additionalBroker: [],
-            });
-            history("/Primate-CRM-FE/");
+    //validate no field can be left blank
+    let validationError = false;
+    Object.keys(sendData).every(sd=>{
+      if(sendData[sd]==='' && sd!=='additionalBroker'){
+        validationError= true;
+        console.log(sd)
+        return false;
+      }
+      return true;
+    })
+    if(sendData['shipperId']==='0' || sendData['carrierRate']===0 || sendData['shipperRate']===0){
+      validationError=true;
+    }
+    if(sendData.additionalBroker.length>0){
+      sendData.additionalBroker.forEach(ab=>{
+        Object.keys(ab).every(k=>{
+          if(ab[k]===''){
+            validationError=true;
+            return false;
           }
-        }
+          return true;
+        })
       })
-      .catch((err) => {
-        handleApiError(err);
-      });
+    }
+    
+    //if successfull validation call api to create load
+    if(!validationError){
+      createLoad(sendData)
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data?.additionalBrokersCreated && res.data?.loadCreated) {
+              alert("Load created successfully");
+              setSendData({
+                loadNumber: "",
+                shipperId: "",
+                pickupLocation: "",
+                deliveryLocation: "",
+                bookingDate: "",
+                pickupDate: "",
+                deliveryDate: "",
+                loadDescription: "",
+                carrierMC: "",
+                carrierName: "",
+                carrierPOC: "",
+                carrierContact: "",
+                carrierEmail: "",
+                shipperRate: 0,
+                carrierRate: 0,
+                netMargin: "",
+                brokerId: "",
+                additionalBroker: [],
+              });
+              history("/Primate-CRM-FE/");
+            }
+          }
+        })
+        .catch((err) => {
+          handleApiError(err);
+        });
+    }
+    else{
+      alert('Please complete the form to create your Load.')
+    }
   };
 
   return (
