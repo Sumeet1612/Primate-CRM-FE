@@ -75,18 +75,20 @@ function ViewLoads() {
   };
 
   const handleViewChange = (viewId) => {
-    if (viewId === "0") {
-      setFilteredLoads(loads);
-    } else if (viewId === "1") {
-      setFilteredLoads(loads.filter((x) => x.invoiceDate !== null));
-    } else if (viewId === "2") {
-      setFilteredLoads(loads.filter((x) => x.paymentStatusId === 2));
-    } else if (viewId === "3") {
-      setFilteredLoads(loads.filter((x) => x.paymentStatusId === 3));
-    } else if (viewId === "4") {
-      setFilteredLoads(loads.filter((x) => x.invoiceDate === null));
-    } else if (viewId === "5") {
-      setFilteredLoads(loads.filter((x) => x.mismatched));
+    if(loads?.length>0){
+      if (viewId === "0") {
+        setFilteredLoads(loads);
+      } else if (viewId === "1") {
+        setFilteredLoads(loads?.filter((x) => x.invoiceDate !== null));
+      } else if (viewId === "2") {
+        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 2));
+      } else if (viewId === "3") {
+        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 3));
+      } else if (viewId === "4") {
+        setFilteredLoads(loads?.filter((x) => x.invoiceDate === null));
+      } else if (viewId === "5") {
+        setFilteredLoads(loads?.filter((x) => x.mismatched));
+      }
     }
   };
 
@@ -117,7 +119,7 @@ function ViewLoads() {
         {isloading ? (
            <LinearProgress />
         ) : (
-          <div className="ag-theme-alpine" style={{ height: 550, width: 950 }}>
+          <div className="ag-theme-alpine" style={{ height: 500, width: '94%' }}>
             <AgGridReact
               rowData={filteredloads}
               columnDefs={columnDefs}

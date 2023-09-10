@@ -219,8 +219,12 @@ function Shippers() {
       {isloading ? (
         <LinearProgress />
       ) : (
-        <div className="ag-theme-alpine" style={{ height: 550, width: 915 }}>
-          <AgGridReact rowData={viewShippers} columnDefs={colDef} onCellClicked={(x)=>handleCell(x)}></AgGridReact>
+        <div className="ag-theme-alpine" style={{ height: 550, width: '90%' }}>
+          <AgGridReact 
+            rowData={viewShippers} 
+            columnDefs={colDef} 
+            onCellClicked={(x)=>handleCell(x)}>
+          </AgGridReact>
         </div>
       )}
     </div>

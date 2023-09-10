@@ -31,8 +31,8 @@ function NewLoad() {
     carrierPOC: "",
     carrierContact: "",
     carrierEmail: "",
-    shipperRate: 0,
-    carrierRate: 0,
+    shipperRate: '',
+    carrierRate: '',
     netMargin: "",
     brokerId: "",
     additionalBroker: [],
@@ -40,16 +40,21 @@ function NewLoad() {
   const [availableBrokers, setAvailableBrokers] = useState([]);
   const [shippers, setShippers] = useState([]);
   const [loggedInBroker, setloggedInBroker]=useState({userName:'XXX'});
-  const [isLoading, setIsLoading] = useState(false);
   const [additionalBrokers, setAdditionalBrokers] = useState([]);
-  const [errs,setErrs]=useState('');
+  const [message, setMessage]=useState({
+    isLoading:false,
+    maxShareError:'',
+    disabled:false
+  })
 
   const history = useNavigate();
 
   useEffect(() => {
     const userId= sessionStorage.getItem("UserId");
     if (userId) {
-      setIsLoading(true);
+      setMessage((prev)=>{
+        return {...prev, isLoading:true}
+      })
 
       //load shippers in dropdown
       getAllShippersForBroker(userId)
@@ -66,7 +71,9 @@ function NewLoad() {
           if(res.status===200){
             setAvailableBrokers(res.data);
           }
-          setIsLoading(false);
+          setMessage((prev)=>{
+            return {...prev, isLoading:false}
+          })
         })
         .catch((err) => {
           console.log(err);
@@ -100,10 +107,14 @@ function NewLoad() {
       if(element.sharedPercentage > 0){
         sum+= +element.sharedPercentage;
         if(sum>loggedInBroker.maxCommision){
-          setErrs('maximum commision exceeded')
+          setMessage((prev)=>{
+            return {...prev, maxShareError:'You cannot share more than your commission', disabled:true}
+          })
         }
         else{
-          setErrs('');
+          setMessage((prev)=>{
+            return {...prev, maxShareError:'', disabled:false}
+          })
         }
       }
     });
@@ -124,7 +135,7 @@ function NewLoad() {
 
     if (feildName === "shipperRate" || feildName === "carrierRate") {
       setSendData((state) => {
-        let netMarginValue = state.shipperRate - state.carrierRate;
+        let netMarginValue = +state.shipperRate - +state.carrierRate;
         return { ...state, netMargin: netMarginValue };
       });
     }
@@ -139,7 +150,9 @@ function NewLoad() {
       sum+= +x.sharedPercentage
     })
     if(sum <= loggedInBroker.maxCommision){
-      setErrs("");
+      setMessage((prev)=>{
+        return {...prev, maxShareError:'', disabled:false}
+      })
     }
     setAdditionalBrokers(arr);
     setSendData((prevState) => {
@@ -170,9 +183,7 @@ function NewLoad() {
       }
       return true;
     })
-    if(sendData['shipperId']==='0' || sendData['carrierRate']===0 || sendData['shipperRate']===0){
-      validationError=true;
-    }
+    
     if(sendData.additionalBroker.length>0){
       sendData.additionalBroker.forEach(ab=>{
         Object.keys(ab).every(k=>{
@@ -190,8 +201,16 @@ function NewLoad() {
       createLoad(sendData)
         .then((res) => {
           if (res.status === 200) {
-            if (res.data?.additionalBrokersCreated && res.data?.loadCreated) {
-              alert("Load created successfully");
+            if(res.data?.validationMessage ==='Load already exists with the same Load Number'){
+              alert('Load already exists with the same Load Number. LoadNumber cannot be duplicate')
+            }
+            else if (res.data?.loadCreated) {
+              if(res.data?.additionalBrokersCreated){
+                alert("Load created successfully");
+              }
+              else{
+                alert('Load is created without Brokerage Share');
+              }
               setSendData({
                 loadNumber: "",
                 shipperId: "",
@@ -206,8 +225,8 @@ function NewLoad() {
                 carrierPOC: "",
                 carrierContact: "",
                 carrierEmail: "",
-                shipperRate: 0,
-                carrierRate: 0,
+                shipperRate: '',
+                carrierRate: '',
                 netMargin: "",
                 brokerId: "",
                 additionalBroker: [],
@@ -225,6 +244,7 @@ function NewLoad() {
     }
   };
 
+
   return (
     <div className="PageLayout">
       <h1
@@ -239,7 +259,7 @@ function NewLoad() {
       >
         Add a New Load
       </h1>
-      {isLoading ? (
+      {message.isLoading ? (
         <LinearProgress />
       ) : (
         <div>
@@ -336,7 +356,6 @@ function NewLoad() {
             value={sendData.pickupDate ? dayjs(sendData.pickupDate) : null}
             onChange={(date) => {
               setSendData((prev) => {
-                console.log("11");
                 return {
                   ...prev,
                   pickupDate: dayjs(date).format("MM/DD/YYYY"),
@@ -391,8 +410,7 @@ function NewLoad() {
               wordWrap: "break-word",
             }}
           >
-            Click the button to add Additional Broker and shared Commission
-            Percentage
+            Click the button to add Additional Broker and shared Commission Percentage
           </i>
           <br />
 
@@ -442,7 +460,7 @@ function NewLoad() {
                 </div>
               );
             })}
-            <h6 color="Red">{errs}</h6>
+            <h6 color="Red">{message.maxShareError}</h6>
             </div>
           ) : (
             <br />
@@ -550,6 +568,7 @@ function NewLoad() {
             variant="contained"
             onClick={handleSubmit}
             sx={{ width: "10%", ml: "40%" }}
+            disabled={message.disabled}
           >
             Submit
           </Button>
