@@ -144,6 +144,15 @@ export const editLoad= (loadNumber,load)=>{
   })
 }
 
+export const editBroker= (brokerId,data)=>{
+  return axios({
+    method:'patch',
+    url:`${baseApiUrl}/users/editProfile/${brokerId}`,
+    data:data,
+    headers:headers
+  })
+}
+
 export const deleteLoad= (loadNumber)=>{
   return axios({
     method:'delete',
@@ -156,6 +165,22 @@ export const deleteShipper= (shipperId)=>{
   return axios({
     method:'delete',
     url:`${baseApiUrl}/users/remove/shipper/${shipperId}`,
+    headers:headers
+  })
+}
+
+export const getBrokerProfile=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/broker/${brokerId}`,
+    headers:headers
+  })
+}
+
+export const getCurrency=()=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/currencies`,
     headers:headers
   })
 }

@@ -69,7 +69,7 @@ function EditLoad() {
   }, [id, isEditable,nav]);
 
   const handleSubmit = () => {
-    const payload = [];
+    let payload = [];
     Object.keys(data).forEach((e) => {
       if (data[e] !== init[e]) {
         payload.push({
@@ -84,6 +84,7 @@ function EditLoad() {
       .then((res) => {
         if (res.data === true) {
           alert("Load updated !!");
+          setInit(data)
         }
       })
       .catch((err) => {
@@ -99,11 +100,11 @@ function EditLoad() {
         value: 2,
       },
     ];
-    console.log(payload);
 
     editLoad(init.loadNumber, payload)
       .then((res) => {
         alert("Payment Requested !!")
+        setInit(data)
       })
       .catch((err) => {
         handleApiError(err);

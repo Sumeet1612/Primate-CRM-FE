@@ -65,7 +65,8 @@ function EditShippers() {
   }
 
   const handleSubmit=()=>{
-    const payload = [];
+
+    let payload = [];
     Object.keys(shipperData).forEach((e) => {
       if (shipperData[e] !== init[e]) {
         payload.push({
@@ -76,15 +77,18 @@ function EditShippers() {
       }
     });
 
-    editShipper(id,payload)
-    .then((res)=>{
-      if(res.status===200 && res.data===true){
-        alert("Shipper Modified successfully !!")
-      }
-    })
-    .catch((err)=>{
-      handleApiError(err);
-    })
+    if(payload?.length>0){     
+      editShipper(id,payload)
+      .then((res)=>{
+        if(res.status===200 && res.data===true){
+          alert("Shipper Modified successfully !!")
+          setInit(shipperData)
+        }
+      })
+      .catch((err)=>{
+        handleApiError(err);
+      })
+    }
   }
   
   return (

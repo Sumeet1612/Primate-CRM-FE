@@ -3,8 +3,127 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import Avatar from "../../img/Avatar.jpg";
 import Box from "@mui/material/Box";
-
+import { useEffect, useState } from "react";
+import { editBroker, getBrokerOnId, getCurrency, handleApiError } from "../../api/api";
+import { MenuItem, Select } from "@mui/material";
 function Profile() {
+
+  const [broker,setBroker]=useState({
+    id:'',
+    userName:'',
+    alias:'',
+    contactNumber:'',
+    isActive:'',
+    email:'',
+    maxCommision:'',
+    maxShare:'',
+    officeEmail:'',
+    officePhone:'',
+    extn:'',
+    roleId:2,
+    residentialAddress:'',
+    permanentAddress:'',
+    tmsPassword:'',
+    currencyId:0,
+    phoneBill:'',
+    whatsAppNumber:'',
+    updatedOn:'',
+    createdOn:'',
+    accountDetails:[]
+  });
+  const [init,setinit]=useState({});
+  const [account,setAccount]= useState([{}])
+  const [currency,setCurrency]= useState([]);
+
+  const [others,setOthers]=useState({
+    exchangeRate:'0'
+  })
+
+  useEffect(()=>{
+    const userId= sessionStorage.getItem("UserId");
+    let currencyData=[];
+
+    //get currency list
+    getCurrency()
+    .then((res)=>{
+      if(res.status===200){
+        setCurrency(res.data);
+        currencyData=res.data;
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    })
+
+    // get broker details
+    if(userId){
+      getBrokerOnId(userId)
+      .then((res)=>{
+        if(res.status===200){
+          setBroker(res.data);
+          setAccount(res.data?.accountDetails);
+          setinit(res.data);
+          const exchangeRate = currencyData.filter(x=>x.id===res.data?.currencyId);
+          if(exchangeRate?.length>0){
+            setOthers((prev)=>{
+              return {...prev, exchangeRate:exchangeRate[0].exchangeRate}
+            })
+          }
+        }
+      })
+      .catch((err)=>{
+        handleApiError(err);
+      })
+    }
+
+  },[]);
+
+
+  const handleChange=(e)=>{
+    let fname= e.target.name;
+    let value= e.target.value;
+    setBroker((state) => {
+      return { ...state, [fname]: value };
+    });
+    if(fname==='currencyId'){
+      let updatedExchangeRate= currency?.filter(x=>x.id===value)[0]?.exchangeRate
+      setOthers((prev)=>{
+        return {...prev, exchangeRate:updatedExchangeRate}
+      })
+    }
+  }
+
+  const handleSave=()=>{
+    const payload = [];
+    Object.keys(broker).forEach((e) => {
+      if (broker[e] !== init[e]) {
+        payload.push({
+          path: `/${e}`,
+          op: "replace",
+          value: `${broker[e]}`,
+        });
+      }
+    });
+    console.log(payload)
+    if(payload?.length>0){
+      editBroker(broker.id,payload)
+      .then((res)=>{
+        console.log(res)
+        if(res.status===200){
+          alert('Profile Updated')
+          setinit(broker)
+        }
+      })
+      .catch((err)=>{
+        handleApiError(err);
+    });
+  }
+}
+
+  const handlePasswordChange=()=>{
+    console.log('pass change')
+  }
+
   return (
     <>
       <div className="profile PageLayout">
@@ -41,7 +160,9 @@ function Profile() {
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1.5%" }}
               type="text"
               label="Name"
-              name="brokerName"
+              name="userName"
+              value={broker.userName}
+              onChange={handleChange}
             />
             <br />
             <TextField
@@ -50,6 +171,8 @@ function Profile() {
               type="text"
               label="Contact Number"
               name="contactNumber"
+              value={broker.contactNumber}
+              onChange={handleChange}
             />{" "}
             <br />
             <TextField
@@ -57,23 +180,27 @@ function Profile() {
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1.5%" }}
               type="text"
               label="Whatsapp Number (if different)"
-              name="whatsappNumber"
+              name="whatsAppNumber"
+              value={broker.whatsAppNumber}
+              onChange={handleChange}
             />{" "}
             <br />
-            <TextField
+            {/* <TextField
               size="small"
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1.5%" }}
               type="text"
               label="PAN NUmber"
               name="numberPAN"
             />{" "}
-            <br />
+            <br /> */}
             <TextField
               size="small"
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1.5%" }}
               type="email"
               label="Email Address"
-              name="pEmail"
+              name="email"
+              value={broker.email}
+              InputProps={{readOnly:true}}
             />{" "}
             <br />
           </div>
@@ -94,14 +221,18 @@ function Profile() {
           sx={{ height: "50px", width: "90%", mr: "10%", mb: "1%" }}
           type="text"
           label="Permanent Address"
-          name="pAddress"
+          name="permanentAddress"
+          value={broker.permanentAddress}
+          onChange={handleChange}
         />
         <TextField
           size="small"
           sx={{ height: "50px", width: "90%", mr: "10%", mb: "2%" }}
           type="text"
           label="Residence Address"
-          name="rAddress"
+          name="residentialAddress"
+          value={broker.residentialAddress}
+          onChange={handleChange}
         />
         <h2
           style={{
@@ -122,7 +253,9 @@ function Profile() {
           sx={{ height: "50px", width: "54%", mr: "10%", mb: "1%" }}
           type="text"
           label="Alias Name"
-          name="brokerAliasName"
+          name="alias"
+          value={broker.alias}
+          onChange={handleChange}
         />
         <br />
         <TextField
@@ -130,14 +263,17 @@ function Profile() {
           sx={{ height: "50px", width: "54%", mr: "3%", mb: "1%" }}
           type="text"
           label="OFS Contact Number"
-          name="OFScontactNumber"
+          name="contact"
+          InputProps={{readOnly:true}}
         />
         <TextField
           size="small"
           sx={{ height: "50px", width: "15%", mr: "3%", mb: "1%" }}
           type="text"
           label="Extension"
-          name="extension"
+          name="extn"
+          value={broker.extn}
+          onChange={handleChange}
         />
 
         <TextField
@@ -145,7 +281,9 @@ function Profile() {
           sx={{ height: "50px", width: "54%", mr: "10%", mb: "1%" }}
           type="text"
           label="Cell Number"
-          name="cellNumber"
+          name="officePhone"
+          value={broker.officePhone}
+          onChange={handleChange}
         />
         <br />
         <TextField
@@ -153,7 +291,9 @@ function Profile() {
           sx={{ height: "50px", width: "54%", mr: "10%", mb: "1%" }}
           type="email"
           label="Email Address"
-          name="wEmail"
+          name="officeEmail"
+          value={broker.officeEmail}
+          onChange={handleChange}
         />
 
         <h2
@@ -176,7 +316,7 @@ function Profile() {
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1%" }}
               type="text"
               label="Name of Bank"
-              name="bank Name"
+              name="bankName"
             />
             <br />
             <TextField
@@ -184,7 +324,7 @@ function Profile() {
               sx={{ height: "50px", width: "90%", mr: "3%", mb: "1%" }}
               type="text"
               label="Account Holder's Name"
-              name="holderName"
+              name="ownerName"
             />
 
             <TextField
@@ -192,7 +332,7 @@ function Profile() {
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1%" }}
               type="text"
               label="Account Number"
-              name="accNumber"
+              name="id"
             />
             <br />
             <TextField
@@ -200,7 +340,7 @@ function Profile() {
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1%" }}
               type="text"
               label="IFSC Code"
-              name="codeIFSC"
+              name="ifsc"
             />
 
             <TextField
@@ -208,7 +348,7 @@ function Profile() {
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1%" }}
               type="text"
               label="PAN Number associated with account"
-              name="associatedPAN"
+              name="pan"
             />
 
           </div>
@@ -245,6 +385,8 @@ function Profile() {
           type="text"
           label="Phone Bill(USD)"
           name="phoneBill"
+          value={broker.phoneBill}
+          onChange={handleChange}
         />
 
         <TextField
@@ -252,16 +394,35 @@ function Profile() {
           sx={{ height: "50px", width: "25%", mr: "3%", mb: "1%" }}
           type="text"
           label="Commission %"
-          name="naxCommission"
+          name="maxCommision"
+          value={broker.maxCommision}
+          onChange={handleChange}
         />
 
-        <TextField
+        {/* <TextField
           size="small"
           sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
           type="text"
           label="Currency"
-          name="currency"
-        />
+          name="currencyId"
+          value={broker.currencyName}
+          onChange={handleChange}
+        /> */}
+
+        <Select
+        name="currencyId"
+        value={broker.currencyId}
+        onChange={handleChange}>
+
+            <MenuItem value='-1' disabled>
+              <em>Select Currency</em>
+            </MenuItem>
+            {currency.map((cur, index)=>{
+              return(
+                <MenuItem key={index} value={cur.id}>{cur.currencyName}</MenuItem>
+              )
+            })}
+        </Select>
 
         <TextField
           size="small"
@@ -269,6 +430,8 @@ function Profile() {
           type="text"
           label="Exchange Rate"
           name="exchangeRate"
+          value={others.exchangeRate}
+          InputProps={{readOnly:true}}
         />
         <br />
 
@@ -276,6 +439,7 @@ function Profile() {
           variant="contained"
           color="secondary"
           sx={{ width: "20%", mb: "1%", mr: "40%" }}
+          onClick={handleSave}
         >
           Save Changes
         </Button>
@@ -291,6 +455,7 @@ function Profile() {
           variant="contained"
           color="info"
           sx={{ width: "20%", mb: "1%", mr: "10%" }}
+          onClick={handlePasswordChange}
         >
           Change Password
         </Button>

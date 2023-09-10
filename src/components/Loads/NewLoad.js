@@ -59,7 +59,9 @@ function NewLoad() {
       //load shippers in dropdown
       getAllShippersForBroker(userId)
         .then((res) => {
-          setShippers(res.data);
+          if(res.status===200){
+            setShippers(res.data);
+          }
         })
         .catch((err) => {
           handleApiError(err);
@@ -178,7 +180,6 @@ function NewLoad() {
     Object.keys(sendData).every(sd=>{
       if(sendData[sd]==='' && sd!=='additionalBroker'){
         validationError= true;
-        console.log(sd)
         return false;
       }
       return true;
