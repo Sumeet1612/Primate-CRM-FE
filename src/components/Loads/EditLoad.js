@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
+import { checkPermissionToNavigation } from "../../api/validation";
 
 function EditLoad() {
   const [data, setData] = useState({
@@ -53,6 +54,10 @@ function EditLoad() {
             setIsEditable(false);
           } else {
             setIsEditable(true);
+          }
+          if(!checkPermissionToNavigation(res.data)){
+            alert("You don't have the permission to view/edit the requested Load")
+            nav('/Primate-CRM-FE/viewLoads')
           }
           
         }

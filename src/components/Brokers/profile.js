@@ -32,15 +32,24 @@ function Profile() {
     accountDetails:[]
   });
   const [init,setinit]=useState({});
-  const [account,setAccount]= useState([{}])
+  const [account,setAccount]= useState([{
+    id:'',
+    bankName:'',
+    ownerName:'',
+    ifsc:'',
+    pan:'',
+    brokerId:'',
+    isPrimary:true,
+    updatedOn:''
+  }])
   const [currency,setCurrency]= useState([]);
 
   const [others,setOthers]=useState({
     exchangeRate:'0'
   })
-
+  const userId= sessionStorage.getItem("UserId");
   useEffect(()=>{
-    const userId= sessionStorage.getItem("UserId");
+    
     let currencyData=[];
 
     //get currency list
@@ -56,7 +65,7 @@ function Profile() {
     })
 
     // get broker details
-    if(userId){
+    if(userId>0){
       getBrokerOnId(userId)
       .then((res)=>{
         if(res.status===200){
@@ -76,7 +85,7 @@ function Profile() {
       })
     }
 
-  },[]);
+  },[userId]);
 
 
   const handleChange=(e)=>{
@@ -93,23 +102,63 @@ function Profile() {
     }
   }
 
+  const handleAccount=(e,index)=>{
+    let fname= e.target.name;
+    let fValue=e.target.value;
+    let additionalAccounts=[...account];
+    additionalAccounts[index][fname]=fValue;
+    setAccount(()=>{return additionalAccounts});
+    setBroker((b)=>{
+      return {
+        ...b,accountDetails:additionalAccounts
+      }
+    })
+  }
+
+  const handleNewAccount=()=>{
+    setAccount((prevAcnt)=>{
+      return [...prevAcnt,
+        {
+          id:'',
+          bankName:'',
+          ownerName:'',
+          ifsc:'',
+          pan:'',
+          brokerId:userId,
+          isPrimary:false
+        }
+      ]
+    })
+  }
+
+  const removeBank=(index)=>{
+    console.log(index)
+    let acnt=[...account]
+    acnt.splice(index,1)
+    setAccount(acnt)
+    setBroker((prevState)=>{
+      return {...prevState,accountDetails:acnt}
+    })
+  }
+
   const handleSave=()=>{
     const payload = [];
     Object.keys(broker).forEach((e) => {
       if (broker[e] !== init[e]) {
-        payload.push({
-          path: `/${e}`,
-          op: "replace",
-          value: `${broker[e]}`,
-        });
-      }
-    });
+            payload.push({
+              path: `/${e}`,
+              op: "replace",
+              value: broker[e]
+            });
+          
+        }
+      });
     console.log(payload)
     if(payload?.length>0){
       editBroker(broker.id,payload)
       .then((res)=>{
         console.log(res)
-        if(res.status===200){
+        if(res.status===200 && res.data===true){
           alert('Profile Updated')
           setinit(broker)
         }
@@ -185,14 +234,6 @@ function Profile() {
               onChange={handleChange}
             />{" "}
             <br />
-            {/* <TextField
-              size="small"
-              sx={{ height: "50px", width: "90%", mr: "10%", mb: "1.5%" }}
-              type="text"
-              label="PAN NUmber"
-              name="numberPAN"
-            />{" "}
-            <br /> */}
             <TextField
               size="small"
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1.5%" }}
@@ -306,17 +347,26 @@ function Profile() {
             fontSize: "15px",
           }}
         >
-          {" "}
+          {" "}BankInfo
           Bank Account Details{" "}
         </h2>
         <div className="BankDetails">
-          <div className="BankInfo">
+          {account ? account.map((acnt,index)=>{
+            return (
+          <div className="BankInfo" key={index}>
+            <Button 
+            variant="contained"
+            color="error" 
+            onClick={()=>removeBank(index)}>X</Button>
+
             <TextField
               size="small"
               sx={{ height: "50px", width: "90%", mr: "10%", mb: "1%" }}
               type="text"
               label="Name of Bank"
               name="bankName"
+              value={acnt.bankName}
+              onChange={(e)=>handleAccount(e,index)}
             />
             <br />
             <TextField
@@ -325,6 +375,8 @@ function Profile() {
               type="text"
               label="Account Holder's Name"
               name="ownerName"
+              value={acnt.ownerName}
+              onChange={(e)=>handleAccount(e,index)}
             />
 
             <TextField
@@ -333,6 +385,8 @@ function Profile() {
               type="text"
               label="Account Number"
               name="id"
+              value={acnt.id}
+              onChange={(e)=>handleAccount(e,index)}
             />
             <br />
             <TextField
@@ -341,6 +395,8 @@ function Profile() {
               type="text"
               label="IFSC Code"
               name="ifsc"
+              value={acnt.ifsc}
+              onChange={(e)=>handleAccount(e,index)}
             />
 
             <TextField
@@ -349,9 +405,11 @@ function Profile() {
               type="text"
               label="PAN Number associated with account"
               name="pan"
+              value={acnt.pan}
+              onChange={(e)=>handleAccount(e,index)}
             />
-
-          </div>
+          </div>)}
+            ): <></> }
           <div className="AddButton">
             <Button
               variant="contained"
@@ -359,6 +417,7 @@ function Profile() {
               size="large"
               endIcon={<AddIcon />}
               sx={{ mb: "3%", width: "50%" }}
+              onClick={handleNewAccount}
             >
               Add
             </Button>
@@ -399,22 +458,12 @@ function Profile() {
           onChange={handleChange}
         />
 
-        {/* <TextField
-          size="small"
-          sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
-          type="text"
-          label="Currency"
-          name="currencyId"
-          value={broker.currencyName}
-          onChange={handleChange}
-        /> */}
-
         <Select
         name="currencyId"
         value={broker.currencyId}
         onChange={handleChange}>
 
-            <MenuItem value='-1' disabled>
+            <MenuItem value='0' disabled>
               <em>Select Currency</em>
             </MenuItem>
             {currency.map((cur, index)=>{

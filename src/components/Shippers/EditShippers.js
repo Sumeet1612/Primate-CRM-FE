@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { editShipper, getShipper, handleApiError, deleteShipper } from "../../api/api";
 import { Button } from "@mui/material";
+import { checkPermissionToNavigation } from "../../api/validation";
 
 function EditShippers() {
 
@@ -24,6 +25,10 @@ function EditShippers() {
       if(res.status===200){
         setShipperData(res.data);
         setInit(res.data);
+        if(!checkPermissionToNavigation(res.data)){
+          alert("You don't have the permission to view/edit the requested Shipper")
+            nav('/Primate-CRM-FE/shippers')
+        }
       }
       else if(res.status===204){
         alert('Shipper Not Found');
