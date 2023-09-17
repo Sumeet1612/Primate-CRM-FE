@@ -1,11 +1,15 @@
 import TextField from "@mui/material/TextField";
-// import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { editShipper, getShipper, handleApiError, deleteShipper } from "../../api/api";
+import { Button } from "@mui/material";
+import { checkPermissionToNavigation } from "../../api/validation";
 
 function EditShippers() {
 
     const { id } = useParams();
+    const nav= useNavigate();
+    const [init, setInit]= useState([]);
     const [shipperData, setShipperData] = useState({
         shipperName: "",
         address: "",
@@ -16,8 +20,81 @@ function EditShippers() {
       });
 
   useEffect(() => {
-    
-  },[]);
+    getShipper(id)
+    .then((res)=>{
+      if(res.status===200){
+        setShipperData(res.data);
+        setInit(res.data);
+        if(!checkPermissionToNavigation(res.data)){
+          alert("You don't have the permission to view/edit the requested Shipper")
+            nav('/Primate-CRM-FE/shippers')
+        }
+      }
+      else if(res.status===204){
+        alert('Shipper Not Found');
+        nav('/Primate-CRM-FE/shippers')
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    })
+  },[id,nav]);
+
+  const handleChange=(e)=>{
+    let value = e.target.value;
+    let feildName = e.target.name;
+    setShipperData((state) => {
+      return { ...state, [feildName]: value };
+    });
+  }
+
+  const handleDelete=()=>{
+    deleteShipper(id)
+    .then((res)=>{
+      if(res.status===200){
+        if((res.data.message==='Deleted Status : True')){
+          alert('Shipper Deleted !!')
+          nav('/Primate-CRM-FE/shippers')
+        }
+        else if(res.data?.message==='Cannot Delete Shipper as it is associated with some load'){
+          alert('Cannot delete shipper as it is used in some load')
+        }
+        else{
+          alert('Something went Wrong. Please retry.')
+        }
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err)
+    })
+  }
+
+  const handleSubmit=()=>{
+
+    let payload = [];
+    Object.keys(shipperData).forEach((e) => {
+      if (shipperData[e] !== init[e]) {
+        payload.push({
+          path: `/${e}`,
+          op: "replace",
+          value: `${shipperData[e]}`,
+        });
+      }
+    });
+
+    if(payload?.length>0){     
+      editShipper(id,payload)
+      .then((res)=>{
+        if(res.status===200 && res.data===true){
+          alert("Shipper Modified successfully !!")
+          setInit(shipperData)
+        }
+      })
+      .catch((err)=>{
+        handleApiError(err);
+      })
+    }
+  }
   
   return (
     <>
@@ -43,6 +120,7 @@ function EditShippers() {
             label="Company Name"
             name="shipperName"
             value={shipperData.shipperName}
+            readOnly
           />
 
           <TextField
@@ -52,6 +130,7 @@ function EditShippers() {
             label="Person of Contact"
             name="poc"
             value={shipperData.poc}
+            onChange={handleChange}
           />
 
           <TextField
@@ -61,6 +140,7 @@ function EditShippers() {
             label="Complete Address"
             name="address"
             value={shipperData.address}
+            onChange={handleChange}
           />
 
           <TextField
@@ -70,6 +150,7 @@ function EditShippers() {
             label="Website"
             name="website"
             value={shipperData.website}
+            onChange={handleChange}
           />
 
           <TextField
@@ -79,6 +160,7 @@ function EditShippers() {
             label="Contact Nummber"
             name="contact"
             value={shipperData.contact}
+            onChange={handleChange}
           />
 
           <TextField
@@ -88,18 +170,29 @@ function EditShippers() {
             label="Email"
             name="email"
             value={shipperData.email}
+            onChange={handleChange}
           />
 
-          {/* <Button
+          <Button
             variant="contained"
             color="primary"
-            endIcon={<AddIcon />}
             sx={{ width: "25%", ml: "32.5%" }}
             onClick={handleSubmit}
           >
             {" "}
             Save Changes{" "}
-          </Button> */}
+          </Button>
+
+          <Button
+            variant="contained"
+            color="error"
+            sx={{ width: "25%", ml: "32.5%" }}
+            onClick={handleDelete}
+          >
+            {" "}
+            
+            REMOVE SHIPPER{" "}
+          </Button>
         </div>
       </div>
     </>

@@ -5,14 +5,16 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getLoadForBroker, handleApiError } from "../../api/api";
 import { useNavigate } from "react-router";
+import { loggedInUserId } from "../../api/validation";
 
 function ViewLoads() {
   const nav = useNavigate();
   const [loads, setLoads] = useState([]);
   const [filteredloads, setFilteredLoads] = useState([]);
   const [isloading, setIsLoading] = useState(false);
+
   useEffect(() => {
-    let brokerId = parseInt(sessionStorage.getItem("UserId"));
+    let brokerId = loggedInUserId();
     if (brokerId > 0) {
       setIsLoading(true);
       getLoadForBroker(brokerId)
@@ -28,29 +30,40 @@ function ViewLoads() {
     }
   }, []);
 
+  const formatDate=(params)=>{
+    if(params?.value?.toString().slice(0,10) === undefined){
+      return '';
+    }
+    else{
+     let date= new Date(params?.value?.toString());
+     return date.toLocaleDateString('en-US')
+    }
+}
+
   const [columnDefs] = useState([
-    { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:'120', headerName:'LOAD #' },
-    // { field: "loadDescription", filter: true, sortable: true },
-    { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:'200', headerName:'SHIPPER NAME' },
-    { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:'150', headerName:'ORIGIN' },
-    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:'150', headerName:'DESTINATION' },
-    { field: "pickupDate", filter: true, sortable: true, tooltipField:'pickupDate', width:'150', headerName:'PICKUP DATE',  },
-    { field: "deliveryDate", filter: true, sortable: true, tooltipField:'deliveryDate', width:'150', headerName:'DELIVERY DATE' },
-    { field: "brokerName", filter: true, sortable: true, width:'120', headerName:'BROKER' }, // We need to display Broker to the Admin, but this coulmn will no be needed in the User section.
-    // { field: "selfRate", filter: true, sortable: true },
-    { field: "carrierMC", filter: true, sortable: true, tooltipField:'carrierMC', width:'135', headerName:'CARRIER MC' },
-    { field: "carrierName", filter: true, sortable: true, tooltipField:'carrierName', width:'200', headerName:'CARRIER NAME' },
-    { field: "carrierPOC", filter: true, sortable: true, tooltipField:'carrierPOC', width:'150', headerName:'CARRIER POC' },
-    { field: "carrierContact", filter: true, sortable: true, tooltipField:'carrierContact', width:'150', headerName:'CARRIER PHONE #' },
-    { field: "carrierEmail", filter: true, sortable: true, tooltipField:'carrierEmail', width:'250', headerName:'CARRIER EMAIL' },
-    // { field: "paymentStatusId", filter: true, sortable: true },
-    { field: "shipperRate", filter: true, sortable: true, tooltipField:'shipperRate', width:'150', headerName:'SHIPPER RATE' },
-    { field: "carrierRate", filter: true, sortable: true, tooltipField:'carrierRate', width:'150', headerName:'CARRIER RATE' },
-    { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:'120', headerName:'MARGIN' },
-    { field: "invoiceDate", filter: true, sortable: true, tooltipField:'invoiceDate', width:'150', headerName:'INVOICED ON'},
-    // { field: "mismatched", filter: true, sortable: true },
-    // { field: "createdOn", filter: true, sortable: true },
-    { field: "updatedOn", filter: true, sortable: true, tooltipField:'updatedOn', width:'150', headerName:'UPDATED ON' },
+    { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:120, headerName:'LOAD #' },
+    { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:200, headerName:'SHIPPER NAME' },
+    { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:150, headerName:'ORIGIN' },
+    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:150, headerName:'DESTINATION'},
+    { field: "pickupDate", filter: 'true', sortable: true, tooltipField:'pickupDate', width:150, headerName:'PICKUP DATE', 
+    valueFormatter: params=>formatDate(params)},
+    { field: "deliveryDate", filter: 'true', sortable: true, tooltipField:'deliveryDate', width:150, headerName:'DELIVERY DATE',
+    valueFormatter: params=>formatDate(params)},
+    { field: "brokerName", filter: true, sortable: true, width:120, headerName:'BROKER' }, // We need to display Broker to the Admin, but this coulmn will no be needed in the User section.
+    { field: "carrierMC", filter: true, sortable: true, tooltipField:'carrierMC', width:135, headerName:'CARRIER MC' },
+    { field: "carrierName", filter: true, sortable: true, tooltipField:'carrierName', width:200, headerName:'CARRIER NAME' },
+    { field: "carrierPOC", filter: true, sortable: true, tooltipField:'carrierPOC', width:150, headerName:'CARRIER POC' },
+    { field: "carrierContact", filter: true, sortable: true, tooltipField:'carrierContact', width:150, headerName:'CARRIER PHONE #' },
+    { field: "carrierEmail", filter: true, sortable: true, tooltipField:'carrierEmail', width:250, headerName:'CARRIER EMAIL' },
+    { field: "shipperRate", filter: true, sortable: true, tooltipField:'shipperRate', width:150, headerName:'SHIPPER RATE' },
+    { field: "carrierRate", filter: true, sortable: true, tooltipField:'carrierRate', width:150, headerName:'CARRIER RATE' },
+    { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:120, headerName:'MARGIN' },
+    { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:150, headerName:'INVOICED ON',
+    valueFormatter: params=>formatDate(params) },
+    { field: "mismatched", filter: true, sortable: true }, 
+    // { field: "createdOn", filter: 'true', sortable: true, valueFormatter: params=>formatDate(params) },
+    { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:150, headerName:'UPDATED ON', 
+     valueFormatter: params=>formatDate(params)}
   ]);
 
   const handleCell = (cellEvent) => {
@@ -63,18 +76,20 @@ function ViewLoads() {
   };
 
   const handleViewChange = (viewId) => {
-    if (viewId === "0") {
-      setFilteredLoads(loads);
-    } else if (viewId === "1") {
-      setFilteredLoads(loads.filter((x) => x.invoiceDate !== null));
-    } else if (viewId === "2") {
-      setFilteredLoads(loads.filter((x) => x.paymentStatusId === 2));
-    } else if (viewId === "3") {
-      setFilteredLoads(loads.filter((x) => x.paymentStatusId === 3));
-    } else if (viewId === "4") {
-      setFilteredLoads(loads.filter((x) => x.invoiceDate === null));
-    } else if (viewId === "5") {
-      setFilteredLoads(loads.filter((x) => x.mismatched));
+    if(loads?.length>0){
+      if (viewId === "0") {
+        setFilteredLoads(loads);
+      } else if (viewId === "1") {
+        setFilteredLoads(loads?.filter((x) => x.invoiceDate !== null));
+      } else if (viewId === "2") {
+        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 2));
+      } else if (viewId === "3") {
+        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 3));
+      } else if (viewId === "4") {
+        setFilteredLoads(loads?.filter((x) => x.invoiceDate === null));
+      } else if (viewId === "5") {
+        setFilteredLoads(loads?.filter((x) => x.mismatched));
+      }
     }
   };
 
@@ -105,7 +120,7 @@ function ViewLoads() {
         {isloading ? (
            <LinearProgress />
         ) : (
-          <div className="ag-theme-alpine" style={{ height: 550, width: 950 }}>
+          <div className="ag-theme-alpine" style={{ height: 500, width: '94%' }}>
             <AgGridReact
               rowData={filteredloads}
               columnDefs={columnDefs}

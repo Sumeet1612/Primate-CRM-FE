@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { callLogin, handleApiError } from '../../api/api';
+import { setUserAndRole } from '../../api/validation';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -33,8 +34,7 @@ export default function SignIn() {
         if (res.status === 200) {
             if (res.data?.id !== -1) {
               alert("logged In");
-              sessionStorage.setItem("Role", res.data?.roleId);
-              sessionStorage.setItem("UserId", res.data?.id);
+              setUserAndRole(res.data?.id, res.data?.roleId)
               history("/Primate-CRM-FE/");
             } else {
               if (res.data?.isActive === false) {

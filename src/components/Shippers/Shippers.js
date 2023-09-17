@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addShipper, getAllShippers, handleApiError } from "../../api/api";
+import { addShipper, getAllShippersForBroker, handleApiError } from "../../api/api";
 import { AgGridReact } from "ag-grid-react";
 import LinearProgress from "@mui/material/LinearProgress";
 import "ag-grid-community/styles/ag-grid.css";
@@ -8,9 +8,12 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
+import { loggedInUserId } from "../../api/validation";
 
 function Shippers() {
+  const brokerId= loggedInUserId()
   const [shipperData, setShipperData] = useState({
+    brokerId:brokerId,
     shipperName: "",
     address: "",
     poc: "",
@@ -26,27 +29,29 @@ function Shippers() {
 
   const handleCell=(cellEvent)=>{
     let shipperId=cellEvent?.data?.id;
-
     if(cellEvent?.colDef?.field==="id"){
       navigation(`/Primate-CRM-FE/Shippers/${shipperId}`)
     }
   }
 
   const [colDef] = useState([
-    { field: "id", filter: true, sortable: true, tooltipField:'id', width:'75', headerName:'ID' },
-    { field: "shipperName", filter: true, sortable: true, width:"200", tooltipField:'shipperName', headerName:"SHIPPER NAME" },
-    { field: "address", filter: true, sortable: true, width:"325", tooltipField:'address', headerName:"ADDRESS" },
-    { field: "website", filter: true, sortable: true, width:"250", tooltipField:'website', headerName:"WEBSITE" },
-    { field: "poc", filter: true, sortable: true, width:"150", tooltipField:'poc', headerName:"POC" },
-    { field: "contact", filter: true, sortable: true, width:"150", tooltipField:'contact', headerName:"PHONE #" },
-    { field: "email", filter: true, sortable: true,width:"250", tooltipField:'email', headerName:"EMAIL" },
-    { field: "updatedOn", filter: true, sortable: true, width:"150", tooltipField:'updatedOn', headerName:"UPDATED ON"},
-    
+    { field: "id", filter: true, sortable: true, tooltipField:'id', width:75, headerName:'ID', resizable: true},
+    { field: "shipperName", filter: true, sortable: true, width:200, tooltipField:'shipperName', headerName:"SHIPPER NAME", resizable: true },
+    { field: "address", filter: true, sortable: true, width:325, tooltipField:'address', headerName:"ADDRESS" , resizable: true},
+    { field: "website", filter: true, sortable: true, width:250, tooltipField:'website', headerName:"WEBSITE", resizable: true },
+    { field: "poc", filter: true, sortable: true, width:150, tooltipField:'poc', headerName:"POC" , resizable: true},
+    { field: "contact", filter: true, sortable: true, width:150, tooltipField:'contact', headerName:"PHONE #" , resizable: true},
+    { field: "email", filter: true, sortable: true,width:250, tooltipField:'email', headerName:"EMAIL" , resizable: true},
+    { field: "updatedOn", filter: true, sortable: true, width:150, headerName:"UPDATED ON", resizable: true,
+    valueFormatter: params=>{
+      let date= new Date(params.value.toString())
+      return date.toLocaleDateString('en-US');
+    }}
   ]);
 
   useEffect(() => {
     setIsLoading(true);
-    getAllShippers()
+    getAllShippersForBroker(brokerId)
       .then((res) => {
         if (res.status === 200) {
           setViewShippers(res.data);
@@ -57,7 +62,8 @@ function Shippers() {
         handleApiError(err);
         setIsLoading(false);
       });
-  }, [refresh]);
+  }, [refresh,brokerId]);
+
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
@@ -68,28 +74,45 @@ function Shippers() {
   };
 
   const handleSubmit = () => {
-    addShipper(shipperData)
-      .then((res) => {
-        if (res.status === 208) {
-          alert("The Shipper already exists!!");
-        } else if (res.status === 200) {
-          alert("Shipper Added !!");
+    //validate that no filed is left empty
+    let validationError = false;
+    Object.keys(shipperData).every(fe=>{
+      if(shipperData[fe]===''){
+        validationError= true;
+        return false;
+      }
+      return true;
+    })
 
-          setShipperData({
-            shipperName: "",
-            address: "",
-            poc: "",
-            contact: "",
-            email: "",
-            website:"",
-          });
+    //if validated, then call api to create shipper
+    if(!validationError){
+      addShipper(shipperData)
+        .then((res) => {
+          if (res.status === 208) {
+            alert("The Shipper already exists!!");
+          } else if (res.status === 200) {
+            alert("Shipper Added !!");
 
-          setRefresh(!refresh);
-        }
-      })
-      .catch((err) => {
-        handleApiError(err);
-      });
+            setShipperData({
+              brokerId:brokerId,
+              shipperName: "",
+              address: "",
+              poc: "",
+              contact: "",
+              email: "",
+              website:"",
+            });
+
+            setRefresh(!refresh);
+          }
+        })
+        .catch((err) => {
+          handleApiError(err);
+        });
+    }
+    else{
+      alert('Please Complete the form to proceed')
+    }
   };
 
   return (
@@ -197,8 +220,12 @@ function Shippers() {
       {isloading ? (
         <LinearProgress />
       ) : (
-        <div className="ag-theme-alpine" style={{ height: 550, width: 915 }}>
-          <AgGridReact rowData={viewShippers} columnDefs={colDef} onCellClicked={(x)=>handleCell(x)}></AgGridReact>
+        <div className="ag-theme-alpine" style={{ height: 550, width: '90%' }}>
+          <AgGridReact 
+            rowData={viewShippers} 
+            columnDefs={colDef} 
+            onCellClicked={(x)=>handleCell(x)}>
+          </AgGridReact>
         </div>
       )}
     </div>

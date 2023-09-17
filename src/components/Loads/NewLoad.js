@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
 import {
   createLoad,
-  getAllShippers,
+  getAllShippersForBroker,
   handleApiError,
   loadActiveBrokers,
 } from "../../api/api";
@@ -14,8 +14,10 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
+import { loggedInUserId } from "../../api/validation";
 
 function NewLoad() {
+
   const [sendData, setSendData] = useState({
     loadNumber: "",
     shipperId: "0",
@@ -30,39 +32,51 @@ function NewLoad() {
     carrierPOC: "",
     carrierContact: "",
     carrierEmail: "",
-    shipperRate: 0,
-    carrierRate: 0,
+    shipperRate: '',
+    carrierRate: '',
     netMargin: "",
-    invoicingDate: "",
-    paymentDate: "",
     brokerId: "",
     additionalBroker: [],
   });
   const [availableBrokers, setAvailableBrokers] = useState([]);
   const [shippers, setShippers] = useState([]);
-  const [brokerName, setBrokerName] = useState("XXX");
-  const [isLoading, setIsLoading] = useState(false);
+  const [loggedInBroker, setloggedInBroker]=useState({userName:'XXX'});
+  const [additionalBrokers, setAdditionalBrokers] = useState([]);
+  const [message, setMessage]=useState({
+    isLoading:false,
+    maxShareError:'',
+    disabled:false
+  })
 
   const history = useNavigate();
 
   useEffect(() => {
-    if (sessionStorage.getItem("UserId")) {
-      setIsLoading(true);
+    const userId= loggedInUserId();
+    if (userId) {
+      setMessage((prev)=>{
+        return {...prev, isLoading:true}
+      })
 
       //load shippers in dropdown
-      getAllShippers()
+      getAllShippersForBroker(userId)
         .then((res) => {
-          setShippers(res.data);
+          if(res.status===200){
+            setShippers(res.data);
+          }
         })
         .catch((err) => {
           handleApiError(err);
         });
 
-      //load all active brokers in drowndown fro additional broker names
+      //load all active brokers in drowndown for additional broker names
       loadActiveBrokers()
         .then((res) => {
-          setAvailableBrokers(res.data);
-          setIsLoading(false);
+          if(res.status===200){
+            setAvailableBrokers(res.data);
+          }
+          setMessage((prev)=>{
+            return {...prev, isLoading:false}
+          })
         })
         .catch((err) => {
           console.log(err);
@@ -71,17 +85,17 @@ function NewLoad() {
 
       //auto set current loggedIn user as the load creater
       setSendData((state) => {
-        return { ...state, brokerId: sessionStorage.getItem("UserId") };
+        return { ...state, brokerId: userId };
       });
     }
   }, []);
 
   useEffect(() => {
     if (availableBrokers.length > 0) {
-      setBrokerName(() => {
+      setloggedInBroker(() => {
         return availableBrokers.filter(
-          (x) => x.id === parseInt(sessionStorage.getItem("UserId"))
-        )[0].userName;
+          (x) => x.id === loggedInUserId()
+        )[0];
       });
     }
   }, [availableBrokers]);
@@ -91,6 +105,22 @@ function NewLoad() {
     let feildName = e.target.name;
     const updatedBrokers = [...additionalBrokers];
     updatedBrokers[index][feildName] = value;
+    let sum=0;
+    updatedBrokers.forEach(element => {
+      if(element.sharedPercentage > 0){
+        sum+= +element.sharedPercentage;
+        if(sum>loggedInBroker.maxCommision){
+          setMessage((prev)=>{
+            return {...prev, maxShareError:'You cannot share more than your commission', disabled:true}
+          })
+        }
+        else{
+          setMessage((prev)=>{
+            return {...prev, maxShareError:'', disabled:false}
+          })
+        }
+      }
+    });
     setAdditionalBrokers(() => {
       return updatedBrokers;
     });
@@ -108,18 +138,28 @@ function NewLoad() {
 
     if (feildName === "shipperRate" || feildName === "carrierRate") {
       setSendData((state) => {
-        let netMarginValue = state.shipperRate - state.carrierRate;
+        let netMarginValue = +state.shipperRate - +state.carrierRate;
         return { ...state, netMargin: netMarginValue };
       });
     }
   };
-  const [additionalBrokers, setAdditionalBrokers] = useState([]);
+  
 
   const undoBroker = (index) => {
-    setAdditionalBrokers((s) => {
-      let arr = [...s];
-      arr.splice(index, 1);
-      return arr;
+    let sum=0;
+    let arr = [...additionalBrokers];
+    arr.splice(index, 1);
+    arr.forEach(x=>{
+      sum+= +x.sharedPercentage
+    })
+    if(sum <= loggedInBroker.maxCommision){
+      setMessage((prev)=>{
+        return {...prev, maxShareError:'', disabled:false}
+      })
+    }
+    setAdditionalBrokers(arr);
+    setSendData((prevState) => {
+      return { ...prevState, additionalBroker: arr };
     });
   };
 
@@ -136,42 +176,76 @@ function NewLoad() {
   };
 
   const handleSubmit = () => {
-    console.log(sendData);
-    createLoad(sendData)
-      .then((res) => {
-        if (res.status === 200) {
-          if (res.data?.additionalBrokersCreated && res.data?.loadCreated) {
-            alert("Load created successfully");
-            setSendData({
-              loadNumber: "",
-              shipperId: "",
-              pickupLocation: "",
-              deliveryLocation: "",
-              bookingDate: "",
-              pickupDate: "",
-              deliveryDate: "",
-              loadDescription: "",
-              carrierMC: "",
-              carrierName: "",
-              carrierPOC: "",
-              carrierContact: "",
-              carrierEmail: "",
-              shipperRate: 0,
-              carrierRate: 0,
-              netMargin: "",
-              invoicingDate: "",
-              paymentDate: "",
-              brokerId: "",
-              additionalBroker: [],
-            });
-            history("/Primate-CRM-FE/");
+    //validate no field can be left blank
+    let validationError = false;
+    Object.keys(sendData).every(sd=>{
+      if(sendData[sd]==='' && sd!=='additionalBroker'){
+        validationError= true;
+        return false;
+      }
+      return true;
+    })
+    
+    if(sendData.additionalBroker.length>0){
+      sendData.additionalBroker.forEach(ab=>{
+        Object.keys(ab).every(k=>{
+          if(ab[k]===''){
+            validationError=true;
+            return false;
           }
-        }
+          return true;
+        })
       })
-      .catch((err) => {
-        handleApiError(err);
-      });
+    }
+    
+    //if successfull validation call api to create load
+    if(!validationError){
+      createLoad(sendData)
+        .then((res) => {
+          if (res.status === 200) {
+            if(res.data?.validationMessage ==='Load already exists with the same Load Number'){
+              alert('Load already exists with the same Load Number. LoadNumber cannot be duplicate')
+            }
+            else if (res.data?.loadCreated) {
+              if(res.data?.additionalBrokersCreated){
+                alert("Load created successfully");
+              }
+              else{
+                alert('Load is created without Brokerage Share');
+              }
+              setSendData({
+                loadNumber: "",
+                shipperId: "",
+                pickupLocation: "",
+                deliveryLocation: "",
+                bookingDate: "",
+                pickupDate: "",
+                deliveryDate: "",
+                loadDescription: "",
+                carrierMC: "",
+                carrierName: "",
+                carrierPOC: "",
+                carrierContact: "",
+                carrierEmail: "",
+                shipperRate: '',
+                carrierRate: '',
+                netMargin: "",
+                brokerId: "",
+                additionalBroker: [],
+              });
+              history("/Primate-CRM-FE/");
+            }
+          }
+        })
+        .catch((err) => {
+          handleApiError(err);
+        });
+    }
+    else{
+      alert('Please complete the form to create your Load.')
+    }
   };
+
 
   return (
     <div className="PageLayout">
@@ -187,7 +261,7 @@ function NewLoad() {
       >
         Add a New Load
       </h1>
-      {isLoading ? (
+      {message.isLoading ? (
         <LinearProgress />
       ) : (
         <div>
@@ -284,7 +358,6 @@ function NewLoad() {
             value={sendData.pickupDate ? dayjs(sendData.pickupDate) : null}
             onChange={(date) => {
               setSendData((prev) => {
-                console.log("11");
                 return {
                   ...prev,
                   pickupDate: dayjs(date).format("MM/DD/YYYY"),
@@ -319,7 +392,7 @@ function NewLoad() {
             id="broker"
             label="Broker"
             name="brokerId"
-            value={brokerName}
+            value={loggedInBroker?.userName}
             readOnly
           />
 
@@ -339,13 +412,12 @@ function NewLoad() {
               wordWrap: "break-word",
             }}
           >
-            Click the button to add Additional Broker and shared Commission
-            Percentage
+            Click the button to add Additional Broker and shared Commission Percentage
           </i>
           <br />
 
-          {additionalBrokers ? (
-            additionalBrokers.map((additionalBroker, index) => {
+          {additionalBrokers ? (<div>
+            {additionalBrokers.map((additionalBroker, index) => {
               return (
                 <div key={index}>
                   <Select
@@ -389,7 +461,9 @@ function NewLoad() {
                   <br />
                 </div>
               );
-            })
+            })}
+            <h6 color="Red">{message.maxShareError}</h6>
+            </div>
           ) : (
             <br />
           )}
@@ -496,6 +570,7 @@ function NewLoad() {
             variant="contained"
             onClick={handleSubmit}
             sx={{ width: "10%", ml: "40%" }}
+            disabled={message.disabled}
           >
             Submit
           </Button>

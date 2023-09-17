@@ -12,6 +12,7 @@ function AgencyForm() {
 
   const handleFileChange = (event) => {
     setUpload(false);
+    setCheck(false);
     setSelectedFile(event.target.files[0]);
   };
 

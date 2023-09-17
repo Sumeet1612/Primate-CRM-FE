@@ -3,21 +3,22 @@ import "../App.css";
 import LogoutIcon from '@mui/icons-material/Logout';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from "react-router-dom";
+import { logOut, loggedInUserId } from "../api/validation";
 
 function Home(){
 
     const [loggedIn, setLoggedIn]=  useState(false);
     const nav= useNavigate();
     useEffect(()=>{
-        if(sessionStorage.getItem("Role")){
+        if(loggedInUserId() > 0){
             setLoggedIn(true);
         }
     },[])
     
     const logout=()=>{
-        sessionStorage.removeItem("UserId");
-        sessionStorage.removeItem("Role");
+        logOut();
         setLoggedIn(false);
+        window.location.reload();
         alert("Logged Out");
     }
 

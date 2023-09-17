@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { editLoad, getLoadOnId, handleApiError } from "../../api/api";
+import { deleteLoad, editLoad, getLoadOnId, handleApiError } from "../../api/api";
 import { useParams } from "react-router";
+import { useNavigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
+import { checkPermissionToNavigation } from "../../api/validation";
 
 function EditLoad() {
   const [data, setData] = useState({
@@ -35,6 +37,7 @@ function EditLoad() {
   const [init, setInit] = useState([]);
 
   const { id } = useParams();
+  const nav= useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
@@ -52,17 +55,26 @@ function EditLoad() {
           } else {
             setIsEditable(true);
           }
-          setIsLoading(false);
+          if(!checkPermissionToNavigation(res.data)){
+            alert("You don't have the permission to view/edit the requested Load")
+            nav('/Primate-CRM-FE/viewLoads')
+          }
+          
         }
+        else if(res.status===204){
+          alert('Load Not Found');
+          nav('/Primate-CRM-FE/viewLoads')
+        }
+        setIsLoading(false);
       })
       .catch((err) => {
         handleApiError(err);
         setIsLoading(false);
       });
-  }, [id, isEditable]);
+  }, [id, isEditable,nav]);
 
   const handleSubmit = () => {
-    const payload = [];
+    let payload = [];
     Object.keys(data).forEach((e) => {
       if (data[e] !== init[e]) {
         payload.push({
@@ -77,6 +89,7 @@ function EditLoad() {
       .then((res) => {
         if (res.data === true) {
           alert("Load updated !!");
+          setInit(data)
         }
       })
       .catch((err) => {
@@ -92,11 +105,11 @@ function EditLoad() {
         value: 2,
       },
     ];
-    console.log(payload);
 
     editLoad(init.loadNumber, payload)
       .then((res) => {
-        console.log(res);
+        alert("Payment Requested !!")
+        setInit(data)
       })
       .catch((err) => {
         handleApiError(err);
@@ -104,6 +117,27 @@ function EditLoad() {
 
     setIsEditable(false);
   };
+
+  const handleDelete=()=>{
+    deleteLoad(data.loadNumber)
+    .then((res)=>{
+      if(res.status===200){
+        if(res.data.message==='Load Deleted: True'){
+          alert('Load Deleted !!')
+          nav('/Primate-CRM-FE/viewLoads')
+        }
+        else if(res.data?.message==='Cannot Delete Load as it is already proceesed for payment'){
+          alert(res.data.message);
+        }
+        else{
+          alert('Some went wrong. Please retry.')
+        }
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err)
+    })
+  }
 
   const handleEdit = (e) => {
     let value = e.target.value;
@@ -145,7 +179,7 @@ function EditLoad() {
             label="Load Number"
             name="loadNumber"
             value={data.loadNumber}
-            readOnly
+            InputProps={{readOnly:true}}
           />
 
           <TextField
@@ -155,7 +189,7 @@ function EditLoad() {
             label="Shipper Name"
             name="shipperName"
             value={data.shipperName}
-            readOnly
+            InputProps={{readOnly:true}}
           />
 
           <TextField
@@ -166,7 +200,7 @@ function EditLoad() {
             name="loadDescription"
             value={data.loadDescription}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -177,7 +211,7 @@ function EditLoad() {
             name="pickupLocation"
             value={data.pickupLocation}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -188,39 +222,16 @@ function EditLoad() {
             name="deliveryLocation"
             value={data.deliveryLocation}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
-
-          {/* <TextField
-            
-            sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="date"
-            label="Booking Date"
-            name="createdOn"
-            value={data.createdOn.toString().slice(0, 10)}
-            readOnly
-          /> */}
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
             label="Booking Date"
             name="createdOn"
             value={dayjs(data.createdOn)}
-            readOnly
+            readOnly={true}
           />
-
-          {/* <TextField
-            
-            sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="date"
-            label="Pickup Date"
-            name="pickupDate"
-            value={data.pickupDate?.toString().slice(0, 10)}
-            onChange={handleEdit}
-            readOnly={!isEditable}
-          /> */}
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
@@ -237,18 +248,6 @@ function EditLoad() {
             }
             readOnly={!isEditable}
           />
-
-          {/* <TextField
-            
-            sx={{ height: "70px", width: "27%", mr: "10%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="date"
-            label="Delivery Date"
-            name="deliveryDate"
-            value={data.deliveryDate?.toString().slice(0, 10)}
-            onChange={handleEdit}
-            readOnly={!isEditable}
-          /> */}
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mr: "10%", mb: "1%" }}
@@ -274,7 +273,7 @@ function EditLoad() {
             name="carrierMC"
             value={data.carrierMC}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -285,7 +284,7 @@ function EditLoad() {
             name="carrierName"
             value={data.carrierName}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -296,7 +295,7 @@ function EditLoad() {
             name="carrierPOC"
             value={data.carrierPOC}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -307,7 +306,7 @@ function EditLoad() {
             name="carrierContact"
             value={data.carrierContact}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -317,8 +316,8 @@ function EditLoad() {
             label="Carrier Email Address"
             name="carrierEmail"
             value={data.carrierEmail}
+            InputProps={{readOnly:!isEditable}}
             onChange={handleEdit}
-            readOnly={!isEditable}
           />
 
           <TextField
@@ -329,7 +328,7 @@ function EditLoad() {
             name="shipperRate"
             value={data.shipperRate}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -340,7 +339,7 @@ function EditLoad() {
             name="carrierRate"
             value={data.carrierRate}
             onChange={handleEdit}
-            readOnly={!isEditable}
+            InputProps={{readOnly:!isEditable}}
           />
 
           <TextField
@@ -350,7 +349,7 @@ function EditLoad() {
             label="Net Margin"
             name="margin"
             value={data.margin}
-            readOnly
+            InputProps={{readOnly:true}}
           />
 
           <TextField
@@ -360,28 +359,16 @@ function EditLoad() {
             label="Broker"
             name="broker"
             value={data.brokerName}
-            readOnly
+            InputProps={{readOnly:true}}
           />
 
-          {/* <TextField
-            
-            sx={{ height: "70px", width: "27%", mb: "2%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="date"
-            label="Invoicing Date"
-            name="invoiceDate"
-            value={
-              data.invoiceDate ? data.invoiceDate.toString().slice(0, 10) : ""
-            }
-            readOnly
-          /> */}
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mb: "2%" }}
             label="Invoicing Date"
             name="invoiceDate"
             value={data.invoiceDate ? dayjs(data.invoiceDate) : null}
-            readOnly
+            readOnly={true}
           />
           <br />
 
@@ -397,7 +384,7 @@ function EditLoad() {
                     type="text"
                     name="sharedWithName"
                     value={d.brokerName}
-                    readOnly
+                    InputProps={{readOnly:true}}
                   />
                   <TextField
                     sx={{ height: "70px", width: "20%", mr: "3%", mb: "1%" }}
@@ -407,7 +394,7 @@ function EditLoad() {
                     type="text"
                     name="sharedWithPercentage"
                     value={d.sharedPercentage}
-                    readOnly
+                    InputProps={{readOnly:true}}
                   />
                 </div>
               );
@@ -418,7 +405,7 @@ function EditLoad() {
 
           <Button
             variant="contained"
-            sx={{ width: "20%", mr: "43%" }}
+            sx={{ width: "20%"}}
             onClick={handleSubmit}
             disabled={!isEditable}
           >
@@ -429,8 +416,19 @@ function EditLoad() {
           <Button
             variant="contained"
             color="success"
+            sx={{ width: "20%" }}
+            onClick={handleDelete}
+            disabled={!isEditable}
+          >
+            {" "}
+            DELETE LOAD{" "}
+          </Button>
+
+          <Button
+            variant="contained"
+            color="success"
             sx={{ width: "27%" }}
-            hidden={!isEditable}
+            disabled={!isEditable}
             onClick={handlePayment}
           >
             {" "}
@@ -440,7 +438,7 @@ function EditLoad() {
           {!isEditable ? (
             <h3>
               Payment is already{" "}
-              {init.paymentStatusId === 2 ? "Requested" : "Processed"}
+              {init.paymentStatusId === 2 ? "Requested" : init.paymentStatusId===3? "Processed": ""}
             </h3>
           ) : (
             <></>

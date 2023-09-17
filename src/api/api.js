@@ -50,6 +50,14 @@ export const loadActiveBrokers=()=>{
     });
 }
 
+export const loadAllBrokers=()=>{
+  return axios({
+      method:"get",
+      url:`${baseApiUrl}/admin/brokers`,
+      headers: headers
+  });
+}
+
 export const getLoadOnId=(loadNumber)=>{
     return axios({
         method:'get',
@@ -69,7 +77,7 @@ export const getBrokerOnId=(brokerId)=>{
 export const getLoadForBroker =(brokerId)=>{
   return axios({
     method:'get',
-    url:`${baseApiUrl}/users/getLoadsForBroker/${brokerId}`,
+    url:`${baseApiUrl}/users/loads/ForBroker/${brokerId}`,
     headers:headers
   })
 }
@@ -99,6 +107,23 @@ export const getAllShippers=()=>{
   })
 }
 
+export const getAllShippersForBroker=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/shippers/forBroker/${brokerId}`,
+    headers:headers
+  })
+}
+
+export const getShipper=(shipperId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/shipper/${shipperId}`,
+    headers:headers
+  })
+}
+
+
 export const addShipper=(data)=>{
   return axios({
     method:'post',
@@ -108,11 +133,62 @@ export const addShipper=(data)=>{
   })
 }
 
+export const editShipper= (id,payload)=>{
+  return axios({
+    method:'patch',
+    url:`${baseApiUrl}/users/editShipper/${id}`,
+    data:payload,
+    headers:headers
+  })
+
+}
+
 export const editLoad= (loadNumber,load)=>{
   return axios({
     method:'patch',
     url:`${baseApiUrl}/users/updateLoad/${loadNumber}`,
     data:load,
+    headers:headers
+  })
+}
+
+export const editBroker= (brokerId,data)=>{
+  return axios({
+    method:'patch',
+    url:`${baseApiUrl}/users/editProfile/${brokerId}`,
+    data:data,
+    headers:headers
+  })
+}
+
+export const deleteLoad= (loadNumber)=>{
+  return axios({
+    method:'delete',
+    url:`${baseApiUrl}/users/remove/load/${loadNumber}`,
+    headers:headers
+  })
+}
+
+export const deleteShipper= (shipperId)=>{
+  return axios({
+    method:'delete',
+    url:`${baseApiUrl}/users/remove/shipper/${shipperId}`,
+    headers:headers
+  })
+}
+
+export const getBrokerProfile=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/broker/${brokerId}`,
+    headers:headers
+  })
+}
+
+export const getCurrency=()=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/currencies`,
     headers:headers
   })
 }
