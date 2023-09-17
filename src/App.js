@@ -16,6 +16,7 @@ import SignUp from "./components/Brokers/SignUp";
 import AgencyForm from "./components/AgencyForm";
 import "./App.css";
 import EditShippers from "./components/Shippers/EditShippers";
+import ViewBrokers from "./components/Brokers/ViewBrokers";
 
 function App() {
   return (
@@ -46,8 +47,9 @@ function App() {
               <Route path="Primate-CRM-FE/Shippers" element={<Shippers />} />
               <Route path="Primate-CRM-FE/Shippers/:id" element={<EditShippers />} />
               <Route path="Primate-CRM-FE/agency" element={<AgencyForm />} />
-              <Route path="Primate-CRM-FE/profile" element={<Profile />} />
+              <Route path="Primate-CRM-FE/profile/:loggedInBrokerId" element={<Profile />} />
               <Route path="Primate-CRM-FE/invoice" element={<Invoice />} />
+              <Route path="Primate-CRM-FE/manageBrokers" element={<ViewBrokers/>}/>
             </Route>
           </Routes>
         </BrowserRouter>

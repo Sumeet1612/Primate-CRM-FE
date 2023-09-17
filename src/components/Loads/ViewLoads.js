@@ -5,6 +5,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getLoadForBroker, handleApiError } from "../../api/api";
 import { useNavigate } from "react-router";
+import { loggedInUserId } from "../../api/validation";
 
 function ViewLoads() {
   const nav = useNavigate();
@@ -13,7 +14,7 @@ function ViewLoads() {
   const [isloading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    let brokerId = parseInt(sessionStorage.getItem("UserId"));
+    let brokerId = loggedInUserId();
     if (brokerId > 0) {
       setIsLoading(true);
       getLoadForBroker(brokerId)

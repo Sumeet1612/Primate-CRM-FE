@@ -14,6 +14,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
+import { loggedInUserId } from "../../api/validation";
 
 function NewLoad() {
 
@@ -50,7 +51,7 @@ function NewLoad() {
   const history = useNavigate();
 
   useEffect(() => {
-    const userId= sessionStorage.getItem("UserId");
+    const userId= loggedInUserId();
     if (userId) {
       setMessage((prev)=>{
         return {...prev, isLoading:true}
@@ -84,7 +85,7 @@ function NewLoad() {
 
       //auto set current loggedIn user as the load creater
       setSendData((state) => {
-        return { ...state, brokerId: sessionStorage.getItem("UserId") };
+        return { ...state, brokerId: userId };
       });
     }
   }, []);
@@ -93,7 +94,7 @@ function NewLoad() {
     if (availableBrokers.length > 0) {
       setloggedInBroker(() => {
         return availableBrokers.filter(
-          (x) => x.id === parseInt(sessionStorage.getItem("UserId"))
+          (x) => x.id === loggedInUserId()
         )[0];
       });
     }

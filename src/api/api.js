@@ -50,6 +50,14 @@ export const loadActiveBrokers=()=>{
     });
 }
 
+export const loadAllBrokers=()=>{
+  return axios({
+      method:"get",
+      url:`${baseApiUrl}/admin/brokers`,
+      headers: headers
+  });
+}
+
 export const getLoadOnId=(loadNumber)=>{
     return axios({
         method:'get',

@@ -8,9 +8,10 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
+import { loggedInUserId } from "../../api/validation";
 
 function Shippers() {
-  const brokerId= sessionStorage.getItem("UserId");
+  const brokerId= loggedInUserId()
   const [shipperData, setShipperData] = useState({
     brokerId:brokerId,
     shipperName: "",

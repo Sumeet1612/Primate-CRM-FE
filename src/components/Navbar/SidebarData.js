@@ -7,11 +7,12 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import { loggedInUserId } from "../../api/validation";
 
 export const SidebarUserData = [
   { title: "Home", icon: <HomeIcon />, path: "Primate-CRM-FE/" },
   { title: "Shippers", icon: <EngineeringIcon />, path: "Primate-CRM-FE/shippers" },
-  { title: "Profile", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/profile" },
+  { title: "Profile", icon: <AccountBoxIcon />, path: `Primate-CRM-FE/profile/${loggedInUserId()}` },
   { title: "Add New Load", icon: <LocalShippingIcon />, path: "Primate-CRM-FE/new" },
   { title: "Manage Loads", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/viewLoads" },
   { title: "Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice" },
@@ -21,4 +22,5 @@ export const SidebarUserData = [
 export const SidebarAdminData = [
   { title: "Register", icon: <GroupAddIcon />, path: "Primate-CRM-FE/register" },
   { title: "Agency System", icon: <FileUploadIcon />, path: "Primate-CRM-FE/agency" },
+  { title: "Manage Brokers", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/manageBrokers" }
 ];

@@ -6,6 +6,8 @@ import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
 import { editBroker, getBrokerOnId, getCurrency, handleApiError } from "../../api/api";
 import { MenuItem, Select } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 function Profile() {
 
   const [broker,setBroker]=useState({
@@ -16,7 +18,6 @@ function Profile() {
     isActive:'',
     email:'',
     maxCommision:'',
-    maxShare:'',
     officeEmail:'',
     officePhone:'',
     extn:'',
@@ -45,12 +46,27 @@ function Profile() {
   const [currency,setCurrency]= useState([]);
 
   const [others,setOthers]=useState({
-    exchangeRate:'0'
+    exchangeRate:'0',
+    userRole:loggedInUserRole()
   })
-  const userId= sessionStorage.getItem("UserId");
+
+  const { loggedInBrokerId } = useParams();
+
+  const nav=useNavigate();
+
   useEffect(()=>{
-    
+    const user= loggedInUserId();
+    if(loggedInBrokerId === 'NaN'){
+      if(isNaN(user)){
+        nav('/Primate-CRM-FE/login/')
+      }
+      else{
+      nav(`/Primate-CRM-FE/profile/${user}`)
+      }
+    }
+    else{
     let currencyData=[];
+    if(loggedInBrokerId > 0 && (user===parseInt(loggedInBrokerId) || others.userRole===1)){
 
     //get currency list
     getCurrency()
@@ -64,9 +80,8 @@ function Profile() {
       handleApiError(err);
     })
 
-    // get broker details
-    if(userId>0){
-      getBrokerOnId(userId)
+      // get broker details
+      getBrokerOnId(loggedInBrokerId)
       .then((res)=>{
         if(res.status===200){
           setBroker(res.data);
@@ -84,8 +99,12 @@ function Profile() {
         handleApiError(err);
       })
     }
+    else{
+      alert('Unauthorized Access')
+    }
+  }
 
-  },[userId]);
+  },[loggedInBrokerId,nav,others.userRole]);
 
 
   const handleChange=(e)=>{
@@ -124,7 +143,7 @@ function Profile() {
           ownerName:'',
           ifsc:'',
           pan:'',
-          brokerId:userId,
+          brokerId:loggedInBrokerId,
           isPrimary:false
         }
       ]
@@ -171,6 +190,49 @@ function Profile() {
 
   const handlePasswordChange=()=>{
     console.log('pass change')
+  }
+
+  const handleActive=()=>{
+    if(broker.isActive){
+      if(window.confirm("Are you sure you want to make this broker Inactive? Note:Marking Inactive won't allow this user to login.")){
+        const payload=[{
+          path:'/isActive',
+          op:'replace',
+          value:false
+        }]
+        editBroker(broker.id,payload)
+        .then((res)=>{
+          if(res.status===200){
+            setBroker((prev)=>{
+              return {...prev, isActive:false}
+            })
+          }
+        })
+        .catch((err)=>{
+          handleApiError(err);
+        })
+      }
+    }
+    else{
+      if(window.confirm("Are you sure you want to make this broker Active?")){
+        const payload=[{
+          path:'/isActive',
+          op:'replace',
+          value:true
+        }]
+        editBroker(broker.id,payload)
+        .then((res)=>{
+          if(res.status===200){
+          setBroker((prev)=>{
+            return {...prev, isActive:true}
+          })
+        }
+        })
+        .catch((err)=>{
+          handleApiError(err);
+        })
+      }
+    }
   }
 
   return (
@@ -336,6 +398,16 @@ function Profile() {
           value={broker.officeEmail}
           onChange={handleChange}
         />
+        <br/>
+        <TextField
+          size="small"
+          sx={{ height: "50px", width: "54%", mr: "10%", mb: "1%" }}
+          type="email"
+          label="TMS Password"
+          name="tmsPassword"
+          value={broker.tmsPassword}
+          onChange={handleChange}
+        />
 
         <h2
           style={{
@@ -424,7 +496,7 @@ function Profile() {
             <p fontSize="14px">Add another Bank Account</p>
           </div>
         </div>
-
+        <div hidden={others.userRole!==1}>
         <h2
           style={{
             color: "white",
@@ -486,19 +558,21 @@ function Profile() {
 
         <Button
           variant="contained"
+          color="info"
+          sx={{ width: "20%", mb: "1%", mr: "10%" }}
+          onClick={handleActive}
+        >{broker.isActive? "Mark Inactive":"Mark Active"}</Button>
+
+        </div>
+
+        <Button
+          variant="contained"
           color="secondary"
           sx={{ width: "20%", mb: "1%", mr: "40%" }}
           onClick={handleSave}
         >
           Save Changes
         </Button>
-
-        {/* <Button
-          variant="contained"
-          color="inherit"
-          sx={{ width: "20%", mb: "1%", mr:"0%" }}        >
-          Edit Profile
-        </Button> */}
 
         <Button
           variant="contained"
