@@ -5,7 +5,7 @@ import AuthLayout from "./Layouts/AuthLayout";
 import RootLayout from "./Layouts/RootLayout";
 import NewLoad from "./components/Loads/NewLoad";
 import Profile from "./components/Brokers/profile";
-import Invoice from "./components/invoice";
+import Invoice from "./components/Invoice/invoice";
 import EditLoad from "./components/Loads/EditLoad";
 import Home from "./components/Home";
 import Shippers from "./components/Shippers/Shippers";
