@@ -192,3 +192,11 @@ export const getCurrency=()=>{
     headers:headers
   })
 }
+
+export const getAllLoads=()=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/allLoads`,
+    headers:headers
+  })
+}

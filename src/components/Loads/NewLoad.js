@@ -36,6 +36,7 @@ function NewLoad() {
     carrierRate: '',
     netMargin: "",
     brokerId: "",
+    selfRate:'',
     additionalBroker: [],
   });
   const [availableBrokers, setAvailableBrokers] = useState([]);
@@ -125,7 +126,7 @@ function NewLoad() {
       return updatedBrokers;
     });
     setSendData((prevState) => {
-      return { ...prevState, additionalBroker: additionalBrokers };
+      return { ...prevState, additionalBroker: additionalBrokers, selfRate:loggedInBroker.maxCommision-sum };
     });
   };
 
@@ -197,7 +198,7 @@ function NewLoad() {
         })
       })
     }
-    
+
     //if successfull validation call api to create load
     if(!validationError){
       createLoad(sendData)

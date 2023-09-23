@@ -28,6 +28,8 @@ function Profile() {
     currencyId:0,
     phoneBill:'',
     whatsAppNumber:'',
+    tds:'',
+    deductionInr:'',
     updatedOn:'',
     createdOn:'',
     accountDetails:[]
@@ -556,6 +558,26 @@ function Profile() {
         />
         <br />
 
+        <TextField
+          size="small"
+          sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
+          type="text"
+          label="TDS"
+          name="tds"
+          value={broker.tds}
+          onChange={handleChange}
+          />
+
+          <TextField
+          size="small"
+          sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
+          type="text"
+          label="INR Deductions"
+          name="deductionInr"
+          value={broker.deductionInr}
+          onChange={handleChange}
+          />
+          <br/>
         <Button
           variant="contained"
           color="info"
