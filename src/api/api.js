@@ -200,3 +200,36 @@ export const getAllLoads=()=>{
     headers:headers
   })
 }
+
+export const getPrepInvoice=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/invoice/${brokerId}/prepare`,
+    headers:headers
+  })
+}
+
+export const generateInvoice=(preInvoice)=>{
+   return axios({
+    method:'post',
+    url:`${baseApiUrl}/users/createInvoice`,
+    data:preInvoice,
+    headers:headers
+   })
+}
+
+export const getPastInvoicesForBroker=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/${brokerId}/pastInvoices`,
+    headers:headers
+  })
+}
+
+export const getAllGeneratedInvoices=()=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/allInvoices`,
+    headers:headers
+  })
+}

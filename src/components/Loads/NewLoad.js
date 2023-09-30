@@ -93,11 +93,17 @@ function NewLoad() {
 
   useEffect(() => {
     if (availableBrokers.length > 0) {
+      //get current loggedIn user detail
+      let loggedInUserDetail= availableBrokers.filter((x) => x.id === loggedInUserId())[0];
+
       setloggedInBroker(() => {
-        return availableBrokers.filter(
-          (x) => x.id === loggedInUserId()
-        )[0];
+        return loggedInUserDetail;
       });
+
+      //set self rate = max commission by default. Is shared will be recalculated
+      setSendData((prev)=>{
+        return {...prev, selfRate:loggedInUserDetail?.maxCommision}
+      })
     }
   }, [availableBrokers]);
 
@@ -160,7 +166,7 @@ function NewLoad() {
     }
     setAdditionalBrokers(arr);
     setSendData((prevState) => {
-      return { ...prevState, additionalBroker: arr };
+      return { ...prevState, additionalBroker: arr, selfRate:loggedInBroker.maxCommision-sum };
     });
   };
 
