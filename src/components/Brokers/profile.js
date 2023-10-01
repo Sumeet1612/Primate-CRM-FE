@@ -3,11 +3,14 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import Avatar from "../../img/Avatar.jpg";
 import Box from "@mui/material/Box";
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 import { useEffect, useState } from "react";
 import { editBroker, getBrokerOnId, getCurrency, handleApiError } from "../../api/api";
 import { MenuItem, Select } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
+import PasswordChangeModal from "./PasswordChangeModal";
 function Profile() {
 
   const [broker,setBroker]=useState({
@@ -49,7 +52,8 @@ function Profile() {
 
   const [others,setOthers]=useState({
     exchangeRate:'0',
-    userRole:loggedInUserRole()
+    userRole:loggedInUserRole(),
+    dialogOpen:false
   })
 
   const { loggedInBrokerId } = useParams();
@@ -190,8 +194,12 @@ function Profile() {
   }
 }
 
-  const handlePasswordChange=()=>{
-    console.log('pass change')
+const handleDialogClose=()=>{
+  setOthers((prev)=>{return {...prev,dialogOpen:false}})
+}
+
+  const handleDialogOpen=()=>{
+    setOthers((prev)=>{return {...prev,dialogOpen:true}})
   }
 
   const handleActive=()=>{
@@ -600,10 +608,17 @@ function Profile() {
           variant="contained"
           color="info"
           sx={{ width: "20%", mb: "1%", mr: "10%" }}
-          onClick={handlePasswordChange}
+          onClick={handleDialogOpen}
         >
           Change Password
         </Button>
+
+        <Dialog open={others.dialogOpen} onClose={handleDialogClose}>
+          <DialogContent>
+            <PasswordChangeModal email={broker.email} brokerId={broker.id}/>
+          </DialogContent>
+        </Dialog>
+        
       </div>
     </>
   );

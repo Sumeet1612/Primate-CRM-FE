@@ -233,3 +233,19 @@ export const getAllGeneratedInvoices=()=>{
     headers:headers
   })
 }
+
+export const sendOtp=(email)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/Users/otp/send?emailId=${email}`,
+    headers:headers
+  })
+}
+
+export const validateOtp=(email,otp)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/Users/otp/validate?emailId=${email}&otp=${otp}`,
+    headers:headers
+  })
+}
