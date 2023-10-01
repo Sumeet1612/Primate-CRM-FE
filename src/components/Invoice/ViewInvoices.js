@@ -5,12 +5,12 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import { useNavigate } from "react-router-dom";
 
 function ViewInvoices(){
     const [isloading,setIsLoading]=useState(false);
     const brokerId= loggedInUserId();
     const userRole= loggedInUserRole();
-
     const [invoices, setInvoices]= useState([])
 
     const [cols]=useState([
@@ -31,7 +31,13 @@ function ViewInvoices(){
         //{field: "additionalDetails" , filter: true, sortable: true}
     ])
 
+    const history= useNavigate();
+
     useEffect(()=>{
+        if(isNaN(brokerId) || isNaN(userRole)){
+            history("/Primate-CRM-FE/login")
+            return;
+          }
         if(userRole===1){
             setIsLoading(true)
             getAllGeneratedInvoices()
@@ -60,7 +66,7 @@ function ViewInvoices(){
             setIsLoading(false);
             })
         }
-    },[brokerId,userRole])
+    },[brokerId,userRole, history])
 
     return(
         <div className="PageLayout Invoice">

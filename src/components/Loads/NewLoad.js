@@ -14,7 +14,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
-import { loggedInUserId } from "../../api/validation";
+import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 
 function NewLoad() {
 
@@ -53,6 +53,11 @@ function NewLoad() {
 
   useEffect(() => {
     const userId= loggedInUserId();
+    const userRole= loggedInUserRole();
+    if(isNaN(userId) || isNaN(userRole)){
+      history("/Primate-CRM-FE/login")
+      return;
+    }
     if (userId) {
       setMessage((prev)=>{
         return {...prev, isLoading:true}
@@ -89,7 +94,7 @@ function NewLoad() {
         return { ...state, brokerId: userId };
       });
     }
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     if (availableBrokers.length > 0) {

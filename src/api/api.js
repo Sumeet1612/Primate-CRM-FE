@@ -102,7 +102,7 @@ export const processInvoices=()=>{
 export const getAllShippers=()=>{
   return axios({
     method:'get',
-    url:`${baseApiUrl}/users/shippers`,
+    url:`${baseApiUrl}/Admin/allShippers`,
     headers:headers
   })
 }

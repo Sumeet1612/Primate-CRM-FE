@@ -5,7 +5,8 @@ import { DatePicker } from "@mui/x-date-pickers";
 import * as dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { generateInvoice, getPrepInvoice, handleApiError } from "../../api/api";
-import { loggedInUserId } from "../../api/validation";
+import { loggedInUserId, loggedInUserRole } from "../../api/validation";
+import { useNavigate } from "react-router-dom";
 
 function Invoice() {
 
@@ -43,8 +44,14 @@ function Invoice() {
     prevInvoiceLoading:false
   })
   const brokerId= loggedInUserId();
+  const userRole= loggedInUserRole();
+  const history= useNavigate();
 
   useEffect(()=>{
+    if(isNaN(brokerId) || isNaN(userRole)){
+      history("/Primate-CRM-FE/login")
+      return;
+    }
       getPrepInvoice(brokerId)
     .then((res)=>{
       if(res.status===200){
@@ -56,7 +63,7 @@ function Invoice() {
     .catch((err)=>{
       handleApiError(err);
     })
-  },[brokerId],others.refresh)
+  },[brokerId,others.refresh,history, userRole])
 
 
   const handleAccount=(event)=>{
