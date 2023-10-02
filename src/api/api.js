@@ -1,13 +1,17 @@
 import axios from "axios";
+import { logOut } from "./validation";
 const baseApiUrl = process.env.REACT_APP_BASE_URL_API;
 const apiKey = process.env.REACT_APP_API_KEY
 const headers={
-    XApiKey: apiKey
-  }
+    XApiKey: apiKey,
+    PToken: sessionStorage.getItem("token")
+}
 
 export const handleApiError=(err)=>{
     if (err?.response?.status === 401) {
-        alert("Authentication failed.");
+        alert("Your current Session is expired. Please login to continue");
+        logOut();
+        window.location.href="/Primate-CRM-FE/login"
       } else if (err?.response?.status === 417) {
         alert("Server error");
       } else {
