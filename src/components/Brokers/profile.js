@@ -3,11 +3,14 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import Avatar from "../../img/Avatar.jpg";
 import Box from "@mui/material/Box";
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 import { useEffect, useState } from "react";
 import { editBroker, getBrokerOnId, getCurrency, handleApiError } from "../../api/api";
 import { MenuItem, Select } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
+import PasswordChangeModal from "./PasswordChangeModal";
 function Profile() {
 
   const [broker,setBroker]=useState({
@@ -28,6 +31,8 @@ function Profile() {
     currencyId:0,
     phoneBill:'',
     whatsAppNumber:'',
+    tds:'',
+    deductionInr:'',
     updatedOn:'',
     createdOn:'',
     accountDetails:[]
@@ -47,7 +52,8 @@ function Profile() {
 
   const [others,setOthers]=useState({
     exchangeRate:'0',
-    userRole:loggedInUserRole()
+    userRole:loggedInUserRole(),
+    dialogOpen:false
   })
 
   const { loggedInBrokerId } = useParams();
@@ -59,6 +65,7 @@ function Profile() {
     if(loggedInBrokerId === 'NaN'){
       if(isNaN(user)){
         nav('/Primate-CRM-FE/login/')
+        return;
       }
       else{
       nav(`/Primate-CRM-FE/profile/${user}`)
@@ -188,8 +195,12 @@ function Profile() {
   }
 }
 
-  const handlePasswordChange=()=>{
-    console.log('pass change')
+const handleDialogClose=()=>{
+  setOthers((prev)=>{return {...prev,dialogOpen:false}})
+}
+
+  const handleDialogOpen=()=>{
+    setOthers((prev)=>{return {...prev,dialogOpen:true}})
   }
 
   const handleActive=()=>{
@@ -556,6 +567,26 @@ function Profile() {
         />
         <br />
 
+        <TextField
+          size="small"
+          sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
+          type="text"
+          label="TDS"
+          name="tds"
+          value={broker.tds}
+          onChange={handleChange}
+          />
+
+          <TextField
+          size="small"
+          sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
+          type="text"
+          label="INR Deductions"
+          name="deductionInr"
+          value={broker.deductionInr}
+          onChange={handleChange}
+          />
+          <br/>
         <Button
           variant="contained"
           color="info"
@@ -578,10 +609,17 @@ function Profile() {
           variant="contained"
           color="info"
           sx={{ width: "20%", mb: "1%", mr: "10%" }}
-          onClick={handlePasswordChange}
+          onClick={handleDialogOpen}
         >
           Change Password
         </Button>
+
+        <Dialog open={others.dialogOpen} onClose={handleDialogClose}>
+          <DialogContent>
+            <PasswordChangeModal email={broker.email} brokerId={broker.id}/>
+          </DialogContent>
+        </Dialog>
+        
       </div>
     </>
   );

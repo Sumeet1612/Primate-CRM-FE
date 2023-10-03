@@ -15,7 +15,8 @@ export const SidebarUserData = [
   { title: "Profile", icon: <AccountBoxIcon />, path: `Primate-CRM-FE/profile/${loggedInUserId()}` },
   { title: "Add New Load", icon: <LocalShippingIcon />, path: "Primate-CRM-FE/new" },
   { title: "Manage Loads", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/viewLoads" },
-  { title: "Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice" },
+  { title: "Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice/generate" },
+  { title: "Past Invoices", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoices" },
   { title: "Login", icon: <ReceiptIcon />, path: "Primate-CRM-FE/login" },
 ];
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { addShipper, getAllShippersForBroker, handleApiError } from "../../api/api";
+import { addShipper, getAllShippers, getAllShippersForBroker, handleApiError } from "../../api/api";
 import { AgGridReact } from "ag-grid-react";
 import LinearProgress from "@mui/material/LinearProgress";
 import "ag-grid-community/styles/ag-grid.css";
@@ -8,10 +8,11 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
-import { loggedInUserId } from "../../api/validation";
+import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 
 function Shippers() {
-  const brokerId= loggedInUserId()
+  const brokerId= loggedInUserId();
+  const userRole= loggedInUserRole();
   const [shipperData, setShipperData] = useState({
     brokerId:brokerId,
     shipperName: "",
@@ -50,19 +51,39 @@ function Shippers() {
   ]);
 
   useEffect(() => {
-    setIsLoading(true);
-    getAllShippersForBroker(brokerId)
-      .then((res) => {
-        if (res.status === 200) {
-          setViewShippers(res.data);
-        }
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        handleApiError(err);
-        setIsLoading(false);
-      });
-  }, [refresh,brokerId]);
+    if(isNaN(brokerId) || isNaN(userRole)){
+      navigation("/Primate-CRM-FE/login")
+      return;
+    }
+    if(brokerId>0 && userRole===2){    
+      setIsLoading(true);
+      getAllShippersForBroker(brokerId)
+        .then((res) => {
+          if (res.status === 200) {
+            setViewShippers(res.data);
+          }
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          handleApiError(err);
+          setIsLoading(false);
+        });
+    }
+    if(userRole=== 1 && brokerId>0){
+      setIsLoading(true);
+      getAllShippers()
+        .then((res) => {
+          if (res.status === 200) {
+            setViewShippers(res.data);
+          }
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          handleApiError(err);
+          setIsLoading(false);
+        });
+    }
+  }, [refresh,brokerId, userRole,navigation]);
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -213,7 +234,7 @@ function Shippers() {
             marginTop: "5%",
           }}
         >
-          Manage your Shippers
+          {userRole===1?"Manage All Shippers":"Manage your Shippers"}
         </h3>
       </div>
       <br />

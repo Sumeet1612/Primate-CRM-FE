@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
-import { checkPermissionToNavigation } from "../../api/validation";
+import { checkPermissionToNavigation, loggedInUserRole } from "../../api/validation";
 
 function EditLoad() {
   const [data, setData] = useState({
@@ -35,7 +35,7 @@ function EditLoad() {
   const [isEditable, setIsEditable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [init, setInit] = useState([]);
-
+  const userRole= loggedInUserRole();
   const { id } = useParams();
   const nav= useNavigate();
 
@@ -97,18 +97,21 @@ function EditLoad() {
       });
   };
 
-  const handlePayment = () => {
+  const handlePayment = (statusId) => {
     let payload = [
       {
         path: "/paymentStatusId",
         op: "replace",
-        value: 2,
+        value: statusId,
       },
     ];
 
     editLoad(init.loadNumber, payload)
       .then((res) => {
-        alert("Payment Requested !!")
+        if(statusId===2)
+          alert("Payment Requested !!")
+        else 
+          alert("Payment Approved !!")
         setInit(data)
       })
       .catch((err) => {
@@ -428,13 +431,24 @@ function EditLoad() {
             variant="contained"
             color="success"
             sx={{ width: "27%" }}
-            disabled={!isEditable}
-            onClick={handlePayment}
+            disabled={!isEditable || !data.invoiceDate}
+            onClick={()=>handlePayment(2)}
           >
             {" "}
             Request for Payment{" "}
           </Button>
           <br />
+          
+          <div hidden={userRole!==1}>
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ width: "27%" }}
+            disabled={init.paymentStatusId!==2}
+            onClick={()=>handlePayment(3)} 
+            > Approve Payment </Button>
+            </div>
+
           {!isEditable ? (
             <h3>
               Payment is already{" "}

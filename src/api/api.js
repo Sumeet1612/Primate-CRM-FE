@@ -1,13 +1,17 @@
 import axios from "axios";
+import { logOut } from "./validation";
 const baseApiUrl = process.env.REACT_APP_BASE_URL_API;
 const apiKey = process.env.REACT_APP_API_KEY
 const headers={
-    XApiKey: apiKey
-  }
+    XApiKey: apiKey,
+    PToken: sessionStorage.getItem("token")
+}
 
 export const handleApiError=(err)=>{
     if (err?.response?.status === 401) {
-        alert("Authentication failed.");
+        alert("Your current Session is expired. Please login to continue");
+        logOut();
+        window.location.href="/Primate-CRM-FE/login"
       } else if (err?.response?.status === 417) {
         alert("Server error");
       } else {
@@ -102,7 +106,7 @@ export const processInvoices=()=>{
 export const getAllShippers=()=>{
   return axios({
     method:'get',
-    url:`${baseApiUrl}/users/shippers`,
+    url:`${baseApiUrl}/Admin/allShippers`,
     headers:headers
   })
 }
@@ -189,6 +193,63 @@ export const getCurrency=()=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/admin/currencies`,
+    headers:headers
+  })
+}
+
+export const getAllLoads=()=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/allLoads`,
+    headers:headers
+  })
+}
+
+export const getPrepInvoice=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/invoice/${brokerId}/prepare`,
+    headers:headers
+  })
+}
+
+export const generateInvoice=(preInvoice)=>{
+   return axios({
+    method:'post',
+    url:`${baseApiUrl}/users/createInvoice`,
+    data:preInvoice,
+    headers:headers
+   })
+}
+
+export const getPastInvoicesForBroker=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/${brokerId}/pastInvoices`,
+    headers:headers
+  })
+}
+
+export const getAllGeneratedInvoices=()=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/allInvoices`,
+    headers:headers
+  })
+}
+
+export const sendOtp=(email)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/Users/otp/send?emailId=${email}`,
+    headers:headers
+  })
+}
+
+export const validateOtp=(email,otp)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/Users/otp/validate?emailId=${email}&otp=${otp}`,
     headers:headers
   })
 }

@@ -3,9 +3,9 @@ import { AgGridReact } from "ag-grid-react";
 import LinearProgress from "@mui/material/LinearProgress";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getLoadForBroker, handleApiError } from "../../api/api";
+import { getAllLoads, getLoadForBroker, handleApiError } from "../../api/api";
 import { useNavigate } from "react-router";
-import { loggedInUserId } from "../../api/validation";
+import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 
 function ViewLoads() {
   const nav = useNavigate();
@@ -15,18 +15,37 @@ function ViewLoads() {
 
   useEffect(() => {
     let brokerId = loggedInUserId();
+    let roleId= loggedInUserRole();
     if (brokerId > 0) {
       setIsLoading(true);
+      if(roleId===2){
       getLoadForBroker(brokerId)
         .then((res) => {
-          setLoads(res.data);
-          setFilteredLoads(res.data);
+          if(res.status===200){
+            setLoads(res.data);
+            setFilteredLoads(res.data);
+          }
           setIsLoading(false);
         })
         .catch((err) => {
           handleApiError(err);
           setIsLoading(false);
         });
+      }
+      else if(roleId===1){
+        getAllLoads(brokerId)
+        .then((res) => {
+          if(res.status===200){
+            setLoads(res.data);
+            setFilteredLoads(res.data);
+          }
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          handleApiError(err);
+          setIsLoading(false);
+        });
+      }
     }
   }, []);
 

@@ -14,7 +14,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
-import { loggedInUserId } from "../../api/validation";
+import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 
 function NewLoad() {
 
@@ -36,6 +36,7 @@ function NewLoad() {
     carrierRate: '',
     netMargin: "",
     brokerId: "",
+    selfRate:'',
     additionalBroker: [],
   });
   const [availableBrokers, setAvailableBrokers] = useState([]);
@@ -52,6 +53,11 @@ function NewLoad() {
 
   useEffect(() => {
     const userId= loggedInUserId();
+    const userRole= loggedInUserRole();
+    if(isNaN(userId) || isNaN(userRole)){
+      history("/Primate-CRM-FE/login")
+      return;
+    }
     if (userId) {
       setMessage((prev)=>{
         return {...prev, isLoading:true}
@@ -88,15 +94,21 @@ function NewLoad() {
         return { ...state, brokerId: userId };
       });
     }
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     if (availableBrokers.length > 0) {
+      //get current loggedIn user detail
+      let loggedInUserDetail= availableBrokers.filter((x) => x.id === loggedInUserId())[0];
+
       setloggedInBroker(() => {
-        return availableBrokers.filter(
-          (x) => x.id === loggedInUserId()
-        )[0];
+        return loggedInUserDetail;
       });
+
+      //set self rate = max commission by default. Is shared will be recalculated
+      setSendData((prev)=>{
+        return {...prev, selfRate:loggedInUserDetail?.maxCommision}
+      })
     }
   }, [availableBrokers]);
 
@@ -125,7 +137,7 @@ function NewLoad() {
       return updatedBrokers;
     });
     setSendData((prevState) => {
-      return { ...prevState, additionalBroker: additionalBrokers };
+      return { ...prevState, additionalBroker: additionalBrokers, selfRate:loggedInBroker.maxCommision-sum };
     });
   };
 
@@ -159,7 +171,7 @@ function NewLoad() {
     }
     setAdditionalBrokers(arr);
     setSendData((prevState) => {
-      return { ...prevState, additionalBroker: arr };
+      return { ...prevState, additionalBroker: arr, selfRate:loggedInBroker.maxCommision-sum };
     });
   };
 
@@ -197,7 +209,7 @@ function NewLoad() {
         })
       })
     }
-    
+
     //if successfull validation call api to create load
     if(!validationError){
       createLoad(sendData)

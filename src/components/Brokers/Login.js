@@ -34,8 +34,9 @@ export default function SignIn() {
         if (res.status === 200) {
             if (res.data?.id !== -1) {
               alert("logged In");
-              setUserAndRole(res.data?.id, res.data?.roleId)
+              setUserAndRole(res.data?.jwtToken)
               history("/Primate-CRM-FE/");
+              window.location.reload();
             } else {
               if (res.data?.isActive === false) {
                 alert(
