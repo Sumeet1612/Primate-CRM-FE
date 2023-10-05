@@ -378,6 +378,7 @@ const handleDialogClose=()=>{
           type="text"
           label="OFS Contact Number"
           name="contact"
+          value="(651) 468-6868"
           InputProps={{readOnly:true}}
         />
         <TextField
@@ -616,7 +617,7 @@ const handleDialogClose=()=>{
 
         <Dialog open={others.dialogOpen} onClose={handleDialogClose}>
           <DialogContent>
-            <PasswordChangeModal email={broker.email} brokerId={broker.id}/>
+            <PasswordChangeModal email={broker.email} brokerId={broker.id} dialog={handleDialogClose}/>
           </DialogContent>
         </Dialog>
         

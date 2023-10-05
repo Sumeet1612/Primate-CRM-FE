@@ -2,6 +2,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import { callLogin, editBroker, handleApiError, sendOtp, validateOtp } from "../../api/api";
+import LinearProgress from "@mui/material/LinearProgress";
 
 function PasswordChangeModal(props){
 
@@ -14,10 +15,14 @@ function PasswordChangeModal(props){
     })
 
     const [obj,setObj]=useState({
-        otpSent:false
+        otpSent:false,
+        loading:false
     })
 
     const ValidateAndGenrateOtp=()=>{
+        setObj((prev)=>{
+            return {...prev, loading:true}
+        })
         let validationError=false;
         Object.keys(form).every(val=>{
             if(form[val]==="" && val!=="otp"){
@@ -46,9 +51,15 @@ function PasswordChangeModal(props){
                         else{
                             alert("OTP Service failure. Please retry or contact Admin")
                         }
+                        setObj((prev)=>{
+                            return {...prev, loading:false}
+                    })
                     })
                     .catch((otpErr)=>{
                         handleApiError(otpErr);
+                        setObj((prev)=>{
+                            return {...prev, loading:false}
+                    })
                     })
                 }
                 else{
@@ -57,6 +68,9 @@ function PasswordChangeModal(props){
             })
             .catch((err)=>{
                 handleApiError(err);
+                setObj((prev)=>{
+                    return {...prev, loading:false}
+            })
             })
         }
     }
@@ -67,6 +81,9 @@ function PasswordChangeModal(props){
             op:"replace",
             value:form.newPassword
         }]
+        setObj((prev)=>{
+            return {...prev, loading:true}
+        })
 
         validateOtp(form.email,form.otp)
         .then((res)=>{
@@ -78,15 +95,28 @@ function PasswordChangeModal(props){
                 .then((brokerRes)=>{
                     if(brokerRes.status===200){
                         alert("Password Changed!!")
+                        props.dialog();
                     }
+                    setObj((prev)=>{
+                        return {...prev, loading:false}
+                    })
                 })
                 .catch((brokerErr)=>{
                     handleApiError(brokerErr)
+                    setObj((prev)=>{
+                        return {...prev, loading:false}
+                    })
                 })
+            }
+            else{
+                alert("Incorrect OTP")
             }
         })
         .catch((err)=>{
             handleApiError(err);
+            setObj((prev)=>{
+                return {...prev, loading:false}
+            })
         })
     }
 
@@ -108,7 +138,8 @@ function PasswordChangeModal(props){
         <div>
         <h3>Reset Password</h3>
         <br/>
-
+        {obj.loading? <LinearProgress/>:<></>}
+        <br/>
         <TextField
         required
         sx={{ height: "70px", width: "70%" }}
@@ -164,6 +195,7 @@ function PasswordChangeModal(props){
           color="info"
           sx={{ width: "40%", mb: "1%", mr: "5%", mt:"2%" }}
           onClick={ValidateAndGenrateOtp}
+          disabled={obj.loading}
         >
           Generate OTP
         </Button>
@@ -178,6 +210,7 @@ function PasswordChangeModal(props){
             name="otp"
             value={form.otp}
             onChange={handleChange}
+            disabled={obj.loading}
             />
         }
 
@@ -188,6 +221,7 @@ function PasswordChangeModal(props){
           color="info"
           sx={{ width: "80%", mb: "1%", mr: "5%", mt:"2%" }}
           onClick={ValidateAndChange}
+          disabled={obj.loading}
         >
           Validate OTP & Save Changes
         </Button>
