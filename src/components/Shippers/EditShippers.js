@@ -71,6 +71,20 @@ function EditShippers() {
 
   const handleSubmit=()=>{
 
+    let blankField = '';
+    Object.keys(shipperData).every(fe=>{
+      if(shipperData[fe]===''){
+        blankField= fe;
+        return false;
+      }
+      return true;
+    })
+
+    if(blankField !== ''){
+      alert("Error: All fields are Mandatory to submit your changes");
+      return;
+    }
+
     let payload = [];
     Object.keys(shipperData).forEach((e) => {
       if (shipperData[e] !== init[e]) {

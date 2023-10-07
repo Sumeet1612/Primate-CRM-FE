@@ -74,6 +74,21 @@ function EditLoad() {
   }, [id, isEditable,nav]);
 
   const handleSubmit = () => {
+
+    let blankField = '';
+    Object.keys(data).every(sd=>{
+      if(data[sd]==='' && sd!=='additionalBroker' && sd!=='invoiceDate'){
+        blankField= sd;
+        return false;
+      }
+      return true;
+    })
+
+    if(blankField !== ''){
+      alert(`Error: All fileds are mandatory to submit your changes. ${blankField} is blank.`);
+      return;
+    }
+
     let payload = [];
     Object.keys(data).forEach((e) => {
       if (data[e] !== init[e]) {
@@ -85,16 +100,18 @@ function EditLoad() {
       }
     });
 
-    editLoad(init.loadNumber, payload)
-      .then((res) => {
-        if (res.data === true) {
-          alert("Load updated !!");
-          setInit(data)
-        }
-      })
-      .catch((err) => {
-        handleApiError(err);
-      });
+    if(payload.length>0){
+      editLoad(init.loadNumber, payload)
+        .then((res) => {
+          if (res.data === true) {
+            alert("Load updated !!");
+            setInit(data)
+          }
+        })
+        .catch((err) => {
+          handleApiError(err);
+        });
+    }
   };
 
   const handlePayment = (statusId) => {

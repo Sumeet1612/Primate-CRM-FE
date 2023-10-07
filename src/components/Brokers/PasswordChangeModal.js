@@ -84,6 +84,12 @@ function PasswordChangeModal(props){
                     handleApiError(brokerErr)
                 })
             }
+            else{
+                alert("Incorrect OTP")
+                setObj((prev)=>{
+                    return {...prev, loading:false}
+                })
+            }
         })
         .catch((err)=>{
             handleApiError(err);
