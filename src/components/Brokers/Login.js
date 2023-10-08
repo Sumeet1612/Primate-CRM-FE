@@ -3,23 +3,28 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { callLogin, handleApiError } from '../../api/api';
 import { setUserAndRole } from '../../api/validation';
-
-// TODO remove, this demo shouldn't need to reset the theme.
+import ResetPasswordModal from './ResetPasswordModal';
 
 const defaultTheme = createTheme();
 
 export default function SignIn() {
 
   const history= useNavigate();
+  const [dialogOpen,setDialogOpen]= React.useState(false);
+
+  const closeDialog=()=>{
+    setDialogOpen(false);
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -99,11 +104,23 @@ export default function SignIn() {
             >
               Sign In
             </Button>
-            <Grid container>
-              
-            </Grid>
           </Box>
         </Box>
+          <Button
+                type="submit"
+                fullWidth
+                variant="text"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={()=>setDialogOpen(true)}
+          >
+              Forgot Your Password? Reset 
+          </Button>
+
+          <Dialog open={dialogOpen} onClose={closeDialog}>
+            <DialogContent>
+              <ResetPasswordModal closeDialog={closeDialog}/>
+            </DialogContent>
+          </Dialog>
       </Container>
     </ThemeProvider>
   );

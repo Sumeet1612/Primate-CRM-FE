@@ -241,7 +241,7 @@ export const getAllGeneratedInvoices=()=>{
 export const sendOtp=(email)=>{
   return axios({
     method:'post',
-    url:`${baseApiUrl}/Users/otp/send?emailId=${email}`,
+    url:`${baseApiUrl}/users/otp/send?emailId=${email}`,
     headers:headers
   })
 }
@@ -249,7 +249,16 @@ export const sendOtp=(email)=>{
 export const validateOtp=(email,otp)=>{
   return axios({
     method:'post',
-    url:`${baseApiUrl}/Users/otp/validate?emailId=${email}&otp=${otp}`,
+    url:`${baseApiUrl}/users/otp/validate?emailId=${email}&otp=${otp}`,
+    headers:headers
+  })
+}
+
+export const resetPassword=(data)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/users/otpValidate/resetPassword`,
+    data:data,
     headers:headers
   })
 }

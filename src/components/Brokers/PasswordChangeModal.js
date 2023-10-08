@@ -43,7 +43,7 @@ function PasswordChangeModal(props){
                 if(res.status===200 && res.data?.id !== -1){
                     sendOtp(form.email)
                     .then((otpRes)=>{
-                        if(otpRes.status===200 && otpRes.data?.message==="OTP Sent Successfully"){
+                        if(otpRes.status===200 && otpRes.data?.message===`OTP Sent Successfully to brokerId: ${props.brokerId}`){
                             setObj((prev)=>{
                                 return {...prev,otpSent:true}
                             })
@@ -87,7 +87,7 @@ function PasswordChangeModal(props){
 
         validateOtp(form.email,form.otp)
         .then((res)=>{
-            if(res.status===200 && res.data?.message==="Validation successfull"){
+            if(res.status===200 && res.data?.message===`Validation successfull for brokerId: ${props.brokerId}`){
                 console.log("OTP Validated")
                 //validation successfull hence calling broker patch API to update password
 
