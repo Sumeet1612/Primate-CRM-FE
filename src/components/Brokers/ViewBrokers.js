@@ -14,22 +14,22 @@ function ViewBrokers(){
       const nav= useNavigate();
 
       const [colDef]= useState([
-        {field:'id', filter: true, sortable: true},
-        {field:'alias', filter: true, sortable: true},
-        {field:'userName', filter: true, sortable: true},
-        {field:'email', filter: true, sortable: true},
-        {field:'contact', filter: true, sortable: true},
-        {field:'phoneBill', filter: true, sortable: true},
-        {field:'officePhone', filter: true, sortable: true},
-        {field:'Extn', filter: true, sortable: true},
-        {field:'officeEmail', filter: true, sortable: true},
-        {field:'maxCommision', filter: true, sortable: true},
-        {field:'whatsAppNumber', filter: true, sortable: true},
-        {field:'residentialAddress', filter: true, sortable: true},
-        {field:'permanentAddress', filter: true, sortable: true},
-        {field:'isActive', filter: true, sortable: true},
-        {field:'tmsPassword', filter: true, sortable: true},
-        {field:'updatedOn', filter: true, sortable: true, 
+        {field:'id', filter: true, sortable: true, resizable: true },
+        {field:'alias', filter: true, sortable: true, resizable: true },
+        {field:'userName', filter: true, sortable: true, resizable: true },
+        {field:'email', filter: true, sortable: true, resizable: true },
+        {field:'contact', filter: true, sortable: true, resizable: true },
+        {field:'phoneBill', filter: true, sortable: true, resizable: true },
+        {field:'officePhone', filter: true, sortable: true, resizable: true },
+        {field:'Extn', filter: true, sortable: true, resizable: true },
+        {field:'officeEmail', filter: true, sortable: true, resizable: true },
+        {field:'maxCommision', filter: true, sortable: true, resizable: true },
+        {field:'whatsAppNumber', filter: true, sortable: true, resizable: true },
+        {field:'residentialAddress', filter: true, sortable: true, resizable: true },
+        {field:'permanentAddress', filter: true, sortable: true, resizable: true },
+        {field:'isActive', filter: true, sortable: true, resizable: true },
+        {field:'tmsPassword', filter: true, sortable: true, resizable: true },
+        {field:'updatedOn', filter: true, sortable: true, resizable: true,
         valueFormatter: params=>{
             let date= new Date(params.value.toString())
             return date.toLocaleDateString('en-US');
@@ -74,7 +74,8 @@ function ViewBrokers(){
           <AgGridReact 
             rowData={broker} 
             columnDefs={colDef} 
-            onCellClicked={(x)=>handleCell(x)}>
+            onCellClicked={(x)=>handleCell(x)}
+            pagination={true} >
           </AgGridReact>
         </div>
         }

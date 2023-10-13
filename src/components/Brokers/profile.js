@@ -179,7 +179,7 @@ function Profile() {
           
         }
       });
-    console.log(payload)
+
     if(payload?.length>0){
       editBroker(broker.id,payload)
       .then((res)=>{

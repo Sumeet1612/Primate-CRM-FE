@@ -2,10 +2,6 @@ import axios from "axios";
 import { logOut } from "./validation";
 const baseApiUrl = process.env.REACT_APP_BASE_URL_API;
 const apiKey = process.env.REACT_APP_API_KEY
-const headers={
-    XApiKey: apiKey,
-    PToken: sessionStorage.getItem("token")
-}
 
 export const handleApiError=(err)=>{
     if (err?.response?.status === 401) {
@@ -24,7 +20,10 @@ export const callLogin = (data) => {
     method: "post",
     url: `${baseApiUrl}/users/login`,
     data,
-    headers: headers,
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   });
 };
 
@@ -33,7 +32,10 @@ export const register=(data)=>{
     method:"post",
     url:`${baseApiUrl}/admin/register`,
     data,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   });
 };
 
@@ -42,7 +44,10 @@ export const createLoad = (data) => {
     method: "post",
     url: `${baseApiUrl}/users/addLoad`,
     data,
-    headers: headers,
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   });
 };
 
@@ -50,7 +55,10 @@ export const loadActiveBrokers=()=>{
     return axios({
         method:"get",
         url:`${baseApiUrl}/admin/activeBrokers`,
-        headers: headers
+        headers:{
+          XApiKey: apiKey,
+          PToken: sessionStorage.getItem("token")
+        }
     });
 }
 
@@ -58,7 +66,10 @@ export const loadAllBrokers=()=>{
   return axios({
       method:"get",
       url:`${baseApiUrl}/admin/brokers`,
-      headers: headers
+      headers:{
+        XApiKey: apiKey,
+        PToken: sessionStorage.getItem("token")
+      }
   });
 }
 
@@ -66,7 +77,10 @@ export const getLoadOnId=(loadNumber)=>{
     return axios({
         method:'get',
         url:`${baseApiUrl}/users/load/${loadNumber}`,
-        headers: headers
+        headers:{
+          XApiKey: apiKey,
+          PToken: sessionStorage.getItem("token")
+        }
     });
 }
 
@@ -74,7 +88,10 @@ export const getBrokerOnId=(brokerId)=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/users/broker/${brokerId}`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -82,7 +99,10 @@ export const getLoadForBroker =(brokerId)=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/users/loads/ForBroker/${brokerId}`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -91,7 +111,10 @@ export const uploadAgencyData=(data)=>{
     method:'post',
     url:`${baseApiUrl}/admin/uploadAgencyData`,
     data,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -99,7 +122,10 @@ export const processInvoices=()=>{
   return axios({
     method:'patch',
     url:`${baseApiUrl}/admin/processInvoices`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -107,7 +133,10 @@ export const getAllShippers=()=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/Admin/allShippers`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -115,7 +144,10 @@ export const getAllShippersForBroker=(brokerId)=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/users/shippers/forBroker/${brokerId}`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -123,7 +155,10 @@ export const getShipper=(shipperId)=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/users/shipper/${shipperId}`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -133,7 +168,10 @@ export const addShipper=(data)=>{
     method:'post',
     url:`${baseApiUrl}/users/createShipper`,
     data:data,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -142,7 +180,10 @@ export const editShipper= (id,payload)=>{
     method:'patch',
     url:`${baseApiUrl}/users/editShipper/${id}`,
     data:payload,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 
 }
@@ -152,7 +193,10 @@ export const editLoad= (loadNumber,load)=>{
     method:'patch',
     url:`${baseApiUrl}/users/updateLoad/${loadNumber}`,
     data:load,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -161,7 +205,10 @@ export const editBroker= (brokerId,data)=>{
     method:'patch',
     url:`${baseApiUrl}/users/editProfile/${brokerId}`,
     data:data,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -169,7 +216,10 @@ export const deleteLoad= (loadNumber)=>{
   return axios({
     method:'delete',
     url:`${baseApiUrl}/users/remove/load/${loadNumber}`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -177,7 +227,10 @@ export const deleteShipper= (shipperId)=>{
   return axios({
     method:'delete',
     url:`${baseApiUrl}/users/remove/shipper/${shipperId}`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -185,7 +238,10 @@ export const getBrokerProfile=(brokerId)=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/users/broker/${brokerId}`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -193,7 +249,10 @@ export const getCurrency=()=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/admin/currencies`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -201,7 +260,10 @@ export const getAllLoads=()=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/admin/allLoads`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -209,7 +271,10 @@ export const getPrepInvoice=(brokerId)=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/users/invoice/${brokerId}/prepare`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -218,7 +283,10 @@ export const generateInvoice=(preInvoice)=>{
     method:'post',
     url:`${baseApiUrl}/users/createInvoice`,
     data:preInvoice,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
    })
 }
 
@@ -226,7 +294,10 @@ export const getPastInvoicesForBroker=(brokerId)=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/users/${brokerId}/pastInvoices`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
@@ -234,22 +305,54 @@ export const getAllGeneratedInvoices=()=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/admin/allInvoices`,
-    headers:headers
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
 export const sendOtp=(email)=>{
   return axios({
     method:'post',
-    url:`${baseApiUrl}/Users/otp/send?emailId=${email}`,
-    headers:headers
+    url:`${baseApiUrl}/users/otp/send?emailId=${email}`,
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }
 
 export const validateOtp=(email,otp)=>{
   return axios({
     method:'post',
-    url:`${baseApiUrl}/Users/otp/validate?emailId=${email}&otp=${otp}`,
-    headers:headers
+    url:`${baseApiUrl}/users/otp/validate?emailId=${email}&otp=${otp}`,
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
+  })
+}
+
+export const resetPassword=(data)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/users/otpValidate/resetPassword`,
+    data:data,
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
+  })
+}
+
+export const getAgencyLoadsOnStatus=(isProcessed)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/agency/loads?isProcessed=${isProcessed}`,
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
   })
 }

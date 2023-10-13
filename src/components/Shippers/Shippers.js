@@ -245,7 +245,8 @@ function Shippers() {
           <AgGridReact 
             rowData={viewShippers} 
             columnDefs={colDef} 
-            onCellClicked={(x)=>handleCell(x)}>
+            onCellClicked={(x)=>handleCell(x)}
+            pagination={true}>
           </AgGridReact>
         </div>
       )}

@@ -60,28 +60,28 @@ function ViewLoads() {
 }
 
   const [columnDefs] = useState([
-    { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:120, headerName:'LOAD #' },
-    { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:200, headerName:'SHIPPER NAME' },
-    { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:150, headerName:'ORIGIN' },
-    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:150, headerName:'DESTINATION'},
-    { field: "pickupDate", filter: 'true', sortable: true, tooltipField:'pickupDate', width:150, headerName:'PICKUP DATE', 
+    { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:120, headerName:'LOAD #', resizable: true },
+    { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:200, headerName:'SHIPPER NAME', resizable: true },
+    { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:150, headerName:'ORIGIN', resizable: true },
+    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:150, headerName:'DESTINATION', resizable: true },
+    { field: "pickupDate", filter: 'true', sortable: true, tooltipField:'pickupDate', width:150, headerName:'PICKUP DATE', resizable: true ,
     valueFormatter: params=>formatDate(params)},
-    { field: "deliveryDate", filter: 'true', sortable: true, tooltipField:'deliveryDate', width:150, headerName:'DELIVERY DATE',
+    { field: "deliveryDate", filter: 'true', sortable: true, tooltipField:'deliveryDate', width:150, headerName:'DELIVERY DATE', resizable: true ,
     valueFormatter: params=>formatDate(params)},
-    { field: "brokerName", filter: true, sortable: true, width:120, headerName:'BROKER' }, // We need to display Broker to the Admin, but this coulmn will no be needed in the User section.
-    { field: "carrierMC", filter: true, sortable: true, tooltipField:'carrierMC', width:135, headerName:'CARRIER MC' },
-    { field: "carrierName", filter: true, sortable: true, tooltipField:'carrierName', width:200, headerName:'CARRIER NAME' },
-    { field: "carrierPOC", filter: true, sortable: true, tooltipField:'carrierPOC', width:150, headerName:'CARRIER POC' },
-    { field: "carrierContact", filter: true, sortable: true, tooltipField:'carrierContact', width:150, headerName:'CARRIER PHONE #' },
-    { field: "carrierEmail", filter: true, sortable: true, tooltipField:'carrierEmail', width:250, headerName:'CARRIER EMAIL' },
-    { field: "shipperRate", filter: true, sortable: true, tooltipField:'shipperRate', width:150, headerName:'SHIPPER RATE' },
-    { field: "carrierRate", filter: true, sortable: true, tooltipField:'carrierRate', width:150, headerName:'CARRIER RATE' },
-    { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:120, headerName:'MARGIN' },
-    { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:150, headerName:'INVOICED ON',
+    { field: "brokerName", filter: true, sortable: true, width:120, headerName:'BROKER', resizable: true  }, // We need to display Broker to the Admin, but this coulmn will no be needed in the User section.
+    { field: "carrierMC", filter: true, sortable: true, tooltipField:'carrierMC', width:135, headerName:'CARRIER MC', resizable: true  },
+    { field: "carrierName", filter: true, sortable: true, tooltipField:'carrierName', width:200, headerName:'CARRIER NAME', resizable: true  },
+    { field: "carrierPOC", filter: true, sortable: true, tooltipField:'carrierPOC', width:150, headerName:'CARRIER POC' , resizable: true },
+    { field: "carrierContact", filter: true, sortable: true, tooltipField:'carrierContact', width:150, headerName:'CARRIER PHONE #' , resizable: true },
+    { field: "carrierEmail", filter: true, sortable: true, tooltipField:'carrierEmail', width:250, headerName:'CARRIER EMAIL', resizable: true  },
+    { field: "shipperRate", filter: true, sortable: true, tooltipField:'shipperRate', width:150, headerName:'SHIPPER RATE', resizable: true  },
+    { field: "carrierRate", filter: true, sortable: true, tooltipField:'carrierRate', width:150, headerName:'CARRIER RATE' , resizable: true },
+    { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:120, headerName:'MARGIN' , resizable: true },
+    { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:150, headerName:'INVOICED ON', resizable: true ,
     valueFormatter: params=>formatDate(params) },
-    { field: "mismatched", filter: true, sortable: true }, 
-    // { field: "createdOn", filter: 'true', sortable: true, valueFormatter: params=>formatDate(params) },
-    { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:150, headerName:'UPDATED ON', 
+    { field: "mismatched", filter: true, sortable: true , resizable: true }, 
+    // { field: "createdOn", filter: 'true', sortable: true, valueFormatter: params=>formatDate(params), resizable: true  },
+    { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:150, headerName:'UPDATED ON', resizable: true , 
      valueFormatter: params=>formatDate(params)}
   ]);
 
@@ -144,6 +144,7 @@ function ViewLoads() {
               rowData={filteredloads}
               columnDefs={columnDefs}
               onCellClicked={(x) => handleCell(x)}
+              pagination={true}
             ></AgGridReact>
           </div>
         )}

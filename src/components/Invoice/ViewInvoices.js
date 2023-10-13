@@ -14,21 +14,21 @@ function ViewInvoices(){
     const [invoices, setInvoices]= useState([])
 
     const [cols]=useState([
-        {field: "invoiceNumber" , filter: true, sortable: true},
-        {field: "brokerId" , filter: true, sortable: true},
-        {field: "grossUsd" , filter: true, sortable: true},
-        {field: "adjustmentDeduction" , filter: true, sortable: true},
-        {field: "payableUsd" , filter: true, sortable: true},
-        {field: "phoneBillUsd" , filter: true, sortable: true},
-        {field: "grossInr" , filter: true, sortable: true},
-        {field: "deductionInr" , filter: true, sortable: true},
-        {field: "tds" , filter: true, sortable: true},
-        {field: "netPayable" , filter: true, sortable: true},
-        {field: "invoiceDate" , filter: true, sortable: true},
-        {field: "dueDate" , filter: true, sortable: true},
-        {field: "paidToAccount" , filter: true, sortable: true},
-        {field: "updatedOn" , filter: true, sortable: true},
-        //{field: "additionalDetails" , filter: true, sortable: true}
+        {field: "invoiceNumber" , filter: true, sortable: true, resizable: true },
+        {field: "brokerId" , filter: true, sortable: true, resizable: true },
+        {field: "grossUsd" , filter: true, sortable: true, resizable: true },
+        {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true },
+        {field: "payableUsd" , filter: true, sortable: true, resizable: true },
+        {field: "phoneBillUsd" , filter: true, sortable: true, resizable: true },
+        {field: "grossInr" , filter: true, sortable: true, resizable: true },
+        {field: "deductionInr" , filter: true, sortable: true, resizable: true },
+        {field: "tds" , filter: true, sortable: true, resizable: true },
+        {field: "netPayable" , filter: true, sortable: true, resizable: true },
+        {field: "invoiceDate" , filter: true, sortable: true, resizable: true },
+        {field: "dueDate" , filter: true, sortable: true, resizable: true },
+        {field: "paidToAccount" , filter: true, sortable: true, resizable: true },
+        {field: "updatedOn" , filter: true, sortable: true, resizable: true },
+        //{field: "additionalDetails" , filter: true, sortable: true, resizable: true }
     ])
 
     const history= useNavigate();
@@ -88,6 +88,7 @@ function ViewInvoices(){
                 <AgGridReact
                   rowData={invoices}
                   columnDefs={cols}
+                  pagination={true}
                 ></AgGridReact>
               </div>
             )}
