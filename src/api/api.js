@@ -345,3 +345,14 @@ export const resetPassword=(data)=>{
     }
   })
 }
+
+export const getAgencyLoadsOnStatus=(isProcessed)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/agency/loads?isProcessed=${isProcessed}`,
+    headers:{
+      XApiKey: apiKey,
+      PToken: sessionStorage.getItem("token")
+    }
+  })
+}

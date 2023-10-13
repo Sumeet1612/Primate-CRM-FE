@@ -1,14 +1,41 @@
-import { useState } from "react";
-import { handleApiError, processInvoices, uploadAgencyData } from "../api/api";
+import { useEffect, useState } from "react";
+import { getAgencyLoadsOnStatus, handleApiError, processInvoices, uploadAgencyData } from "../api/api";
 import LinearProgress from "@mui/material/LinearProgress";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { AgGridReact } from "ag-grid-react";
 
 function AgencyForm() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [upload, setUpload] = useState(false);
   const [check, setCheck] = useState(false);
+
+  const [loads,setLoads]= useState([]);
+  const [colDef]= useState([
+    {field:"loadNumber", filter:true, sortable:true, resizable:true},
+    {field:"shipperRate", filter:true, sortable:true, resizable:true},
+    {field:"carrierRate", filter:true, sortable:true, resizable:true},
+    {field:"margin", filter:true, sortable:true, resizable:true},
+    {field:"adjustmentAmount", filter:true, sortable:true, resizable:true},
+    {field:"invoiceDate", filter:true, sortable:true, resizable:true},
+    {field:"uploadedOn", filter:true, sortable:true, resizable:true}
+  ]) 
+
+  useEffect(()=>{
+    setLoading(true);
+    getAgencyLoadsOnStatus(false)
+    .then((res)=>{
+      if(res.status===200){
+        setLoads(res.data);
+      }
+      setLoading(false);
+    })
+    .catch((err)=>{
+      handleApiError(err);
+      setLoading(false);
+    })
+  },[check]);
 
   const handleFileChange = (event) => {
     setUpload(false);
@@ -42,7 +69,6 @@ function AgencyForm() {
     setLoading(true);
     processInvoices()
       .then((res) => {
-        console.log(res);
         setLoading(false);
         if (res.status === 200) {
           setCheck(true);
@@ -110,6 +136,15 @@ function AgencyForm() {
       ) : (
         <></>
       )}
+            <div className="ag-theme-alpine" style={{ height: 500, width: '94%' }}>
+              <h2>Loads invoiced but not created by brokers in Primate System</h2>
+              <br/>
+            <AgGridReact
+              rowData={loads}
+              columnDefs={colDef}
+              pagination={true}
+            />
+          </div>
     </div>
   );
 }
