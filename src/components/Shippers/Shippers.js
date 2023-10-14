@@ -144,7 +144,7 @@ function Shippers() {
           backgroundColor: "#00b7aa",
           marginBottom: "2%",
           padding: "2%",
-          width: "86%",
+          width: "94%",
           fontSize: "20px",
         }}
       >
@@ -229,7 +229,7 @@ function Shippers() {
             backgroundColor: "#00b7aa",
             marginBottom: "2%",
             padding: "2%",
-            width: "86%",
+            width: "94%",
             fontSize: "18px",
             marginTop: "5%",
           }}
@@ -241,13 +241,13 @@ function Shippers() {
       {isloading ? (
         <LinearProgress />
       ) : (
-        <div className="ag-theme-alpine" style={{ height: 550, width: '90%' }}>
+        <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
           <AgGridReact 
             rowData={viewShippers} 
             columnDefs={colDef} 
             onCellClicked={(x)=>handleCell(x)}
-            pagination={true}>
-          </AgGridReact>
+            pagination={true}
+            paginationAutoPageSize={true} />
         </div>
       )}
     </div>

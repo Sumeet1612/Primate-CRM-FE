@@ -121,7 +121,7 @@ function ViewLoads() {
             backgroundColor: "#00b7aa",
             marginBottom: "2%",
             padding: "2%",
-            width: "90%",
+            width: "95%",
             fontSize: "20px",
           }}
         >
@@ -139,13 +139,14 @@ function ViewLoads() {
         {isloading ? (
            <LinearProgress />
         ) : (
-          <div className="ag-theme-alpine" style={{ height: 500, width: '94%' }}>
+          <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
             <AgGridReact
               rowData={filteredloads}
               columnDefs={columnDefs}
               onCellClicked={(x) => handleCell(x)}
               pagination={true}
-            ></AgGridReact>
+              paginationAutoPageSize={true}
+            />
           </div>
         )}
       </div>

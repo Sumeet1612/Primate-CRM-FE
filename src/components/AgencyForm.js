@@ -89,7 +89,7 @@ function AgencyForm() {
           backgroundColor: "#00b7aa",
           marginBottom: "2%",
           padding: "2%",
-          width: "86%",
+          width: "94%",
           fontSize: "20px",
         }}
       >
@@ -136,15 +136,27 @@ function AgencyForm() {
       ) : (
         <></>
       )}
-            <div className="ag-theme-alpine" style={{ height: 500, width: '94%' }}>
-              <h2>Loads invoiced but not created by brokers in Primate System</h2>
-              <br/>
-            <AgGridReact
-              rowData={loads}
-              columnDefs={colDef}
-              pagination={true}
-            />
-          </div>
+      <h1
+        style={{
+          color: "#fff",
+          backgroundColor: "#00b7aa",
+          marginBottom: "2%",
+          padding: "2%",
+          width: "94%",
+          fontSize: "20px",
+        }}
+      >
+        {" "}
+        Loads Invoiced but NOT Created in System{" "}
+      </h1>
+      <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
+      <AgGridReact
+        rowData={loads}
+        columnDefs={colDef}
+        pagination={true}
+        paginationAutoPageSize={true}
+      />
+    </div>
     </div>
   );
 }

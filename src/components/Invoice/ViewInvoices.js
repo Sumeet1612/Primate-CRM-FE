@@ -76,7 +76,7 @@ function ViewInvoices(){
                     backgroundColor: "#00b7aa",
                     marginBottom: "2%",
                     padding: "2%",
-                    width: "90%",
+                    width: "94%",
                     fontSize: "16px",
                 }}
             >
@@ -84,12 +84,12 @@ function ViewInvoices(){
             </h1>
 
             {isloading? <LinearProgress/>:(
-                <div className="ag-theme-alpine" style={{ height: 500, width: '94%' }}>
+                <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
                 <AgGridReact
                   rowData={invoices}
                   columnDefs={cols}
                   pagination={true}
-                ></AgGridReact>
+                  paginationAutoPageSize={true} />
               </div>
             )}
         </div>
