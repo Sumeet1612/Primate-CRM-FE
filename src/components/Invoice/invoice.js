@@ -174,7 +174,7 @@ function Invoice() {
           type="date"
           sx={{ height: "70px", width: "27%", mr: "10%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
-          InputProps={{readOnly:true}}
+          readOnly={true}
           value={dayjs(currentDate)}
         />
         <TextField
@@ -195,7 +195,7 @@ function Invoice() {
           type="date"
           sx={{ height: "70px", width: "27%", mr: "10.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
-          InputProps={{readOnly:true}}
+          readOnly={true}
           value={dayjs(dueDate)}
         />
 

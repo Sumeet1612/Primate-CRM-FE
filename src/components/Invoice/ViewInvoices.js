@@ -15,7 +15,7 @@ function ViewInvoices(){
 
     const [cols]=useState([
         {field: "invoiceNumber" , filter: true, sortable: true, resizable: true },
-        {field: "brokerId" , filter: true, sortable: true, resizable: true },
+        {field: "brokerName" , filter: true, sortable: true, resizable: true },
         {field: "grossUsd" , filter: true, sortable: true, resizable: true },
         {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true },
         {field: "payableUsd" , filter: true, sortable: true, resizable: true },
@@ -27,7 +27,11 @@ function ViewInvoices(){
         {field: "invoiceDate" , filter: true, sortable: true, resizable: true },
         {field: "dueDate" , filter: true, sortable: true, resizable: true },
         {field: "paidToAccount" , filter: true, sortable: true, resizable: true },
-        {field: "updatedOn" , filter: true, sortable: true, resizable: true },
+        {field: "updatedOn" , filter: true, sortable: true, resizable: true,
+        valueFormatter: params=>{
+            let date= new Date(params.value.toString())
+            return date.toLocaleDateString('en-US');
+          } },
         //{field: "additionalDetails" , filter: true, sortable: true, resizable: true }
     ])
 

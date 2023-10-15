@@ -18,6 +18,7 @@ import "./App.css";
 import EditShippers from "./components/Shippers/EditShippers";
 import ViewBrokers from "./components/Brokers/ViewBrokers";
 import ViewInvoices from "./components/Invoice/ViewInvoices";
+import InvoiceLayout from "./components/Invoice/InvoiceLayout";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
               <Route path="Primate-CRM-FE/invoice/generate" element={<Invoice />} />
               <Route path="Primate-CRM-FE/invoices" element={<ViewInvoices />} />
               <Route path="Primate-CRM-FE/manageBrokers" element={<ViewBrokers/>}/>
+              <Route path="Primate-CRM-FE/invoice/:invoiceNumber" element={<InvoiceLayout/>}/>
             </Route>
           </Routes>
         </BrowserRouter>

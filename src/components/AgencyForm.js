@@ -18,8 +18,8 @@ function AgencyForm() {
     {field:"carrierRate", filter:true, sortable:true, resizable:true},
     {field:"margin", filter:true, sortable:true, resizable:true},
     {field:"adjustmentAmount", filter:true, sortable:true, resizable:true},
-    {field:"invoiceDate", filter:true, sortable:true, resizable:true},
-    {field:"uploadedOn", filter:true, sortable:true, resizable:true}
+    {field:"invoiceDate", filter:true, sortable:true, resizable:true, valueFormatter: params=>formatDate(params)},
+    {field:"uploadedOn", filter:true, sortable:true, resizable:true, valueFormatter: params=>formatDate(params)}
   ]) 
 
   useEffect(()=>{
@@ -36,6 +36,16 @@ function AgencyForm() {
       setLoading(false);
     })
   },[check]);
+
+  const formatDate=(params)=>{
+    if(params?.value?.toString().slice(0,10) === undefined){
+      return '';
+    }
+    else{
+     let date= new Date(params?.value?.toString());
+     return date.toLocaleDateString('en-US')
+    }
+}
 
   const handleFileChange = (event) => {
     setUpload(false);
