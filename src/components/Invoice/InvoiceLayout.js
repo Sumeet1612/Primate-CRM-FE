@@ -32,6 +32,12 @@ function InvoiceLayout(){
         updatedOn: ''
       });
 
+      const [bankDetails,setBankDetaiks] = useState({
+        Id:'',
+        BankName:'',
+        Ifsc:''
+      })
+
     useEffect(()=>{
         if(isNaN(brokerId) || isNaN(userRole)){
             history("/Primate-CRM-FE/login")
@@ -41,6 +47,9 @@ function InvoiceLayout(){
           .then((res)=>{
             if(res.status===200){
                 setInvoices(res.data);
+                setBankDetaiks(()=>{
+                    return JSON.parse(res.data?.additionalDetails)
+                })
             }
           })
           .catch((err)=>{
@@ -50,8 +59,7 @@ function InvoiceLayout(){
 
     return(
         <div className="PageLayout">
-            <h1>Broker Invoice</h1>
-            <button onClick={() => toPDF()}>Download PDF</button>
+        <button onClick={() => toPDF()}>Download PDF</button>
         <div ref={targetRef}>
         <h1
           style={{
@@ -69,7 +77,7 @@ function InvoiceLayout(){
         <TextField
           type="text"
           variant="standard"
-          sx={{ height: "70px", width: "20%", mb: "0.25%" }}
+          sx={{  width: "20%", mb: "0.25%", fontWeight:"bold" }}
           value="Billed By: "
           InputProps={{
             disableUnderline: true,
@@ -79,7 +87,7 @@ function InvoiceLayout(){
         <TextField
           type="text"
           variant="standard"
-          sx={{ height: "70px", width: "25%", mr: "5%", mb: "0.25%" }}
+          sx={{  width: "25%", mr: "5%", mb: "0.25%" }}
           value={invoices.brokerName}
           InputProps={{
             disableUnderline: true,
@@ -90,8 +98,8 @@ function InvoiceLayout(){
         <TextField
           type="text"
           variant="standard"
-          sx={{ height: "70px", width: "20%", mb: "0.25%" }}
-          value="Invoice Number#: "
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Invoice Number # : "
           InputProps={{
             disableUnderline: true,
             readOnly:true 
@@ -100,13 +108,230 @@ function InvoiceLayout(){
         <TextField
           type="text"
           variant="standard"
-          sx={{ height: "70px", width: "25%", mr: "5%", mb: "0.25%" }}
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
           value={invoices.invoiceNumber}
           InputProps={{
             disableUnderline: true,
             readOnly:true 
           }}
         />
+        <br/>
+
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Bill To: "
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value="Primate Outsourcing Private Limited"
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <br/>
+
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Date: "
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value={invoices.invoiceDate?.substring(0,10)}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Payment Terms: "
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value="NET 15"
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <br/>
+
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Due Date: "
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value={invoices.dueDate?.substring(0,10)}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Balance Due: "
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value={"₹ " + Number(invoices.netPayable)?.toFixed(2)}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <br/>
+
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Freelance service: "
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value={"₹ " + Number(invoices.grossInr)?.toFixed(2)}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Deductions: "
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value={"₹ " + Number(invoices.deductionInr)?.toFixed(2)}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+         <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value={"TDS "+ invoices.tds + "%"}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value={"₹ " + Number((invoices.tds/100)*(invoices.grossInr-invoices.deductionInr))?.toFixed(2)}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        /> 
+        <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "50%", mr: "5%", mb: "0.25%" }}
+          value={"All Payments are made to: "}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "50%", mr: "5%", mb: "0.25%" }}
+          value={"Bank: "+ bankDetails?.BankName}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+         <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "50%", mr: "5%", mb: "0.25%" }}
+          value={"A/C Number:"+ bankDetails?.Id}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+         <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "50%", mr: "5%", mb: "0.25%" }}
+          value={"IFSC: "+ bankDetails?.Ifsc}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+
         </div>
         </div>
     )

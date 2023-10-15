@@ -72,6 +72,13 @@ function ViewInvoices(){
         }
     },[brokerId,userRole, history])
 
+    const handleCell=(cellEvent)=>{
+        let invNumber= cellEvent?.data?.invoiceNumber;
+        if(cellEvent?.colDef?.field==="invoiceNumber"){
+          history(`/Primate-CRM-FE/invoice/${invNumber}`)
+        }
+      }
+
     return(
         <div className="PageLayout Invoice">
             <h1
@@ -93,7 +100,8 @@ function ViewInvoices(){
                   rowData={invoices}
                   columnDefs={cols}
                   pagination={true}
-                  paginationAutoPageSize={true} />
+                  paginationAutoPageSize={true}
+                  onCellClicked={(x)=>handleCell(x)} />
               </div>
             )}
         </div>
