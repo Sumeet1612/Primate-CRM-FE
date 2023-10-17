@@ -15,7 +15,7 @@ function ViewInvoices(){
 
     const [cols]=useState([
         {field: "invoiceNumber" , filter: true, sortable: true, resizable: true },
-        {field: "brokerId" , filter: true, sortable: true, resizable: true },
+        {field: "brokerName" , filter: true, sortable: true, resizable: true },
         {field: "grossUsd" , filter: true, sortable: true, resizable: true },
         {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true },
         {field: "payableUsd" , filter: true, sortable: true, resizable: true },
@@ -27,7 +27,11 @@ function ViewInvoices(){
         {field: "invoiceDate" , filter: true, sortable: true, resizable: true },
         {field: "dueDate" , filter: true, sortable: true, resizable: true },
         {field: "paidToAccount" , filter: true, sortable: true, resizable: true },
-        {field: "updatedOn" , filter: true, sortable: true, resizable: true },
+        {field: "updatedOn" , filter: true, sortable: true, resizable: true,
+        valueFormatter: params=>{
+            let date= new Date(params.value.toString())
+            return date.toLocaleDateString('en-US');
+          } },
         //{field: "additionalDetails" , filter: true, sortable: true, resizable: true }
     ])
 
@@ -68,6 +72,13 @@ function ViewInvoices(){
         }
     },[brokerId,userRole, history])
 
+    const handleCell=(cellEvent)=>{
+        let invNumber= cellEvent?.data?.invoiceNumber;
+        if(cellEvent?.colDef?.field==="invoiceNumber"){
+          history(`/Primate-CRM-FE/invoice/${invNumber}`)
+        }
+      }
+
     return(
         <div className="PageLayout Invoice">
             <h1
@@ -76,7 +87,7 @@ function ViewInvoices(){
                     backgroundColor: "#00b7aa",
                     marginBottom: "2%",
                     padding: "2%",
-                    width: "90%",
+                    width: "94%",
                     fontSize: "16px",
                 }}
             >
@@ -84,12 +95,13 @@ function ViewInvoices(){
             </h1>
 
             {isloading? <LinearProgress/>:(
-                <div className="ag-theme-alpine" style={{ height: 500, width: '94%' }}>
+                <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
                 <AgGridReact
                   rowData={invoices}
                   columnDefs={cols}
                   pagination={true}
-                ></AgGridReact>
+                  paginationAutoPageSize={true}
+                  onCellClicked={(x)=>handleCell(x)} />
               </div>
             )}
         </div>

@@ -75,8 +75,8 @@ function ViewBrokers(){
             rowData={broker} 
             columnDefs={colDef} 
             onCellClicked={(x)=>handleCell(x)}
-            pagination={true} >
-          </AgGridReact>
+            pagination={true}
+            paginationAutoPageSize={true} />
         </div>
         }
         </div>

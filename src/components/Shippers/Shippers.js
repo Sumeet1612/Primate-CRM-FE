@@ -38,6 +38,7 @@ function Shippers() {
   const [colDef] = useState([
     { field: "id", filter: true, sortable: true, tooltipField:'id', width:75, headerName:'ID', resizable: true},
     { field: "shipperName", filter: true, sortable: true, width:200, tooltipField:'shipperName', headerName:"SHIPPER NAME", resizable: true },
+    { field: "brokerName", filter: true, sortable: true, width:200, tooltipField:'brokerName', headerName:"BROKER", resizable: true },
     { field: "address", filter: true, sortable: true, width:325, tooltipField:'address', headerName:"ADDRESS" , resizable: true},
     { field: "website", filter: true, sortable: true, width:250, tooltipField:'website', headerName:"WEBSITE", resizable: true },
     { field: "poc", filter: true, sortable: true, width:150, tooltipField:'poc', headerName:"POC" , resizable: true},
@@ -144,7 +145,7 @@ function Shippers() {
           backgroundColor: "#00b7aa",
           marginBottom: "2%",
           padding: "2%",
-          width: "86%",
+          width: "94%",
           fontSize: "20px",
         }}
       >
@@ -229,7 +230,7 @@ function Shippers() {
             backgroundColor: "#00b7aa",
             marginBottom: "2%",
             padding: "2%",
-            width: "86%",
+            width: "94%",
             fontSize: "18px",
             marginTop: "5%",
           }}
@@ -241,13 +242,13 @@ function Shippers() {
       {isloading ? (
         <LinearProgress />
       ) : (
-        <div className="ag-theme-alpine" style={{ height: 550, width: '90%' }}>
+        <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
           <AgGridReact 
             rowData={viewShippers} 
             columnDefs={colDef} 
             onCellClicked={(x)=>handleCell(x)}
-            pagination={true}>
-          </AgGridReact>
+            pagination={true}
+            paginationAutoPageSize={true} />
         </div>
       )}
     </div>

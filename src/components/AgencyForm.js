@@ -18,8 +18,8 @@ function AgencyForm() {
     {field:"carrierRate", filter:true, sortable:true, resizable:true},
     {field:"margin", filter:true, sortable:true, resizable:true},
     {field:"adjustmentAmount", filter:true, sortable:true, resizable:true},
-    {field:"invoiceDate", filter:true, sortable:true, resizable:true},
-    {field:"uploadedOn", filter:true, sortable:true, resizable:true}
+    {field:"invoiceDate", filter:true, sortable:true, resizable:true, valueFormatter: params=>formatDate(params)},
+    {field:"uploadedOn", filter:true, sortable:true, resizable:true, valueFormatter: params=>formatDate(params)}
   ]) 
 
   useEffect(()=>{
@@ -36,6 +36,16 @@ function AgencyForm() {
       setLoading(false);
     })
   },[check]);
+
+  const formatDate=(params)=>{
+    if(params?.value?.toString().slice(0,10) === undefined){
+      return '';
+    }
+    else{
+     let date= new Date(params?.value?.toString());
+     return date.toLocaleDateString('en-US')
+    }
+}
 
   const handleFileChange = (event) => {
     setUpload(false);
@@ -89,7 +99,7 @@ function AgencyForm() {
           backgroundColor: "#00b7aa",
           marginBottom: "2%",
           padding: "2%",
-          width: "86%",
+          width: "94%",
           fontSize: "20px",
         }}
       >
@@ -136,15 +146,27 @@ function AgencyForm() {
       ) : (
         <></>
       )}
-            <div className="ag-theme-alpine" style={{ height: 500, width: '94%' }}>
-              <h2>Loads invoiced but not created by brokers in Primate System</h2>
-              <br/>
-            <AgGridReact
-              rowData={loads}
-              columnDefs={colDef}
-              pagination={true}
-            />
-          </div>
+      <h1
+        style={{
+          color: "#fff",
+          backgroundColor: "#00b7aa",
+          marginBottom: "2%",
+          padding: "2%",
+          width: "94%",
+          fontSize: "20px",
+        }}
+      >
+        {" "}
+        Loads Invoiced but NOT Created in System{" "}
+      </h1>
+      <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
+      <AgGridReact
+        rowData={loads}
+        columnDefs={colDef}
+        pagination={true}
+        paginationAutoPageSize={true}
+      />
+    </div>
     </div>
   );
 }
