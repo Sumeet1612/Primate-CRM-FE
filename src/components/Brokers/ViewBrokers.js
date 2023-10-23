@@ -31,7 +31,7 @@ function ViewBrokers(){
         {field:'tmsPassword', filter: true, sortable: true, resizable: true },
         {field:'updatedOn', filter: true, sortable: true, resizable: true,
         valueFormatter: params=>{
-            let date= new Date(params.value.toString())
+            let date= new Date(params?.value?.toString())
             return date.toLocaleDateString('en-US');
           }},
       ])

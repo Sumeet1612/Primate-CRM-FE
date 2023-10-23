@@ -11,6 +11,9 @@ import { MenuItem, Select } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 import PasswordChangeModal from "./PasswordChangeModal";
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+
 function Profile() {
 
   const [broker,setBroker]=useState({
@@ -53,7 +56,9 @@ function Profile() {
   const [others,setOthers]=useState({
     exchangeRate:'0',
     userRole:loggedInUserRole(),
-    dialogOpen:false
+    dialogOpen:false,
+    profileCompletionPercentage:0,
+    refresh: 0
   })
 
   const { loggedInBrokerId } = useParams();
@@ -91,6 +96,35 @@ function Profile() {
       getBrokerOnId(loggedInBrokerId)
       .then((res)=>{
         if(res.status===200){
+
+          // calculate profile completion percentage
+          let kc=0;
+          let ec=0;
+          Object.keys(res?.data).every(p=>{
+            kc++;
+            if(res?.data[p]==='' || res?.data[p]=== null){
+              res.data[p]='';
+              ec++;
+            }
+            if(p==='accountDetails'){
+              if(res?.data[p].length===0){
+                ec++;
+              }
+            }
+            if(p==='tds'|| p==='maxCommision' || p==='currencyId'){
+              if(res?.data[p]===0){
+                ec++;
+              }
+            }
+            return true;
+          })
+          setOthers((prev)=>{
+            return {
+              ...prev, profileCompletionPercentage: (kc-ec)*100/kc
+            }
+          })
+
+          // set state
           setBroker(res.data);
           setAccount(res.data?.accountDetails);
           setinit(res.data);
@@ -111,7 +145,7 @@ function Profile() {
     }
   }
 
-  },[loggedInBrokerId,nav,others.userRole]);
+  },[loggedInBrokerId,nav,others.userRole, others.refresh]);
 
 
   const handleChange=(e)=>{
@@ -183,10 +217,10 @@ function Profile() {
     if(payload?.length>0){
       editBroker(broker.id,payload)
       .then((res)=>{
-        console.log(res)
         if(res.status===200 && res.data===true){
           alert('Profile Updated')
           setinit(broker)
+          setOthers((prev)=>{ return {...prev, refresh: prev.refresh++}})
         }
       })
       .catch((err)=>{
@@ -261,7 +295,32 @@ const handleDialogClose=()=>{
         >
           Profile
         </h1>
-        <br />
+        <div style={{width:'92%' ,
+        display:'flex',
+        justifyContent:'flex-end'
+        }}>
+          <label>Profile Completion Status:&nbsp;&nbsp; </label>      
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant="determinate" value={others.profileCompletionPercentage} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography variant="caption" component="div" color="text.secondary">
+          {`${Math.round(others.profileCompletionPercentage)}%`}
+        </Typography>
+      </Box>
+      </Box>
+      <br/>
+      </div>
         <h2
           style={{
             color: "white",
