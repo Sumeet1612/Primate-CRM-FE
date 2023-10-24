@@ -105,7 +105,6 @@ const [role,setRole]= React.useState(0)
                   fullWidth
                   id="alias"
                   label="Broker Alias"
-                  autoFocus
                 />
               </Grid>
               <Grid item xs={12}>

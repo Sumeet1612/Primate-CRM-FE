@@ -103,7 +103,7 @@ function Profile() {
           Object.keys(res?.data).every(p=>{
             kc++;
             if(res?.data[p]==='' || res?.data[p]=== null){
-              res.data[p]='';
+              res.data[p]=''; //setting null to empty for preventing warning on console
               ec++;
             }
             if(p==='accountDetails'){
