@@ -36,7 +36,7 @@ function Shippers() {
   }
 
   const [colDef] = useState([
-    { field: "id", filter: true, sortable: true, tooltipField:'id', width:75, headerName:'ID', resizable: true},
+    { field: "id", filter: true, sortable: true, tooltipField:'id', width:100, headerName:'ID', resizable: true},
     { field: "shipperName", filter: true, sortable: true, width:200, tooltipField:'shipperName', headerName:"SHIPPER NAME", resizable: true },
     { field: "brokerAlias", filter: true, sortable: true, width:200, tooltipField:'brokerName', headerName:"BROKER", resizable: true },
     { field: "address", filter: true, sortable: true, width:325, tooltipField:'address', headerName:"ADDRESS" , resizable: true},
