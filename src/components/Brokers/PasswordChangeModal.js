@@ -33,8 +33,18 @@ function PasswordChangeModal(props){
             return true;
         })
         if(!validationError){
+            if(form?.newPassword?.length < 8){
+                alert("Password should be atleast 8 character long");
+                setObj((prev)=>{
+                    return {...prev, loading:false}
+                })
+                return;
+            }
             if(form.newPassword!==form.confirmNewPassword){
                 alert("Password And Confirm Password Does Not Matches. Please re-try !! ")
+                setObj((prev)=>{
+                    return {...prev, loading:false}
+                })
                 return;
             }
             

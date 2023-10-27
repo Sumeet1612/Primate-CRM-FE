@@ -49,6 +49,11 @@ const [role,setRole]= React.useState(0)
     alert("All fields are mandatory for broker registeration")
     return;
   }
+
+  if(registerObj.password?.length < 8){
+    alert("Password should be atleast 8 character long");
+    return;
+  }
   //API Call
   register(registerObj)
   .then((res)=>{
