@@ -35,7 +35,9 @@ function InvoiceLayout(){
       const [bankDetails,setBankDetaiks] = useState({
         Id:'',
         BankName:'',
-        Ifsc:''
+        Ifsc:'',
+        OwnerName:'',
+        Pan:''
       })
 
     useEffect(()=>{
@@ -88,7 +90,7 @@ function InvoiceLayout(){
           type="text"
           variant="standard"
           sx={{  width: "25%", mr: "5%", mb: "0.25%" }}
-          value={invoices.brokerName}
+          value={bankDetails.OwnerName}
           InputProps={{
             disableUnderline: true,
             readOnly:true 
@@ -331,7 +333,18 @@ function InvoiceLayout(){
             readOnly:true 
           }}
         />
-
+        <br/>
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "50%", mr: "5%", mb: "0.25%" }}
+          value={"PAN:"+ bankDetails?.Pan}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        
         </div>
         </div>
     )

@@ -445,7 +445,7 @@ function NewLoad() {
                           key={availableBroker.id}
                           value={availableBroker.id}
                         >
-                          {availableBroker.userName}
+                          {availableBroker.brokerAlias}
                         </MenuItem>
                       );
                     })}

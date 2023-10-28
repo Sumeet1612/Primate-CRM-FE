@@ -25,14 +25,35 @@ const [role,setRole]= React.useState(0)
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    let validationError= false;
     const data = new FormData(event.currentTarget);
     let registerObj= {
     email: data.get("email"),
+    alias:data.get("alias"),
     password: data.get("password"),
     userName: data.get("userName"),
     roleId: data.get("roleId"),
     isActive: data.get("active")? true: false
   };
+  
+  //validation for all mandatory fields
+  Object.keys(registerObj).every(r=>{
+    if(registerObj[r]===''){
+      validationError=true;
+      return false;
+    }
+    return true;
+  })
+
+  if(validationError){
+    alert("All fields are mandatory for broker registeration")
+    return;
+  }
+
+  if(registerObj.password?.length < 8){
+    alert("Password should be atleast 8 character long");
+    return;
+  }
   //API Call
   register(registerObj)
   .then((res)=>{
@@ -80,6 +101,15 @@ const [role,setRole]= React.useState(0)
                   id="userName"
                   label="Broker Name"
                   autoFocus
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  name="alias"
+                  required
+                  fullWidth
+                  id="alias"
+                  label="Broker Alias"
                 />
               </Grid>
               <Grid item xs={12}>

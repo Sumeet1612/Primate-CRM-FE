@@ -99,7 +99,7 @@ function ViewLoads() {
       if (viewId === "0") {
         setFilteredLoads(loads);
       } else if (viewId === "1") {
-        setFilteredLoads(loads?.filter((x) => x.invoiceDate !== null));
+        setFilteredLoads(loads?.filter((x) => x.invoiceDate !== null && x.paymentStatusId===1));
       } else if (viewId === "2") {
         setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 2));
       } else if (viewId === "3") {
@@ -130,7 +130,7 @@ function ViewLoads() {
         <label> Select View</label> <>   </>
         <select onChange={(event) => handleViewChange(event.target.value)}>
           <option value="0">All Loads</option>
-          <option value="1">Invoiced Load</option>
+          <option value="1">Invoiced Loads & Payment not Requested</option>
           <option value="2">Loads with Payment Requested</option>
           <option value="3">Loads with Payment Processed</option>
           <option value="4">Not Invoiced Load</option>
