@@ -281,3 +281,11 @@ export const getInvoiceOnId=(invoiceNumber)=>{
     headers:headers()
   })
 }
+
+export const getLoadsForShipper=(shipperId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/loads/ForShipper/${shipperId}`,
+    headers:headers()
+  })
+}

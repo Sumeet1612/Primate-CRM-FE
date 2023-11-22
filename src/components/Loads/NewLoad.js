@@ -151,7 +151,7 @@ function NewLoad() {
     if (feildName === "shipperRate" || feildName === "carrierRate") {
       setSendData((state) => {
         let netMarginValue = +state.shipperRate - +state.carrierRate;
-        return { ...state, netMargin: netMarginValue };
+        return { ...state, netMargin: Number(netMarginValue.toFixed(2)) };
       });
     }
   };

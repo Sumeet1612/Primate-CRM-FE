@@ -21,7 +21,7 @@ export const SidebarUserData = [
 ];
 
 export const SidebarAdminData = [
+  { title: "Manage Brokers", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/manageBrokers" },
   { title: "Register", icon: <GroupAddIcon />, path: "Primate-CRM-FE/register" },
-  { title: "Agency System", icon: <FileUploadIcon />, path: "Primate-CRM-FE/agency" },
-  { title: "Manage Brokers", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/manageBrokers" }
+  { title: "Agency System", icon: <FileUploadIcon />, path: "Primate-CRM-FE/agency" }
 ];

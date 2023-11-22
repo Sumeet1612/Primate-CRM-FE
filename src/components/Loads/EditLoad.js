@@ -169,11 +169,15 @@ function EditLoad() {
     if (feildName === "shipperRate" || feildName === "carrierRate") {
       setData((state) => {
         let netMarginValue = state.shipperRate - state.carrierRate;
-        return { ...state, margin: netMarginValue };
+        return { ...state, margin: Number(netMarginValue.toFixed(2)) };
       });
     }
   };
 
+  const handleOpenShipper=()=>{
+    nav(`/Primate-CRM-FE/Shippers/${data.shipperId}`)
+  }
+  
   return (
     <div className="PageLayout">
       <h1
@@ -210,6 +214,7 @@ function EditLoad() {
             name="shipperName"
             value={data.shipperName}
             InputProps={{readOnly:true}}
+            onClick={handleOpenShipper}
           />
 
           <TextField
