@@ -351,7 +351,6 @@ function NewLoad() {
             name="bookingDate"
             value={sendData.bookingDate ? dayjs(sendData.bookingDate) : null}
             onChange={(date) => {
-              // console.log (date)
               setSendData((prev) => {
                 return {
                   ...prev,

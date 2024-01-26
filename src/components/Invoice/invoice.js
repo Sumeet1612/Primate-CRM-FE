@@ -270,7 +270,7 @@ function Invoice() {
 
         <Button variant="contained" color="info" 
         style={{height:"50px", width:"15%"}}
-        disabled={preInvoice.grossUsd===0 || preInvoice.paidToAccount==="0"}
+        disabled={preInvoice.payableUsd===0 || preInvoice.paidToAccount==="0"}
         onClick={handleInvoiceCreation}
         >
           Generate Invoice

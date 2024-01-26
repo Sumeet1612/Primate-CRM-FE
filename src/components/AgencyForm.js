@@ -9,7 +9,7 @@ function AgencyForm() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [upload, setUpload] = useState(false);
-  const [check, setCheck] = useState(false);
+  const [reload, setReload]= useState(0);
 
   const [loads,setLoads]= useState([]);
   const [colDef]= useState([
@@ -35,7 +35,7 @@ function AgencyForm() {
       handleApiError(err);
       setLoading(false);
     })
-  },[check]);
+  },[reload]);
 
   const formatDate=(params)=>{
     if(params?.value?.toString().slice(0,10) === undefined){
@@ -49,7 +49,6 @@ function AgencyForm() {
 
   const handleFileChange = (event) => {
     setUpload(false);
-    setCheck(false);
     setSelectedFile(event.target.files[0]);
   };
 
@@ -81,16 +80,16 @@ function AgencyForm() {
       .then((res) => {
         setLoading(false);
         if (res.status === 200) {
-          setCheck(true);
           alert("Data Processed successfully");
+          setReload(reload+1);
         }
       })
       .catch((err) => {
         setLoading(false);
-        setCheck(false);
         handleApiError(err);
       });
   };
+
   return (
     <div className="PageLayout">
       <h1
@@ -134,18 +133,14 @@ function AgencyForm() {
       </Button>
       <br /><br/>
 
-      {upload ? (
         <Button
           variant="contained"
           color="info"
           onClick={handleScanChanges}
-          disabled={check}
         >
           Update Loads
         </Button>
-      ) : (
-        <></>
-      )}
+
       <h1
         style={{
           color: "#fff",

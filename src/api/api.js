@@ -287,5 +287,13 @@ export const getLoadsForShipper=(shipperId)=>{
     method:'get',
     url:`${baseApiUrl}/users/loads/ForShipper/${shipperId}`,
     headers:headers()
-  })
+  });
+}
+
+export const resolveMismatchByBroker=(loadNumber)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/Users/resolve/mismatch/${loadNumber}`,
+    headers:headers()
+  });
 }
