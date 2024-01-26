@@ -15,7 +15,7 @@ function ViewInvoices(){
 
     const [cols]=useState([
         {field: "invoiceNumber" , filter: true, sortable: true, resizable: true },
-        {field: "brokerName" , filter: true, sortable: true, resizable: true },
+        {field: "brokerAlias" , filter: true, sortable: true, resizable: true },
         {field: "grossUsd" , filter: true, sortable: true, resizable: true },
         {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true },
         {field: "payableUsd" , filter: true, sortable: true, resizable: true },

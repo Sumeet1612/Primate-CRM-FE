@@ -74,7 +74,6 @@ function EditLoad() {
   }, [id, isEditable,nav]);
 
   const handleSubmit = () => {
-
     let blankField = '';
     Object.keys(data).every(sd=>{
       if(data[sd]==='' && sd!=='additionalBroker' && sd!=='invoiceDate'){
@@ -123,19 +122,29 @@ function EditLoad() {
       },
     ];
 
+    setIsLoading(true);
     editLoad(init.loadNumber, payload)
       .then((res) => {
-        if(statusId===2)
+        if(statusId===2){
           alert("Payment Requested !!")
-        else 
+          setIsEditable(false)
+        }
+        else if(statusId===1){
+          alert("Payment Rejected !!")
+          setIsEditable(true)
+        }
+        else if(statusId===3){
           alert("Payment Approved !!")
+          setIsEditable(false)
+          nav('/Primate-CRM-FE/viewLoads')
+        }
         setInit(data)
+        setIsLoading(false);
       })
       .catch((err) => {
         handleApiError(err);
+        setIsLoading(false);
       });
-
-    setIsEditable(false);
   };
 
   const handleDelete=()=>{
@@ -469,6 +478,14 @@ function EditLoad() {
             disabled={init.paymentStatusId!==2}
             onClick={()=>handlePayment(3)} 
             > Approve Payment </Button>
+
+            <Button
+            variant="contained"
+            color="success"
+            sx={{ width: "27%" }}
+            disabled={init.paymentStatusId!==2}
+            onClick={()=>handlePayment(1)} 
+            > Reject Payment </Button>
             </div>
 
           {!isEditable ? (

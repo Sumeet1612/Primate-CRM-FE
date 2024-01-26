@@ -26,7 +26,7 @@ function Invoice() {
     tds: '',
     netPayable: '',
     brokerProfile:{
-      userName:'',
+      alias:'',
       accountDetails:[{
         id:'',
         ownerName:'',
@@ -107,7 +107,7 @@ function Invoice() {
           sx={{ height: "70px", width: "25%", mr: "10%", mb: "0.25%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.brokerProfile?.userName}
+          value={preInvoice.brokerProfile?.alias}
         />
 
         <Select name="paidToAccount"
