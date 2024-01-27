@@ -35,7 +35,8 @@ function Invoice() {
         bank:''
       }]
     },
-    paidToAccount:'0'
+    paidToAccount:'0',
+    description:''
   });
 
   const [others,setOthers]=useState({
@@ -66,18 +67,26 @@ function Invoice() {
   },[brokerId,others.refresh,history, userRole])
 
 
-  const handleAccount=(event)=>{
+  const handleChange=(event)=>{
+    let fname= event.target.name;
+    let fvalue= event.target.value
     setPreInvoice((prevState)=>{
-      return {...prevState,paidToAccount:event.target.value}
+      return {...prevState,[fname]:fvalue}
     })
   }
 
   const handleInvoiceCreation=()=>{
+    if(preInvoice.description==="" || preInvoice.description===null){
+      alert("Please provide invoice description")
+      return;
+    }
+
     generateInvoice(preInvoice)
     .then((res)=>{
       if(res.status===200){
         setOthers((prev)=>{return({...prev,refresh:!prev.refresh})});
         alert("invoice generated")
+        history("/Primate-CRM-FE/invoices")
       }
     })
     .catch((err)=>{
@@ -112,7 +121,7 @@ function Invoice() {
 
         <Select name="paidToAccount"
           value={preInvoice.paidToAccount}
-          onChange={handleAccount}>
+          onChange={handleChange}>
             <MenuItem value="0" disabled>
               <em> Select Owner-Bank in which you want Payment</em>
             </MenuItem>
@@ -268,8 +277,19 @@ function Invoice() {
           value={preInvoice.netPayable}
         />
 
+        <TextField
+          label="Invoice Description*"
+          type="text"
+          name="description"
+          sx={{ height: "70px", width: "40%", mr: "3.5%", mb: "1%" }}
+          InputLabelProps={{ style: { fontSize: 15 } }}
+          value={preInvoice.description}
+          onChange={handleChange}
+        />
+        <br/>
+
         <Button variant="contained" color="info" 
-        style={{height:"50px", width:"15%"}}
+        style={{height:"50px", width:"30%"}}
         disabled={preInvoice.payableUsd===0 || preInvoice.paidToAccount==="0"}
         onClick={handleInvoiceCreation}
         >

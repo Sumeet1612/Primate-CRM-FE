@@ -28,6 +28,7 @@ function InvoiceLayout(){
         dueDate: '',
         paidToAccount: '',
         additionalDetails: '',
+        description:'',
         createdOn: '',
         updatedOn: ''
       });
@@ -273,7 +274,7 @@ function InvoiceLayout(){
           type="text"
           variant="standard"
           sx={{ width: "20%", mb: "0.25%" }}
-          value={"TDS "+ invoices.tds + "%"}
+          value={"TDS "+ invoices.tds + "%:"}
           InputProps={{
             disableUnderline: true,
             readOnly:true 
@@ -290,6 +291,29 @@ function InvoiceLayout(){
           }}
         /> 
         <br/>
+
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "20%", mb: "0.25%" }}
+          value="Payment Description:"
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        />
+        <TextField
+          type="text"
+          variant="standard"
+          sx={{ width: "25%", mr: "5%", mb: "0.25%" }}
+          value={invoices.description}
+          InputProps={{
+            disableUnderline: true,
+            readOnly:true 
+          }}
+        /> 
+        <br/>
+
         <TextField
           type="text"
           variant="standard"
