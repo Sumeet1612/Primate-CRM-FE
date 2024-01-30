@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/Primate-CRM-FE/static/css/main.b514f1e0.css",
-    "main.js": "/Primate-CRM-FE/static/js/main.4cbeec9c.js",
+    "main.js": "/Primate-CRM-FE/static/js/main.4d79b1af.js",
     "static/js/703.0cf8d08a.chunk.js": "/Primate-CRM-FE/static/js/703.0cf8d08a.chunk.js",
     "static/js/598.51f7da69.chunk.js": "/Primate-CRM-FE/static/js/598.51f7da69.chunk.js",
     "static/js/787.920d0757.chunk.js": "/Primate-CRM-FE/static/js/787.920d0757.chunk.js",
     "static/media/Avatar.jpg": "/Primate-CRM-FE/static/media/Avatar.c39ccb07f1a9d8601d31.jpg",
     "index.html": "/Primate-CRM-FE/index.html",
     "main.b514f1e0.css.map": "/Primate-CRM-FE/static/css/main.b514f1e0.css.map",
-    "main.4cbeec9c.js.map": "/Primate-CRM-FE/static/js/main.4cbeec9c.js.map",
+    "main.4d79b1af.js.map": "/Primate-CRM-FE/static/js/main.4d79b1af.js.map",
     "703.0cf8d08a.chunk.js.map": "/Primate-CRM-FE/static/js/703.0cf8d08a.chunk.js.map",
     "598.51f7da69.chunk.js.map": "/Primate-CRM-FE/static/js/598.51f7da69.chunk.js.map",
     "787.920d0757.chunk.js.map": "/Primate-CRM-FE/static/js/787.920d0757.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b514f1e0.css",
-    "static/js/main.4cbeec9c.js"
+    "static/js/main.4d79b1af.js"
   ]
 }
