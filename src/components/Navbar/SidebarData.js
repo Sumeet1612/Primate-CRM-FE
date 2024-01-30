@@ -15,13 +15,13 @@ export const SidebarUserData = [
   { title: "Profile", icon: <AccountBoxIcon />, path: `Primate-CRM-FE/profile/${loggedInUserId()}` },
   { title: "Add New Load", icon: <LocalShippingIcon />, path: "Primate-CRM-FE/new" },
   { title: "Manage Loads", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/viewLoads" },
-  { title: "Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice/generate" },
+  { title: "Generate Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice/generate" },
   { title: "Past Invoices", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoices" },
   { title: "Login", icon: <ReceiptIcon />, path: "Primate-CRM-FE/login" },
 ];
 
 export const SidebarAdminData = [
+  { title: "Manage Brokers", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/manageBrokers" },
   { title: "Register", icon: <GroupAddIcon />, path: "Primate-CRM-FE/register" },
-  { title: "Agency System", icon: <FileUploadIcon />, path: "Primate-CRM-FE/agency" },
-  { title: "Manage Brokers", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/manageBrokers" }
+  { title: "Agency System", icon: <FileUploadIcon />, path: "Primate-CRM-FE/agency" }
 ];

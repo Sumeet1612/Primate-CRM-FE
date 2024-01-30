@@ -281,3 +281,19 @@ export const getInvoiceOnId=(invoiceNumber)=>{
     headers:headers()
   })
 }
+
+export const getLoadsForShipper=(shipperId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/loads/ForShipper/${shipperId}`,
+    headers:headers()
+  });
+}
+
+export const resolveMismatchByBroker=(loadNumber)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/Users/resolve/mismatch/${loadNumber}`,
+    headers:headers()
+  });
+}
