@@ -89,7 +89,7 @@ function ViewLoads() {
     let loadId = cellEvent?.data?.loadNumber;
     if (cellEvent?.colDef?.field === "loadNumber") {
       if (window.confirm("Do you want to View/Edit the Load?")) {
-        nav(`/Primate-CRM-FE/editLoad/${loadId}`);
+        nav(`/editLoad/${loadId}`);
       }
     }
   };

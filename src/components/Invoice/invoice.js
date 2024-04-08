@@ -50,7 +50,7 @@ function Invoice() {
 
   useEffect(()=>{
     if(isNaN(brokerId) || isNaN(userRole)){
-      history("/Primate-CRM-FE/login")
+      history("/login")
       return;
     }
       getPrepInvoice(brokerId)
@@ -86,7 +86,7 @@ function Invoice() {
       if(res.status===200){
         setOthers((prev)=>{return({...prev,refresh:!prev.refresh})});
         alert("invoice generated")
-        history("/Primate-CRM-FE/invoices")
+        history("/invoices")
       }
     })
     .catch((err)=>{

@@ -27,7 +27,7 @@ return(
     <h1> Home</h1>
     <br/>
     {loggedIn? <><LogoutIcon onClick={logout}/> <h3>Log Out</h3> </>: 
-    <><LockOutlinedIcon onClick={()=>nav('/Primate-CRM-FE/login')}/><h3>Log In</h3> </>}
+    <><LockOutlinedIcon onClick={()=>nav('/login')}/><h3>Log In</h3> </>}
     </div>
 )
 }

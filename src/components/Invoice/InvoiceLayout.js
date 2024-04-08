@@ -43,7 +43,7 @@ function InvoiceLayout(){
 
     useEffect(()=>{
         if(isNaN(brokerId) || isNaN(userRole)){
-            history("/Primate-CRM-FE/login")
+            history("/login")
             return;
           }
           getInvoiceOnId(invoiceNumber)

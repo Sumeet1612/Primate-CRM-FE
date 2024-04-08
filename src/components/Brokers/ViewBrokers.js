@@ -69,7 +69,7 @@ function ViewBrokers(){
       const handleCell=(cellEvent)=>{
         let brokerId= cellEvent?.data?.id;
         if(cellEvent?.colDef?.field==="id"){
-          nav(`/Primate-CRM-FE/profile/${brokerId}`)
+          nav(`/profile/${brokerId}`)
         }
       }
 
