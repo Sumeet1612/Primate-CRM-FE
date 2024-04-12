@@ -214,7 +214,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.grossUsd}
+          value={Number(preInvoice.grossUsd).toFixed(2)}
         />
         <TextField
           label="Adjustment (If any)"
@@ -222,7 +222,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.adjustmentDeduction}
+          value={Number(preInvoice.adjustmentDeduction).toFixed(2)}
         />
         <TextField
           label="Payable USD"
@@ -230,7 +230,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.payableUsd}
+          value={Number(preInvoice.payableUsd).toFixed(2)}
         />
         <TextField
           label="Phone Bill (USD)"
@@ -238,7 +238,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.phoneBillUsd}
+          value={Number(preInvoice.phoneBillUsd).toFixed(2)}
         />
 
         <TextField
@@ -247,7 +247,7 @@ function Invoice() {
           sx={{ height: "70px", width: "16%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.grossInr}
+          value={Number(preInvoice.grossInr).toFixed(2)}
         />
 
         <TextField
@@ -256,7 +256,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.deductionInr}
+          value={Number(preInvoice.deductionInr).toFixed(2)}
         />
 
         <TextField
@@ -265,7 +265,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.tds/100 * (preInvoice.grossInr-preInvoice.deductionInr)}
+          value={Number(preInvoice.tds/100 * (preInvoice.grossInr-preInvoice.deductionInr)).toFixed(3)}
         />
 
         <TextField
@@ -274,7 +274,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={preInvoice.netPayable}
+          value={Number(preInvoice.netPayable).toFixed(2)}
         />
 
         <TextField

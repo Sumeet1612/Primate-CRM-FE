@@ -108,6 +108,8 @@ function ViewLoads() {
         setFilteredLoads(loads?.filter((x) => x.invoiceDate === null));
       } else if (viewId === "5") {
         setFilteredLoads(loads?.filter((x) => x.mismatched));
+      }else if(viewId==="6"){
+        setFilteredLoads(loads?.filter((x)=>x.invoiceNumber===null && x.paymentStatusId===3))
       }
     }
   };
@@ -134,6 +136,7 @@ function ViewLoads() {
           <option value="2">Loads with Payment Requested</option>
           <option value="3">Loads with Payment Processed</option>
           <option value="4">Not Invoiced Load</option>
+          <option value="6">Next Payout</option>
           <option value="5">Loads with Rate Discrepancy</option>
         </select> <br/>  <br/>
         {isloading ? (
