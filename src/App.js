@@ -27,33 +27,33 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route element={<AuthLayout />}>
-              <Route path="Primate-CRM-FE/login" element={<Login />} />
+              <Route path="login" element={<Login />} />
             </Route>
             <Route element={<RootLayout />}>
-              <Route exact path="Primate-CRM-FE/" element={<Home />} />
+              <Route exact path="" element={<Home />} />
               <Route
                 exact
-                path="Primate-CRM-FE/register"
+                path="register"
                 element={<SignUp />}
               />
-              <Route path="Primate-CRM-FE/new" element={<NewLoad />} />
+              <Route path="new" element={<NewLoad />} />
               <Route
-                path="Primate-CRM-FE/editLoad/:id"
+                path="editLoad/:id"
                 element={<EditLoad />}
               />
-              <Route path="Primate-CRM-FE/viewLoads" element={<ViewLoads />} />
+              <Route path="viewLoads" element={<ViewLoads />} />
               <Route
-                path="Primate-CRM-FE/searchLoad"
+                path="searchLoad"
                 element={<SearchLoad />}
               />
-              <Route path="Primate-CRM-FE/Shippers" element={<Shippers />} />
-              <Route path="Primate-CRM-FE/Shippers/:id" element={<EditShippers />} />
-              <Route path="Primate-CRM-FE/agency" element={<AgencyForm />} />
-              <Route path="Primate-CRM-FE/profile/:loggedInBrokerId" element={<Profile />} />
-              <Route path="Primate-CRM-FE/invoice/generate" element={<Invoice />} />
-              <Route path="Primate-CRM-FE/invoices" element={<ViewInvoices />} />
-              <Route path="Primate-CRM-FE/manageBrokers" element={<ViewBrokers/>}/>
-              <Route path="Primate-CRM-FE/invoice/:invoiceNumber" element={<InvoiceLayout/>}/>
+              <Route path="Shippers" element={<Shippers />} />
+              <Route path="Shippers/:id" element={<EditShippers />} />
+              <Route path="agency" element={<AgencyForm />} />
+              <Route path="profile/:loggedInBrokerId" element={<Profile />} />
+              <Route path="invoice/generate" element={<Invoice />} />
+              <Route path="invoices" element={<ViewInvoices />} />
+              <Route path="manageBrokers" element={<ViewBrokers/>}/>
+              <Route path="invoice/:invoiceNumber" element={<InvoiceLayout/>}/>
             </Route>
           </Routes>
         </BrowserRouter>

@@ -40,7 +40,7 @@ export default function SignIn() {
             if (res.data?.id !== -1) {
               alert("logged In");
               setUserAndRole(res.data?.jwtToken)
-              history("/Primate-CRM-FE/");
+              history("/");
               window.location.reload();
             } else {
               if (res.data?.isActive === false) {

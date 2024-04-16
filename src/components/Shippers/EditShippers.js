@@ -70,12 +70,12 @@ function EditShippers() {
         setInit(res.data);
         if(!checkPermissionToNavigation(res.data)){
           alert("You don't have the permission to view/edit the requested Shipper")
-            nav('/Primate-CRM-FE/shippers')
+            nav('/shippers')
         }
       }
       else if(res.status===204){
         alert('Shipper Not Found');
-        nav('/Primate-CRM-FE/shippers')
+        nav('/shippers')
       }
     })
     .catch((err)=>{
@@ -110,7 +110,7 @@ function EditShippers() {
       if(res.status===200){
         if((res.data.message==='Deleted Status : True')){
           alert('Shipper Deleted !!')
-          nav('/Primate-CRM-FE/shippers')
+          nav('/shippers')
         }
         else if(res.data?.message==='Cannot Delete Shipper as it is associated with some load'){
           alert('Cannot delete shipper as it is used in some load')
@@ -170,7 +170,7 @@ function EditShippers() {
     let loadId = cellEvent?.data?.loadNumber;
     if (cellEvent?.colDef?.field === "loadNumber") {
       if (window.confirm("Do you want to View/Edit the Load?")) {
-        nav(`/Primate-CRM-FE/editLoad/${loadId}`);
+        nav(`/editLoad/${loadId}`);
       }
     }
   };

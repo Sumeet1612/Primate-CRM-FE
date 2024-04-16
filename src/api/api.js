@@ -14,7 +14,7 @@ export const handleApiError=(err)=>{
     if (err?.response?.status === 401) {
         alert("Your current Session is expired. Please login to continue");
         logOut();
-        window.location.href="/Primate-CRM-FE/login"
+        window.location.href="/login"
       } else if (err?.response?.status === 417) {
         alert("Server error");
       } else {

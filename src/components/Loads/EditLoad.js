@@ -62,13 +62,13 @@ function EditLoad() {
           }
           if(!checkPermissionToNavigation(res.data)){
             alert("You don't have the permission to view/edit the requested Load")
-            nav('/Primate-CRM-FE/viewLoads')
+            nav('/viewLoads')
           }
           
         }
         else if(res.status===204){
           alert('Load Not Found');
-          nav('/Primate-CRM-FE/viewLoads')
+          nav('/viewLoads')
         }
         setObj((prev)=>{return {...prev, isLoading:false}})
       })
@@ -170,7 +170,7 @@ function EditLoad() {
           }
           else if(statusId===3){
             alert("Payment Approved !!")
-            nav('/Primate-CRM-FE/viewLoads')
+            nav('/viewLoads')
           }
           setInit(data);
       }
@@ -188,7 +188,7 @@ function EditLoad() {
       if(res.status===200){
         if(res.data.message==='Load Deleted: True'){
           alert('Load Deleted !!')
-          nav('/Primate-CRM-FE/viewLoads')
+          nav('/viewLoads')
         }
         else if(res.data?.message==='Cannot Delete Load as it is already proceesed for payment'){
           alert(res.data.message);
@@ -219,7 +219,7 @@ function EditLoad() {
   };
 
   const handleOpenShipper=()=>{
-    nav(`/Primate-CRM-FE/Shippers/${data.shipperId}`)
+    nav(`/Shippers/${data.shipperId}`)
   }
 
   const handleBrokerResolve=()=>{
