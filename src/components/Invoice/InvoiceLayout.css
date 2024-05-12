@@ -1,0 +1,90 @@
+.invoiceLayout{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.Row1{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 5%;
+}
+
+.Row1Column1{
+    font-weight: bold;
+    font-size: larger;
+}
+
+.Row1Column2{
+    display: flex;
+    flex-direction: column;
+}
+
+.Row2{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 5%;
+}
+
+.Row2Column2{
+    width:33%;
+}
+
+.Row2 td{
+    padding: 2%;
+    text-align: right;
+}
+
+.balanceDue{
+    font-size:large;
+    font-weight: bolder;
+    border-radius: 5px;
+}
+
+.Row3{
+    margin-bottom: 5%;
+}
+
+.Row3 th{
+    background-color: black;
+    color: white;
+    padding: 0.5%;
+    border-radius: 5px;
+    border-style: none;
+}
+
+.Row3 td{
+    padding-left: 15px;
+    padding-top: 10px;
+}
+
+.downloadButton{
+    display: flex;
+    flex-direction: row;
+    margin-top: 5%;
+    align-items: center;
+    justify-content: center;
+}
+
+.Row4 p{
+    padding: 1.5px;
+}
+
+.downloadButton button{
+    width: 150px;
+    height: 40px;
+    background-color: #337ab7;
+    color: white;
+    font-weight: bolder;
+    border-radius: 5px;
+}
+
+.downloadButton button:hover{
+    opacity: 0.9;
+    scale: 1.1;
+}
+
+.downloadButton button:active{
+    opacity: 0.65;
+}
+
