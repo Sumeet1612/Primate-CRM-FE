@@ -24,14 +24,20 @@ function ViewInvoices(){
         {field: "deductionInr" , filter: true, sortable: true, resizable: true },
         {field: "tds" , filter: true, sortable: true, resizable: true },
         {field: "netPayable" , filter: true, sortable: true, resizable: true },
-        {field: "invoiceDate" , filter: true, sortable: true, resizable: true },
-        {field: "dueDate" , filter: true, sortable: true, resizable: true },
+        {field: "invoiceDate" , filter: true, sortable: true, resizable: true, valueFormatter: params=>{
+            let date= new Date(params.value.toString())
+            return date.toLocaleDateString('en-US');
+          } },
+        {field: "dueDate" , filter: true, sortable: true, resizable: true, valueFormatter: params=>{
+            let date= new Date(params.value.toString())
+            return date.toLocaleDateString('en-US');
+          } },
         {field: "paidToAccount" , filter: true, sortable: true, resizable: true },
         {field: "updatedOn" , filter: true, sortable: true, resizable: true,
         valueFormatter: params=>{
             let date= new Date(params.value.toString())
             return date.toLocaleDateString('en-US');
-          } },
+          } }
         //{field: "additionalDetails" , filter: true, sortable: true, resizable: true }
     ])
 
