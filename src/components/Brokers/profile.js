@@ -77,8 +77,6 @@ function Profile() {
       if(isNaN(user)){
         nav('/login/')
         return;
-      } else {
-        nav(`/Primate-CRM-FE/profile/${user}`);
       }
       else{
       nav(`/profile/${user}`)

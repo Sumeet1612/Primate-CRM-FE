@@ -264,8 +264,6 @@ function EditShippers() {
     })
   }
 
-  const handleSubmit=()=>{
-
   const handleSubmit = () => {
     let blankField = "";
     Object.keys(shipperData).every((fe) => {

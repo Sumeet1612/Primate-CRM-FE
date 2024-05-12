@@ -41,14 +41,6 @@ function InvoiceLayout() {
     Pan: "",
   });
 
-      const [bankDetails,setBankDetaiks] = useState({
-        Id:'',
-        BankName:'',
-        Ifsc:'',
-        OwnerName:'',
-        Pan:''
-      })
-
     useEffect(()=>{
         if(isNaN(brokerId) || isNaN(userRole)){
             history("/login")

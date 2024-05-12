@@ -248,7 +248,7 @@ function EditLoad() {
         else{
           alert('Some went wrong. Please retry.')
         }
-      })
+      }})
       .catch((err) => {
         handleApiError(err);
       });
