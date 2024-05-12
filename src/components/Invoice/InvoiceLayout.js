@@ -41,24 +41,32 @@ function InvoiceLayout() {
     Pan: "",
   });
 
-  useEffect(() => {
-    if (isNaN(brokerId) || isNaN(userRole)) {
-      history("/Primate-CRM-FE/login");
-      return;
-    }
-    getInvoiceOnId(invoiceNumber)
-      .then((res) => {
-        if (res.status === 200) {
-          setInvoices(res.data);
-          setBankDetaiks(() => {
-            return JSON.parse(res.data?.additionalDetails);
-          });
-        }
+      const [bankDetails,setBankDetaiks] = useState({
+        Id:'',
+        BankName:'',
+        Ifsc:'',
+        OwnerName:'',
+        Pan:''
       })
-      .catch((err) => {
-        handleApiError(err);
-      });
-  }, [brokerId, userRole, history, invoiceNumber]);
+
+    useEffect(()=>{
+        if(isNaN(brokerId) || isNaN(userRole)){
+            history("/login")
+            return;
+          }
+          getInvoiceOnId(invoiceNumber)
+          .then((res)=>{
+            if(res.status===200){
+                setInvoices(res.data);
+                setBankDetaiks(()=>{
+                    return JSON.parse(res.data?.additionalDetails)
+                })
+            }
+          })
+          .catch((err)=>{
+            handleApiError(err);
+          })
+    },[brokerId,userRole, history, invoiceNumber])
 
   return (
     <div className="PageLayout">

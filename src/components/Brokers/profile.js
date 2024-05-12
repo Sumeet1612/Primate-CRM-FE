@@ -71,32 +71,34 @@ function Profile() {
 
   const nav = useNavigate();
 
-  useEffect(() => {
-    const user = loggedInUserId();
-    if (loggedInBrokerId === "NaN") {
-      if (isNaN(user)) {
-        nav("/Primate-CRM-FE/login/");
+  useEffect(()=>{
+    const user= loggedInUserId();
+    if(loggedInBrokerId === 'NaN'){
+      if(isNaN(user)){
+        nav('/login/')
         return;
       } else {
         nav(`/Primate-CRM-FE/profile/${user}`);
       }
-    } else {
-      let currencyData = [];
-      if (
-        loggedInBrokerId > 0 &&
-        (user === parseInt(loggedInBrokerId) || others.userRole === 1)
-      ) {
-        //get currency list
-        getCurrency()
-          .then((res) => {
-            if (res.status === 200) {
-              setCurrency(res.data);
-              currencyData = res.data;
-            }
-          })
-          .catch((err) => {
-            handleApiError(err);
-          });
+      else{
+      nav(`/profile/${user}`)
+      }
+    }
+    else{
+    let currencyData=[];
+    if(loggedInBrokerId > 0 && (user===parseInt(loggedInBrokerId) || others.userRole===1)){
+
+    //get currency list
+    getCurrency()
+    .then((res)=>{
+      if(res.status===200){
+        setCurrency(res.data);
+        currencyData=res.data;
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    })
 
         // get broker details
         getBrokerOnId(loggedInBrokerId)

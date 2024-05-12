@@ -5,7 +5,7 @@ function SearchLoad() {
 const [loadNumber,setloadNumber]= useState(0);
 const navigate = useNavigate();
 const handleSearch=()=>{
-    navigate(`/Primate-CRM-FE/editLoad/${loadNumber}`)
+    navigate(`/editLoad/${loadNumber}`)
 }
   return (
     <div className="PageLayout">

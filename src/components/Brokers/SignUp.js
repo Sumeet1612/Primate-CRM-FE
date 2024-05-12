@@ -172,7 +172,7 @@ const [role,setRole]= React.useState(0)
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/Primate-CRM-FE/login" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

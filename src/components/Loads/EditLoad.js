@@ -75,19 +75,19 @@ function EditLoad() {
               return { ...prev, isEditable: true };
             });
           }
-          if (!checkPermissionToNavigation(res.data)) {
-            alert(
-              "You don't have the permission to view/edit the requested Load"
-            );
-            nav("/Primate-CRM-FE/viewLoads");
+          if(!checkPermissionToNavigation(res.data)){
+            alert("You don't have the permission to view/edit the requested Load")
+            nav('/viewLoads')
           }
         } else if (res.status === 204) {
           alert("Load Not Found");
           nav("/Primate-CRM-FE/viewLoads");
         }
-        setObj((prev) => {
-          return { ...prev, isLoading: false };
-        });
+        else if(res.status===204){
+          alert('Load Not Found');
+          nav('/viewLoads')
+        }
+        setObj((prev)=>{return {...prev, isLoading:false}})
       })
       .catch((err) => {
         handleApiError(err);
@@ -208,6 +208,13 @@ function EditLoad() {
             alert("Payment Approved !!");
             nav("/Primate-CRM-FE/viewLoads");
           }
+          else if(statusId===1){
+            alert("Payment Rejected !!")
+          }
+          else if(statusId===3){
+            alert("Payment Approved !!")
+            nav('/viewLoads')
+          }
           setInit(data);
         }
         setObj((prev) => {
@@ -229,19 +236,17 @@ function EditLoad() {
 
   const handleDelete = () => {
     deleteLoad(data.loadNumber)
-      .then((res) => {
-        if (res.status === 200) {
-          if (res.data.message === "Load Deleted: True") {
-            alert("Load Deleted !!");
-            nav("/Primate-CRM-FE/viewLoads");
-          } else if (
-            res.data?.message ===
-            "Cannot Delete Load as it is already proceesed for payment"
-          ) {
-            alert(res.data.message);
-          } else {
-            alert("Some went wrong. Please retry.");
-          }
+    .then((res)=>{
+      if(res.status===200){
+        if(res.data.message==='Load Deleted: True'){
+          alert('Load Deleted !!')
+          nav('/viewLoads')
+        }
+        else if(res.data?.message==='Cannot Delete Load as it is already proceesed for payment'){
+          alert(res.data.message);
+        }
+        else{
+          alert('Some went wrong. Please retry.')
         }
       })
       .catch((err) => {
@@ -264,9 +269,9 @@ function EditLoad() {
     }
   };
 
-  const handleOpenShipper = () => {
-    nav(`/Primate-CRM-FE/Shippers/${data.shipperId}`);
-  };
+  const handleOpenShipper=()=>{
+    nav(`/Shippers/${data.shipperId}`)
+  }
 
   const handleBrokerResolve = () => {
     resolveMismatchByBroker(data?.loadNumber)

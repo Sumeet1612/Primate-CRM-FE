@@ -55,7 +55,7 @@ function NewLoad() {
     const userId= loggedInUserId();
     const userRole= loggedInUserRole();
     if(isNaN(userId) || isNaN(userRole)){
-      history("/Primate-CRM-FE/login")
+      history("/login")
       return;
     }
     if (userId) {
@@ -245,7 +245,7 @@ function NewLoad() {
                 brokerId: "",
                 additionalBroker: [],
               });
-              history("/Primate-CRM-FE/");
+              history("/");
             }
           }
         })

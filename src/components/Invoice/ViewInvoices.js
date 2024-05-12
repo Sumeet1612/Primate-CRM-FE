@@ -39,7 +39,7 @@ function ViewInvoices(){
 
     useEffect(()=>{
         if(isNaN(brokerId) || isNaN(userRole)){
-            history("/Primate-CRM-FE/login")
+            history("/login")
             return;
           }
         if(userRole===1){
@@ -75,7 +75,7 @@ function ViewInvoices(){
     const handleCell=(cellEvent)=>{
         let invNumber= cellEvent?.data?.invoiceNumber;
         if(cellEvent?.colDef?.field==="invoiceNumber"){
-          history(`/Primate-CRM-FE/invoice/${invNumber}`)
+          history(`/invoice/${invNumber}`)
         }
       }
 

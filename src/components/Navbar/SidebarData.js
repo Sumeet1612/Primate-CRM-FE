@@ -10,18 +10,18 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { loggedInUserId } from "../../api/validation";
 
 export const SidebarUserData = [
-  { title: "Home", icon: <HomeIcon />, path: "Primate-CRM-FE/" },
-  { title: "Shippers", icon: <EngineeringIcon />, path: "Primate-CRM-FE/shippers" },
-  { title: "Profile", icon: <AccountBoxIcon />, path: `Primate-CRM-FE/profile/${loggedInUserId()}` },
-  { title: "Add New Load", icon: <LocalShippingIcon />, path: "Primate-CRM-FE/new" },
-  { title: "Manage Loads", icon: <AirportShuttleIcon />, path: "Primate-CRM-FE/viewLoads" },
-  { title: "Generate Invoice", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoice/generate" },
-  { title: "Past Invoices", icon: <ReceiptIcon />, path: "Primate-CRM-FE/invoices" },
-  { title: "Login", icon: <ReceiptIcon />, path: "Primate-CRM-FE/login" },
+  { title: "Home", icon: <HomeIcon />, path: "" },
+  { title: "Shippers", icon: <EngineeringIcon />, path: "shippers" },
+  { title: "Profile", icon: <AccountBoxIcon />, path: `profile/${loggedInUserId()}` },
+  { title: "Add New Load", icon: <LocalShippingIcon />, path: "new" },
+  { title: "Manage Loads", icon: <AirportShuttleIcon />, path: "viewLoads" },
+  { title: "Generate Invoice", icon: <ReceiptIcon />, path: "invoice/generate" },
+  { title: "Past Invoices", icon: <ReceiptIcon />, path: "invoices" },
+  { title: "Login", icon: <ReceiptIcon />, path: "login" },
 ];
 
 export const SidebarAdminData = [
-  { title: "Manage Brokers", icon: <AccountBoxIcon />, path: "Primate-CRM-FE/manageBrokers" },
-  { title: "Register", icon: <GroupAddIcon />, path: "Primate-CRM-FE/register" },
-  { title: "Agency System", icon: <FileUploadIcon />, path: "Primate-CRM-FE/agency" }
+  { title: "Manage Brokers", icon: <AccountBoxIcon />, path: "manageBrokers" },
+  { title: "Register", icon: <GroupAddIcon />, path: "register" },
+  { title: "Agency System", icon: <FileUploadIcon />, path: "agency" }
 ];

@@ -203,24 +203,23 @@ function EditShippers() {
   useEffect(() => {
     setIsLoading(true);
     getShipper(id)
-      .then((res) => {
-        if (res.status === 200) {
-          setShipperData(res.data);
-          setInit(res.data);
-          if (!checkPermissionToNavigation(res.data)) {
-            alert(
-              "You don't have the permission to view/edit the requested Shipper"
-            );
-            nav("/Primate-CRM-FE/shippers");
-          }
-        } else if (res.status === 204) {
-          alert("Shipper Not Found");
-          nav("/Primate-CRM-FE/shippers");
+    .then((res)=>{
+      if(res.status===200){
+        setShipperData(res.data);
+        setInit(res.data);
+        if(!checkPermissionToNavigation(res.data)){
+          alert("You don't have the permission to view/edit the requested Shipper")
+            nav('/shippers')
         }
-      })
-      .catch((err) => {
-        handleApiError(err);
-      });
+      }
+      else if(res.status===204){
+        alert('Shipper Not Found');
+        nav('/shippers')
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err);
+    })
 
     getLoadsForShipper(id)
       .then((res) => {
@@ -246,25 +245,26 @@ function EditShippers() {
 
   const handleDelete = () => {
     deleteShipper(id)
-      .then((res) => {
-        if (res.status === 200) {
-          if (res.data.message === "Deleted Status : True") {
-            alert("Shipper Deleted !!");
-            nav("/Primate-CRM-FE/shippers");
-          } else if (
-            res.data?.message ===
-            "Cannot Delete Shipper as it is associated with some load"
-          ) {
-            alert("Cannot delete shipper as it is used in some load");
-          } else {
-            alert("Something went Wrong. Please retry.");
-          }
+    .then((res)=>{
+      if(res.status===200){
+        if((res.data.message==='Deleted Status : True')){
+          alert('Shipper Deleted !!')
+          nav('/shippers')
         }
-      })
-      .catch((err) => {
-        handleApiError(err);
-      });
-  };
+        else if(res.data?.message==='Cannot Delete Shipper as it is associated with some load'){
+          alert('Cannot delete shipper as it is used in some load')
+        }
+        else{
+          alert('Something went Wrong. Please retry.')
+        }
+      }
+    })
+    .catch((err)=>{
+      handleApiError(err)
+    })
+  }
+
+  const handleSubmit=()=>{
 
   const handleSubmit = () => {
     let blankField = "";
@@ -310,7 +310,7 @@ function EditShippers() {
     let loadId = cellEvent?.data?.loadNumber;
     if (cellEvent?.colDef?.field === "loadNumber") {
       if (window.confirm("Do you want to View/Edit the Load?")) {
-        nav(`/Primate-CRM-FE/editLoad/${loadId}`);
+        nav(`/editLoad/${loadId}`);
       }
     }
   };
