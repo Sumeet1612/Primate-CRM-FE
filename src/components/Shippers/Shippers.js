@@ -31,7 +31,7 @@ function Shippers() {
   const handleCell=(cellEvent)=>{
     let shipperId=cellEvent?.data?.id;
     if(cellEvent?.colDef?.field==="id"){
-      navigation(`/Primate-CRM-FE/Shippers/${shipperId}`)
+      navigation(`/Shippers/${shipperId}`)
     }
   }
 
@@ -53,7 +53,7 @@ function Shippers() {
 
   useEffect(() => {
     if(isNaN(brokerId) || isNaN(userRole)){
-      navigation("/Primate-CRM-FE/login")
+      navigation("/login")
       return;
     }
     if(brokerId>0 && userRole===2){    

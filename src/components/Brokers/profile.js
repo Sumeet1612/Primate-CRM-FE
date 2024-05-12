@@ -69,11 +69,11 @@ function Profile() {
     const user= loggedInUserId();
     if(loggedInBrokerId === 'NaN'){
       if(isNaN(user)){
-        nav('/Primate-CRM-FE/login/')
+        nav('/login/')
         return;
       }
       else{
-      nav(`/Primate-CRM-FE/profile/${user}`)
+      nav(`/profile/${user}`)
       }
     }
     else{
