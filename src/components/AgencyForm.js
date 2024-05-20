@@ -134,6 +134,7 @@ function AgencyForm() {
       <br /><br/>
 
         <Button
+        sx={{mb:"2%"}}
           variant="contained"
           color="info"
           onClick={handleScanChanges}
