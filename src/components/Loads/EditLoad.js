@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { deleteLoad, editLoad, getLoadOnId, handleApiError, resolveMismatchByBroker } from "../../api/api";
+import {
+  deleteLoad,
+  editLoad,
+  getLoadOnId,
+  handleApiError,
+  resolveMismatchByBroker,
+} from "../../api/api";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -7,7 +13,10 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
-import { checkPermissionToNavigation, loggedInUserRole } from "../../api/validation";
+import {
+  checkPermissionToNavigation,
+  loggedInUserRole,
+} from "../../api/validation";
 
 function EditLoad() {
   const [data, setData] = useState({
@@ -29,23 +38,25 @@ function EditLoad() {
     invoiceDate: "",
     brokerName: "",
     brokerId: "",
-    adjustmentAmount:0,
+    adjustmentAmount: 0,
     createdOn: "",
-    mismatched:true,
+    mismatched: true,
     additionalBroker: [],
   });
   const [init, setInit] = useState([]);
-  const userRole= loggedInUserRole();
+  const userRole = loggedInUserRole();
   const { id } = useParams();
-  const nav= useNavigate();
-  const [obj,setObj]= useState({
-    isEditable:true,
-    isLoading:false,
-    refresh:0
-  })
+  const nav = useNavigate();
+  const [obj, setObj] = useState({
+    isEditable: true,
+    isLoading: false,
+    refresh: 0,
+  });
 
   useEffect(() => {
-    setObj((prev)=>{return {...prev, isLoading:true}})
+    setObj((prev) => {
+      return { ...prev, isLoading: true };
+    });
     getLoadOnId(id)
       .then((res) => {
         if (res.status === 200) {
@@ -56,15 +67,21 @@ function EditLoad() {
           setInit(res.data);
 
           if (res.data?.paymentStatusId !== 1) {
-            setObj((prev)=>{return {...prev, isEditable:false}})
+            setObj((prev) => {
+              return { ...prev, isEditable: false };
+            });
           } else {
-            setObj((prev)=>{return {...prev, isEditable:true}})
+            setObj((prev) => {
+              return { ...prev, isEditable: true };
+            });
           }
           if(!checkPermissionToNavigation(res.data)){
             alert("You don't have the permission to view/edit the requested Load")
             nav('/viewLoads')
           }
-          
+        } else if (res.status === 204) {
+          alert("Load Not Found");
+          nav("/Primate-CRM-FE/viewLoads");
         }
         else if(res.status===204){
           alert('Load Not Found');
@@ -74,22 +91,30 @@ function EditLoad() {
       })
       .catch((err) => {
         handleApiError(err);
-        setObj((prev)=>{return {...prev, isLoading:false}})
+        setObj((prev) => {
+          return { ...prev, isLoading: false };
+        });
       });
-  }, [id,nav, obj.refresh]);
+  }, [id, nav, obj.refresh]);
 
   const handleSubmit = () => {
-    let blankField = '';
-    Object.keys(data).every(sd=>{
-      if(data[sd]==='' && sd!=='additionalBroker' && sd!=='invoiceDate'){
-        blankField= sd;
+    let blankField = "";
+    Object.keys(data).every((sd) => {
+      if (
+        data[sd] === "" &&
+        sd !== "additionalBroker" &&
+        sd !== "invoiceDate"
+      ) {
+        blankField = sd;
         return false;
       }
       return true;
-    })
+    });
 
-    if(blankField !== ''){
-      alert(`Error: All fileds are mandatory to submit your changes. ${blankField} is blank.`);
+    if (blankField !== "") {
+      alert(
+        `Error: All fileds are mandatory to submit your changes. ${blankField} is blank.`
+      );
       return;
     }
 
@@ -104,12 +129,12 @@ function EditLoad() {
       }
     });
 
-    if(payload.length>0){
+    if (payload.length > 0) {
       editLoad(init.loadNumber, payload)
         .then((res) => {
           if (res.data === true) {
             alert("Load updated !!");
-            setInit(data)
+            setInit(data);
           }
         })
         .catch((err) => {
@@ -118,42 +143,55 @@ function EditLoad() {
     }
   };
 
-  const handlePayment = async(statusId) => {
+  const handlePayment = async (statusId) => {
     let payload = [
       {
         path: "/paymentStatusId",
         op: "replace",
         value: statusId,
-      }
+      },
     ];
 
-    setObj((prev)=>{return {...prev,  isLoading:true}})
+    setObj((prev) => {
+      return { ...prev, isLoading: true };
+    });
 
     //before requesting for payment check mismatch status
-    if(statusId===2){
-      try{
-        const res= await resolveMismatchByBroker(data?.loadNumber);
-        if(res?.status===200){
-          if(res?.data===1){
-            alert("Cannot request for payment as there is a mismatch of rates with Agency System")
-            setObj((prev)=>{return {...prev,  isLoading:false, refresh:prev.refresh+1}})
+    if (statusId === 2) {
+      try {
+        const res = await resolveMismatchByBroker(data?.loadNumber);
+        if (res?.status === 200) {
+          if (res?.data === 1) {
+            alert(
+              "Cannot request for payment as there is a mismatch of rates with Agency System"
+            );
+            setObj((prev) => {
+              return { ...prev, isLoading: false, refresh: prev.refresh + 1 };
+            });
+            return;
+          } else if (res?.data === 2) {
+            alert(
+              `Cannot scan changes. Contact admin and report error code : ${2}`
+            );
+            setObj((prev) => {
+              return { ...prev, isLoading: false };
+            });
             return;
           }
-          else if(res?.data===2){
-            alert(`Cannot scan changes. Contact admin and report error code : ${2}`)
-            setObj((prev)=>{return {...prev,  isLoading:false}})
-            return;
-          }
-        }
-        else{
-          alert(`Something went wrong. Report error status code: ${res?.status} to Admin`)
-          setObj((prev)=>{return {...prev,  isLoading:false}})
+        } else {
+          alert(
+            `Something went wrong. Report error status code: ${res?.status} to Admin`
+          );
+          setObj((prev) => {
+            return { ...prev, isLoading: false };
+          });
           return;
         }
-      }
-      catch(err){
+      } catch (err) {
         handleApiError(err);
-        setObj((prev)=>{return {...prev,  isLoading:false}})
+        setObj((prev) => {
+          return { ...prev, isLoading: false };
+        });
         return;
       }
     }
@@ -161,9 +199,14 @@ function EditLoad() {
     //if no mismatch. change payment status.
     editLoad(init.loadNumber, payload)
       .then((res) => {
-        if(res?.status===200 && res?.data===true){
-          if(statusId===2){
-            alert("Payment Requested !!")
+        if (res?.status === 200 && res?.data === true) {
+          if (statusId === 2) {
+            alert("Payment Requested !!");
+          } else if (statusId === 1) {
+            alert("Payment Rejected !!");
+          } else if (statusId === 3) {
+            alert("Payment Approved !!");
+            nav("/Primate-CRM-FE/viewLoads");
           }
           else if(statusId===1){
             alert("Payment Rejected !!")
@@ -173,16 +216,25 @@ function EditLoad() {
             nav('/viewLoads')
           }
           setInit(data);
-      }
-        setObj((prev)=>{return {...prev,  refresh:prev.refresh+1, isEditable:false, isLoading:false}})
+        }
+        setObj((prev) => {
+          return {
+            ...prev,
+            refresh: prev.refresh + 1,
+            isEditable: false,
+            isLoading: false,
+          };
+        });
       })
       .catch((err) => {
-        setObj((prev)=>{return {...prev,  isLoading:false}});
+        setObj((prev) => {
+          return { ...prev, isLoading: false };
+        });
         handleApiError(err);
       });
   };
 
-  const handleDelete=()=>{
+  const handleDelete = () => {
     deleteLoad(data.loadNumber)
     .then((res)=>{
       if(res.status===200){
@@ -196,12 +248,11 @@ function EditLoad() {
         else{
           alert('Some went wrong. Please retry.')
         }
-      }
-    })
-    .catch((err)=>{
-      handleApiError(err)
-    })
-  }
+      }})
+      .catch((err) => {
+        handleApiError(err);
+      });
+  };
 
   const handleEdit = (e) => {
     let value = e.target.value;
@@ -222,47 +273,49 @@ function EditLoad() {
     nav(`/Shippers/${data.shipperId}`)
   }
 
-  const handleBrokerResolve=()=>{
+  const handleBrokerResolve = () => {
     resolveMismatchByBroker(data?.loadNumber)
-    .then((res)=>{
-      if(res?.status===200){
-        if(res?.data===0){
-          setObj((prev)=>{return {...prev, refresh:prev.refresh+1}})
-          alert("Mismatch of rates with Agency system is resolved");
+      .then((res) => {
+        if (res?.status === 200) {
+          if (res?.data === 0) {
+            setObj((prev) => {
+              return { ...prev, refresh: prev.refresh + 1 };
+            });
+            alert("Mismatch of rates with Agency system is resolved");
+          } else {
+            alert(
+              "There is mismatch of rates with Agency System. Please recheck rates or contact admin"
+            );
+          }
         }
-        else{
-          alert("There is mismatch of rates with Agency System. Please recheck rates or contact admin")
-        }
-      }
-    })
-    .catch((err)=>{
-      handleApiError(err);
-    })
-  }
+      })
+      .catch((err) => {
+        handleApiError(err);
+      });
+  };
 
-  const handleAdminResolve=()=>{
+  const handleAdminResolve = () => {
     let payload = [
       {
         path: "/mismatched",
         op: "replace",
-        value: false
+        value: false,
       },
     ];
 
     editLoad(data?.loadNumber, payload)
-    .then((res)=>{
-      if(res?.status===200){
-        if(res?.data===true){
-          alert("Mismatch resolved")
+      .then((res) => {
+        if (res?.status === 200) {
+          if (res?.data === true) {
+            alert("Mismatch resolved");
+          }
         }
-      }
-    })
-    .catch((err)=>{
-      handleApiError(err);
-    })
+      })
+      .catch((err) => {
+        handleApiError(err);
+      });
+  };
 
-  }
-  
   return (
     <div className="PageLayout">
       <h1
@@ -288,7 +341,7 @@ function EditLoad() {
             label="Load Number"
             name="loadNumber"
             value={data.loadNumber}
-            InputProps={{readOnly:true}}
+            InputProps={{ readOnly: true }}
           />
 
           <TextField
@@ -298,7 +351,7 @@ function EditLoad() {
             label="Shipper Name"
             name="shipperName"
             value={data.shipperName}
-            InputProps={{readOnly:true}}
+            InputProps={{ readOnly: true }}
             onClick={handleOpenShipper}
           />
 
@@ -310,7 +363,7 @@ function EditLoad() {
             name="loadDescription"
             value={data.loadDescription}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable}}
+            InputProps={{ readOnly: !obj.isEditable }}
           />
 
           <TextField
@@ -321,7 +374,7 @@ function EditLoad() {
             name="pickupLocation"
             value={data.pickupLocation}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable}}
+            InputProps={{ readOnly: !obj.isEditable }}
           />
 
           <TextField
@@ -332,7 +385,7 @@ function EditLoad() {
             name="deliveryLocation"
             value={data.deliveryLocation}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable}}
+            InputProps={{ readOnly: !obj.isEditable }}
           />
 
           <DatePicker
@@ -383,7 +436,7 @@ function EditLoad() {
             name="carrierMC"
             value={data.carrierMC}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable}}
+            InputProps={{ readOnly: !obj.isEditable }}
           />
 
           <TextField
@@ -394,7 +447,7 @@ function EditLoad() {
             name="carrierName"
             value={data.carrierName}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable}}
+            InputProps={{ readOnly: !obj.isEditable }}
           />
 
           <TextField
@@ -405,7 +458,7 @@ function EditLoad() {
             name="carrierPOC"
             value={data.carrierPOC}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable}}
+            InputProps={{ readOnly: !obj.isEditable }}
           />
 
           <TextField
@@ -416,7 +469,7 @@ function EditLoad() {
             name="carrierContact"
             value={data.carrierContact}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable}}
+            InputProps={{ readOnly: !obj.isEditable }}
           />
 
           <TextField
@@ -426,7 +479,7 @@ function EditLoad() {
             label="Carrier Email Address"
             name="carrierEmail"
             value={data.carrierEmail}
-            InputProps={{readOnly:!obj.isEditable}}
+            InputProps={{ readOnly: !obj.isEditable }}
             onChange={handleEdit}
           />
 
@@ -438,7 +491,7 @@ function EditLoad() {
             name="shipperRate"
             value={data.shipperRate}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable && userRole!==1}}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
           />
 
           <TextField
@@ -449,7 +502,7 @@ function EditLoad() {
             name="carrierRate"
             value={data.carrierRate}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable && userRole!==1}}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
           />
 
           <TextField
@@ -459,7 +512,7 @@ function EditLoad() {
             label="Net Margin"
             name="margin"
             value={data.margin}
-            InputProps={{readOnly:true}}
+            InputProps={{ readOnly: true }}
           />
 
           <TextField
@@ -469,10 +522,10 @@ function EditLoad() {
             label="Broker"
             name="broker"
             value={data.brokerName}
-            InputProps={{readOnly:true}}
+            InputProps={{ readOnly: true }}
           />
 
-            <TextField
+          <TextField
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
             InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
             type="text"
@@ -480,7 +533,7 @@ function EditLoad() {
             name="adjustmentAmount"
             value={data.adjustmentAmount}
             onChange={handleEdit}
-            InputProps={{readOnly:!obj.isEditable && userRole!==1 }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
           />
 
           <DatePicker
@@ -492,17 +545,19 @@ function EditLoad() {
           />
           <br />
 
-          {data?.invoiceNumber?
-          <TextField
-            sx={{ height: "70px", width: "40%", mr: "4.5%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="text"
-            label="Primary Invoices"
-            name="primaryInvoiceNumber"
-            value={data.invoiceNumber}
-            InputProps={{readOnly:true }}
-          />
-          :<></>}
+          {data?.invoiceNumber ? (
+            <TextField
+              sx={{ height: "70px", width: "40%", mr: "4.5%", mb: "1%" }}
+              InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
+              type="text"
+              label="Primary Invoices"
+              name="primaryInvoiceNumber"
+              value={data.invoiceNumber}
+              InputProps={{ readOnly: true }}
+            />
+          ) : (
+            <></>
+          )}
 
           {data.additionalBroker ? (
             data.additionalBroker.map((d, index) => {
@@ -517,7 +572,7 @@ function EditLoad() {
                     name="sharedWithName"
                     label="Shared With"
                     value={d.brokerName}
-                    InputProps={{readOnly:true}}
+                    InputProps={{ readOnly: true }}
                   />
                   <TextField
                     sx={{ height: "70px", width: "20%", mr: "3%", mb: "1%" }}
@@ -528,7 +583,7 @@ function EditLoad() {
                     label="Shared Percentage"
                     name="sharedWithPercentage"
                     value={d.sharedPercentage}
-                    InputProps={{readOnly:true}}
+                    InputProps={{ readOnly: true }}
                   />
                   <TextField
                     sx={{ height: "70px", width: "20%", mr: "3%", mb: "1%" }}
@@ -539,7 +594,7 @@ function EditLoad() {
                     label="Invoiced In"
                     name="additionalBrokerInvoiceIn"
                     value={d.invoiceNumber}
-                    InputProps={{readOnly:true}}
+                    InputProps={{ readOnly: true }}
                   />
                 </div>
               );
@@ -548,89 +603,132 @@ function EditLoad() {
             <br />
           )}
 
-          {data?.mismatched ? <h3>There is a rate Discrepancy in this load.</h3>: <></>}
-          <br/>
-          {data?.mismatched? userRole===1 ? 
-            <Button
-            name="admin resolve mismatch"
-            variant="contained"
-            sx={{ width: "40%"}}
-            onClick={handleAdminResolve}
-            disabled={!obj.isEditable && userRole===2}
-            >
-              {" "}
-              Resolve Mismatch{" "}
-            </Button>
-          :
-            <Button
-              name="broker resolve mismatch"
-              variant="contained"
-              sx={{ width: "40%"}}
-              onClick={handleBrokerResolve}
-              disabled={!obj.isEditable && userRole===2}
-            >
-              {" "}
-              Reevaluate mismatch{" "}
-            </Button> 
-           :<></>}
-          <br/><br/>
-
-          <Button
-            variant="contained"
-            sx={{ width: "20%"}}
-            onClick={handleSubmit}
-            disabled={!obj.isEditable && userRole===2}
-          >
-            {" "}
-            Save Changes{" "}
-          </Button>
-
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ width: "20%" }}
-            onClick={handleDelete}
-            disabled={!obj.isEditable}
-          >
-            {" "}
-            DELETE LOAD{" "}
-          </Button>
-
-          {data?.mismatched || !data?.invoiceDate || data?.paymentStatusId!==1 ? <></>:
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ width: "27%" }}
-            disabled={!obj.isEditable || !data.invoiceDate}
-            onClick={()=>handlePayment(2)}
-          >
-            {" "}
-            Request for Payment{" "}
-          </Button>}
+          {data?.mismatched ? (
+            <h3>There is a rate Discrepancy in this load.</h3>
+          ) : (
+            <></>
+          )}
           <br />
-          
-          <div hidden={userRole===2 || data.paymentStatusId!==2}>
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ width: "27%" }}
-            disabled={init.paymentStatusId!==2}
-            onClick={()=>handlePayment(3)} 
-            > Approve Payment </Button>
+          {data?.mismatched ? (
+            userRole === 1 ? (
+              <Button
+                name="admin resolve mismatch"
+                variant="contained"
+                sx={{ width: "40%" }}
+                onClick={handleAdminResolve}
+                disabled={!obj.isEditable && userRole === 2}
+              >
+                {" "}
+                Resolve Mismatch{" "}
+              </Button>
+            ) : (
+              <Button
+                name="broker resolve mismatch"
+                variant="contained"
+                sx={{ width: "40%" }}
+                onClick={handleBrokerResolve}
+                disabled={!obj.isEditable && userRole === 2}
+              >
+                {" "}
+                Reevaluate mismatch{" "}
+              </Button>
+            )
+          ) : (
+            <></>
+          )}
+          <br />
+          <br />
+
+          <div
+            style={{
+              width: "90%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginBottom: "20px",
+            }}
+          >
+            <Button
+              variant="contained"
+              sx={{ width: "20%" }}
+              onClick={handleSubmit}
+              disabled={!obj.isEditable && userRole === 2}
+            >
+              {" "}
+              SAVE CHANGES{" "}
+            </Button>
 
             <Button
-            variant="contained"
-            color="success"
-            sx={{ width: "27%" }}
-            disabled={init.paymentStatusId!==2}
-            onClick={()=>handlePayment(1)} 
-            > Reject Payment </Button>
+              variant="contained"
+              color="success"
+              sx={{ width: "20%" }}
+              onClick={handleDelete}
+              disabled={!obj.isEditable}
+            >
+              {" "}
+              DELETE LOAD{" "}
+            </Button>
+
+            {data?.mismatched ||
+            !data?.invoiceDate ||
+            data?.paymentStatusId !== 1 ? (
+              <></>
+            ) : (
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ width: "20%" }}
+                disabled={!obj.isEditable || !data.invoiceDate}
+                onClick={() => handlePayment(2)}
+              >
+                {" "}
+                Request Payment{" "}
+              </Button>
+            )}
+          </div>
+
+          <div hidden={userRole === 2 || data.paymentStatusId !== 2}>
+            <div
+              style={{
+                width: "90%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: "20px",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ width: "20%" }}
+                disabled={init.paymentStatusId !== 2}
+                onClick={() => handlePayment(3)}
+              >
+                {" "}
+                Approve Payment{" "}
+              </Button>
+
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ width: "20%" }}
+                disabled={init.paymentStatusId !== 2}
+                onClick={() => handlePayment(1)}
+              >
+                {" "}
+                Reject Payment{" "}
+              </Button>
             </div>
+          </div>
 
           {!obj.isEditable ? (
             <h3>
               Payment is already{" "}
-              {init.paymentStatusId === 2 ? "Requested" : init.paymentStatusId===3? "Processed": ""}
+              {init.paymentStatusId === 2
+                ? "Requested"
+                : init.paymentStatusId === 3
+                ? "Processed"
+                : ""}
             </h3>
           ) : (
             <></>
