@@ -38,7 +38,7 @@ export default function SignIn() {
       .then((res)=>{
         if (res.status === 200) {
             if (res.data?.id !== -1) {
-              alert("logged In");
+              alert("Successfully Logged In !!");
               setUserAndRole(res.data?.jwtToken)
               history("/");
               window.location.reload();
@@ -48,7 +48,7 @@ export default function SignIn() {
                   "You no longer have the access. Please contact your Admin."
                 );
               } else {
-                alert("Incorrect credentials.");
+                alert("Incorrect Credentials.");
               }
             }
           }
@@ -59,6 +59,7 @@ export default function SignIn() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <h1 style={{ textAlign: 'center', marginBottom:"2%", color:"#1976d2"}}> Welcome To Primate CRM Application</h1>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

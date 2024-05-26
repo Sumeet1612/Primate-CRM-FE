@@ -98,7 +98,6 @@ function PasswordChangeModal(props){
         validateOtp(form.email,form.otp)
         .then((res)=>{
             if(res.status===200 && res.data?.message===`Validation successfull for brokerId: ${props.brokerId}`){
-                console.log("OTP Validated")
                 //validation successfull hence calling broker patch API to update password
 
                 editBroker(props.brokerId,payload)

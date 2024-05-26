@@ -11,6 +11,7 @@ const headers=()=>{
 }
 
 export const handleApiError=(err)=>{
+  console.log(err);
     if (err?.response?.status === 401) {
         alert("Your current Session is expired. Please login to continue");
         logOut();
@@ -294,6 +295,22 @@ export const resolveMismatchByBroker=(loadNumber)=>{
   return axios({
     method:'post',
     url:`${baseApiUrl}/Users/resolve/mismatch/${loadNumber}`,
+    headers:headers()
+  });
+}
+
+export const getMarginForBroker=(brokerId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/margin/${brokerId}`,
+    headers:headers()
+  });
+}
+
+export const getMarginForAdmin=()=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/totalMargin`,
     headers:headers()
   });
 }
