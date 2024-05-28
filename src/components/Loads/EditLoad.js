@@ -81,7 +81,7 @@ function EditLoad() {
           }
         } else if (res.status === 204) {
           alert("Load Not Found");
-          nav("/Primate-CRM-FE/viewLoads");
+          nav("/viewLoads");
         }
         else if(res.status===204){
           alert('Load Not Found');
@@ -206,7 +206,7 @@ function EditLoad() {
             alert("Payment Rejected !!");
           } else if (statusId === 3) {
             alert("Payment Approved !!");
-            nav("/Primate-CRM-FE/viewLoads");
+            nav("/viewLoads");
           }
           else if(statusId===1){
             alert("Payment Rejected !!")
