@@ -314,3 +314,12 @@ export const getMarginForAdmin=()=>{
     headers:headers()
   });
 }
+
+export const updatePaymentState=(loads, status)=>{
+  return axios({
+    method:'post',
+    url:`${baseApiUrl}/Users/changePaymentStatus?status=${status}`,
+    data: loads,
+    headers:headers()
+  });
+}

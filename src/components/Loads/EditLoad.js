@@ -363,7 +363,7 @@ function EditLoad() {
             name="loadDescription"
             value={data.loadDescription}
             onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1}}
           />
 
           <TextField
@@ -374,7 +374,7 @@ function EditLoad() {
             name="pickupLocation"
             value={data.pickupLocation}
             onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1}}
           />
 
           <TextField
@@ -385,7 +385,7 @@ function EditLoad() {
             name="deliveryLocation"
             value={data.deliveryLocation}
             onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1}}
           />
 
           <DatePicker
@@ -409,7 +409,7 @@ function EditLoad() {
                 };
               })
             }
-            readOnly={!obj.isEditable}
+            readOnly={!obj.isEditable && userRole !== 1}
           />
 
           <DatePicker
@@ -425,7 +425,7 @@ function EditLoad() {
                 };
               })
             }
-            readOnly={!obj.isEditable}
+            readOnly={!obj.isEditable && userRole !== 1}
           />
 
           <TextField
@@ -436,7 +436,7 @@ function EditLoad() {
             name="carrierMC"
             value={data.carrierMC}
             onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
           />
 
           <TextField
@@ -447,7 +447,7 @@ function EditLoad() {
             name="carrierName"
             value={data.carrierName}
             onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
           />
 
           <TextField
@@ -458,7 +458,7 @@ function EditLoad() {
             name="carrierPOC"
             value={data.carrierPOC}
             onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
           />
 
           <TextField
@@ -469,7 +469,7 @@ function EditLoad() {
             name="carrierContact"
             value={data.carrierContact}
             onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
           />
 
           <TextField
@@ -479,7 +479,7 @@ function EditLoad() {
             label="Carrier Email Address"
             name="carrierEmail"
             value={data.carrierEmail}
-            InputProps={{ readOnly: !obj.isEditable }}
+            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
             onChange={handleEdit}
           />
 
@@ -663,7 +663,7 @@ function EditLoad() {
               color="success"
               sx={{ width: "20%" }}
               onClick={handleDelete}
-              disabled={!obj.isEditable}
+              disabled={!obj.isEditable && userRole === 2}
             >
               {" "}
               DELETE LOAD{" "}
