@@ -205,7 +205,6 @@ function Profile() {
   };
 
   const removeBank = (index) => {
-    console.log(index);
     let acnt = [...account];
     acnt.splice(index, 1);
     setAccount(acnt);

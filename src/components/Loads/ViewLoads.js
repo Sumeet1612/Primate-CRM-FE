@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllLoads, getLoadForBroker, handleApiError } from "../../api/api";
+import { getAllLoads, getLoadForBroker, handleApiError, updatePaymentState } from "../../api/api";
 import { useNavigate } from "react-router";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 
@@ -12,6 +13,12 @@ function ViewLoads() {
   const [loads, setLoads] = useState([]);
   const [filteredloads, setFilteredLoads] = useState([]);
   const [isloading, setIsLoading] = useState(false);
+  const [reload, setReload] = useState(0);
+  const [gridApi, setGridApi] = useState(null);
+  const [paymentState, setPaymentState]= useState({
+    status:0,
+    selectedLoad:[]
+  });
 
   useEffect(() => {
     let brokerId = loggedInUserId();
@@ -47,7 +54,7 @@ function ViewLoads() {
         });
       }
     }
-  }, []);
+  }, [reload]);
 
   const formatDate=(params)=>{
     if(params?.value?.toString().slice(0,10) === undefined){
@@ -60,6 +67,7 @@ function ViewLoads() {
 }
 
   const [columnDefs] = useState([
+    { headerCheckboxSelection:true, checkboxSelection:true, field: "",  width:50, headerName:'#' },
     { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:120, headerName:'LOAD #', resizable: true },
     { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:200, headerName:'SHIPPER NAME', resizable: true },
     { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:150, headerName:'ORIGIN', resizable: true },
@@ -96,6 +104,10 @@ function ViewLoads() {
 
   const handleViewChange = (viewId) => {
     if(loads?.length>0){
+      setPaymentState({
+        status:0,
+        selectedLoad:[]
+      })
       if (viewId === "0") {
         setFilteredLoads(loads);
       } else if (viewId === "1") {
@@ -113,6 +125,59 @@ function ViewLoads() {
       }
     }
   };
+
+  const handleMutipleSelection=(event)=>{
+    let selectedRow = event.api.getSelectedRows();
+    if(selectedRow.length>0){
+    if(selectedRow.every(x=>x.paymentStatusId===1 && x.invoiceDate)){
+      setPaymentState((prev)=>{
+        return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:2}
+      });
+    }
+    else if(selectedRow.every(x=>x.paymentStatusId===2)){
+      setPaymentState((prev)=>{
+        return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:3}
+      });
+    }
+    else{
+      setPaymentState((prev)=>{
+        return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:0}
+      });
+    }
+  }
+  else{
+    setPaymentState((prev)=>{
+      return {selectedLoad:[], status:0}
+    });
+  }
+  }
+  const handlePayment=()=>{
+    if(paymentState?.status>0){
+      updatePaymentState(paymentState?.selectedLoad, paymentState?.status)
+      .then((res)=>{
+        if(res?.status===200){
+          if(paymentState?.status===2 && res?.data){
+            alert("Payment Requested !!")
+            setReload((prev)=>{return prev+1});
+            setPaymentState((prev)=>{
+              return {selectedLoad:[], status:0}
+            });
+          }
+          else if(paymentState?.status===3 && res?.data){
+            alert("Payment Approved !!")
+            setReload((prev)=>{return prev+1});
+            setPaymentState((prev)=>{
+              return {selectedLoad:[], status:0}
+            });
+          }
+        }
+      })
+      .catch((err)=>{
+        handleApiError(err);
+      })
+    }
+    
+  }
 
   return (
     <>
@@ -138,17 +203,39 @@ function ViewLoads() {
           <option value="4">Not Invoiced Load</option>
           <option value="6">Next Payout</option>
           <option value="5">Loads with Rate Discrepancy</option>
-        </select> <br/>  <br/>
+        </select> 
+        <Button
+        variant="contained"
+        color="success"
+        sx={{ width: "25%" , marginLeft:"25%"}}
+        onClick={()=>{gridApi.exportDataAsCsv({fileName:"PrimateLoad.csv"});}}>
+          EXPORT TO EXCEL
+      </Button>
+        <br/>  <br/>
         {isloading ? (
            <LinearProgress />
         ) : (
           <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
+          {paymentState.status=== 0 ? <></>:
+            <Button
+                variant="contained"
+                color="success"
+                sx={{ width: "40%" }}
+                onClick={handlePayment}
+              >
+                {" "}
+                {paymentState.status === 2 ? "Request Payment": "Approve Payment"}{" "}
+              </Button>
+              }
             <AgGridReact
               rowData={filteredloads}
               columnDefs={columnDefs}
               onCellClicked={(x) => handleCell(x)}
               pagination={true}
               paginationAutoPageSize={true}
+              rowSelection="multiple"
+              onSelectionChanged={handleMutipleSelection}
+              onGridReady={(event)=>{setGridApi(event.api)}}
             />
           </div>
         )}

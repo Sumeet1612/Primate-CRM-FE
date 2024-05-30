@@ -85,7 +85,6 @@ function NewLoad() {
           })
         })
         .catch((err) => {
-          console.log(err);
           handleApiError(err);
         });
 

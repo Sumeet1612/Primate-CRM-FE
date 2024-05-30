@@ -223,7 +223,6 @@ function EditShippers() {
 
     getLoadsForShipper(id)
       .then((res) => {
-        console.log(res);
         if (res.status === 200) {
           setLoads(res.data);
         }

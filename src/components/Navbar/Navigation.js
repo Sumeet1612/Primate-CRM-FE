@@ -34,7 +34,7 @@ function Navigation() {
                   </Link>
                 </li>
               );
-            })}
+            })}           
           </ul>
         </nav>
      

@@ -7,7 +7,7 @@ import NewLoad from "./components/Loads/NewLoad";
 import Profile from "./components/Brokers/profile";
 import Invoice from "./components/Invoice/invoice";
 import EditLoad from "./components/Loads/EditLoad";
-import Home from "./components/Home";
+import Home from "./components/Dashboard/Home";
 import Shippers from "./components/Shippers/Shippers";
 import Login from "./components/Brokers/Login";
 import SearchLoad from "./components/Loads/SearchLoad";

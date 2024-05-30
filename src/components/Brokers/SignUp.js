@@ -57,7 +57,6 @@ const [role,setRole]= React.useState(0)
   //API Call
   register(registerObj)
   .then((res)=>{
-    console.log(res)
     if(res.status===200){
       alert("New Broker Added")
       event.target.reset();

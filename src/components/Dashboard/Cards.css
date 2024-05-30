@@ -1,0 +1,9 @@
+.mainCard{
+    border-radius: 3%;
+    box-shadow: 5px 5px 20px #014b6e;
+    font-size: 20px;
+    line-height: 32px;
+    margin-bottom: 2.5%;
+    padding: 1%;
+    width: 350px;
+}

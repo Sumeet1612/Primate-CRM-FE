@@ -10,6 +10,7 @@ function AgencyForm() {
   const [loading, setLoading] = useState(false);
   const [upload, setUpload] = useState(false);
   const [reload, setReload]= useState(0);
+  const [gridApi, setGridApi]= useState(null);
 
   const [loads,setLoads]= useState([]);
   const [colDef]= useState([
@@ -156,11 +157,20 @@ function AgencyForm() {
         Loads Invoiced but NOT Created in System{" "}
       </h1>
       <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
+      {loads?.length>0 ?
+      <Button
+        variant="contained"
+        color="success"
+        sx={{ width: "25%" }}
+        onClick={()=>{gridApi.exportDataAsCsv({fileName:"NotCreatedLoad.csv"});}}
+      > EXPORT TO EXCEL</Button>
+      :<></>}
       <AgGridReact
         rowData={loads}
         columnDefs={colDef}
         pagination={true}
         paginationAutoPageSize={true}
+        onGridReady={(event)=>{setGridApi(event.api)}}
       />
     </div>
     </div>
