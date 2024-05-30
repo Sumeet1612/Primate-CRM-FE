@@ -100,7 +100,7 @@ function InvoiceLayout() {
             </div>
 
             <div className="Row2Column2">
-              <table style={{ width: "80%" }}>
+              <table style={{ width: "85%" }}>
                 <tr>
                   <td>Date:</td>
                   <td>{invoices.invoiceDate?.substring(0, 10)}</td>
@@ -174,6 +174,8 @@ function InvoiceLayout() {
             <p>IFSC Code: {bankDetails?.Ifsc}</p>
             <p>PAN Number: {bankDetails?.Pan}</p>
           </div>
+          <br/>
+          <p style={{color:'#000053'}}>Phone Bill Charged: ${invoices.phoneBillUsd}</p>
         </div>
       </div>
       <div className="downloadButton">

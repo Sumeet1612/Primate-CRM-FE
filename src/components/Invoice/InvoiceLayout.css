@@ -28,11 +28,11 @@
 
 .Row2Column2{
     width:33%;
+    margin-right: 20px;
 }
 
 .Row2 td{
     padding: 2%;
-    text-align: right;
 }
 
 .balanceDue{
