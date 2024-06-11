@@ -189,8 +189,12 @@ function NewLoad() {
   const handleSubmit = () => {
     //validate no field can be left blank
     let validationError = false;
+    if(sendData['pickupDate'] > sendData['deliveryDate']){
+      alert("Pickup Date cannot be after Booking Date")
+      validationError=true;
+    }
     Object.keys(sendData).every(sd=>{
-      if(sendData[sd]==='' && sd!=='additionalBroker'){
+      if((sendData[sd]==='') || (sendData[sd]==='0' && sd==='shipperId')){
         validationError= true;
         return false;
       }
