@@ -74,10 +74,10 @@ function ViewBrokers(){
       }
 
     return(
-        <div className="profile PageLayout">
+        <div className="profile PageLayout" style={{ height: '100%' }}>
             <h1>Manage All Brokers</h1>
             {others.loading ? <LinearProgress/>:
-            <div className="ag-theme-alpine" style={{ height: 550, width: '90%' }}>
+            <div className="ag-theme-alpine" style={{ height: '90%', width: '90%' }}>
           <AgGridReact 
             rowData={broker} 
             columnDefs={colDef} 

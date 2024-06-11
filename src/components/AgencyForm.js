@@ -92,7 +92,7 @@ function AgencyForm() {
   };
 
   return (
-    <div className="PageLayout">
+    <div className="PageLayout" style={{ height: '100%' }}>
       <h1
         style={{
           color: "#fff",
@@ -156,7 +156,7 @@ function AgencyForm() {
         {" "}
         Loads Invoiced but NOT Created in System{" "}
       </h1>
-      <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
+      <div className="ag-theme-alpine" style={{ height: '90%', width: '98%' }}>
       {loads?.length>0 ?
       <Button
         variant="contained"

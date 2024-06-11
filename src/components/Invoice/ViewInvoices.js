@@ -85,7 +85,7 @@ function ViewInvoices(){
       }
 
     return(
-        <div className="PageLayout Invoice">
+        <div className="PageLayout Invoice" style={{ height: '100%' }}>
             <h1
                 style={{
                     color: "white",
@@ -100,7 +100,7 @@ function ViewInvoices(){
             </h1>
 
             {isloading? <LinearProgress/>:(
-                <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
+                <div className="ag-theme-alpine" style={{ height: '90%', width: '98%' }}>
                 <AgGridReact
                   rowData={invoices}
                   columnDefs={cols}

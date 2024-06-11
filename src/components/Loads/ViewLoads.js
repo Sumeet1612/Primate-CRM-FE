@@ -197,7 +197,7 @@ const getStatus=(param)=>{
 
   return (
     <>
-      <div className="PageLayout">
+      <div className="PageLayout" style={{ height: '100%' }}>
       <h1
           style={{
             color: "white",
@@ -231,7 +231,7 @@ const getStatus=(param)=>{
         {isloading ? (
            <LinearProgress />
         ) : (
-          <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
+          <div className="ag-theme-alpine" style={{ height: "90%" , width: '98%' }}>
           {paymentState.status=== 0 ? <></>:
             <Button
                 variant="contained"
