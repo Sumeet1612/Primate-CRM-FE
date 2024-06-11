@@ -67,68 +67,99 @@ function Home() {
 
   return (
     <div className="PageLayout">
-      <div style={{display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"center", marginBottom:"4%"}}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "4%",
+        }}
+      >
         <img
-          style={{ width: "100px", height: "100px" }}
+          style={{ width: "150px", height: "120px" }}
           src={logo}
           alt="PO Logo"
         />
-
-        <h1 style={{ textAlign: "center", marginLeft:"4%" }}>
-          {" "}
-          Welcome To Primate CRM Application
-        </h1>
       </div>
 
       {loggedIn ? (
         isLoading ? (
           <LinearProgress />
         ) : (
-          <>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ width: "25%", margin: "3%", padding:"15px 0px" }}
-              onClick={() => nav("/new")}
+          <div>
+            <div
+              className="buttonDiv"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                margin: "5% 5%",
+              }}
             >
-              Add New Load
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ width: "25%", margin: "3%", padding:"15px 0px" }}
-              onClick={() => nav("/shippers")}
-            >
-              Shippers
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ width: "25%", padding: "12px 0px" }}
+                onClick={() => nav("/new")}
+              >
+                Add New Load
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ width: "25%", padding: "12px 0px" }}
+                onClick={() => nav("/shippers")}
+              >
+                Shippers
+              </Button>
 
-            <Button
-              variant="contained"
-              color="info"
-              sx={{ width: "25%", margin: "3%", padding:"15px 0px" }}
-              onClick={() => nav("/invoice/generate")}
-            >
-              Generate Invoice
-            </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ width: "25%", padding: "12px 0px" }}
+                onClick={() => nav("/invoice/generate")}
+              >
+                Generate Invoice
+              </Button>
+            </div>
 
-            <div style={{ marginTop: "4%" }} className="Row1">
-              <Cards
-                title="Monthly Sale"
-                value={"$ " + margin?.currentMonthMargin}
-              />
-              <Cards title="Gross Sale" value={"$ " + margin?.totalMargin} />
+            <div className="cardDiv">
+              <div
+                className="Row1"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  margin: "5% 5%",
+                }}
+              >
+                <Cards
+                  title="Monthly Sale"
+                  value={"$ " + margin?.currentMonthMargin}
+                />
+                <Cards title="Gross Sale" value={"$ " + margin?.totalMargin} />
+              </div>
+              <div
+                className="Row2"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  margin: "5% 5%",
+                }}
+              >
+                <Cards
+                  title="Sale After Last Invoice"
+                  value={"$ " + margin?.invoicedMargin}
+                />
+                <Cards
+                  title="Last Payout"
+                  value={"₹ " + margin?.lastInvoicedAmount}
+                />
+              </div>
             </div>
-            <div className="Row2">
-              <Cards
-                title="Sale After Last Invoice"
-                value={"$ " + margin?.invoicedMargin}
-              />
-              <Cards
-                title="Last Payout"
-                value={"₹ " + margin?.lastInvoicedAmount}
-              />
-            </div>
-          </>
+          </div>
         )
       ) : (
         <>
@@ -140,7 +171,25 @@ function Home() {
       <br />
       {loggedIn ? (
         <>
-          <LogoutIcon onClick={logout} /> <h3>Log Out</h3>{" "}
+          <LogoutIcon
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginLeft: "5%",
+            }}
+            onClick={logout}
+          />{" "}
+          <h3
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginLeft: "5%",
+            }}
+          >
+            Log Out
+          </h3>{" "}
         </>
       ) : (
         <>

@@ -7,7 +7,6 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -67,25 +66,23 @@ export default function SignUp() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box
           sx={{
             marginTop: 8,
+            marginLeft:"30%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
           <img
-            style={{ width: "70px", height: "70px" }}
+            style={{ width: "200px", height: "175px", marginBottom: "5%" }}
             src={logo}
             alt="PO Logo"
           />
 
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
           <Box
             component="form"
             noValidate
@@ -133,10 +130,10 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item md={4}>
                 <InputLabel>Role</InputLabel>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item md={8} >
                 <Select
                   labelId="roleLabel"
                   label="Role"
