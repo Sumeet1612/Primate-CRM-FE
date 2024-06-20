@@ -106,7 +106,9 @@ function ViewInvoices(){
                   columnDefs={cols}
                   pagination={true}
                   paginationAutoPageSize={true}
-                  onCellClicked={(x)=>handleCell(x)} />
+                  onCellClicked={(x)=>handleCell(x)}
+                  enableCellTextSelection={true}
+                  />
               </div>
             )}
         </div>

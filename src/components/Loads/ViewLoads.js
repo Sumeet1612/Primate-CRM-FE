@@ -255,6 +255,7 @@ const getStatus=(param)=>{
               rowSelection="multiple"
               onSelectionChanged={handleMutipleSelection}
               onGridReady={(event)=>{setGridApi(event.api)}}
+              enableCellTextSelection={true}
             />
           </div>
         )}

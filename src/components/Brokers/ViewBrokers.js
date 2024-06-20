@@ -83,7 +83,9 @@ function ViewBrokers(){
             columnDefs={colDef} 
             onCellClicked={(x)=>handleCell(x)}
             pagination={true}
-            paginationAutoPageSize={true} />
+            paginationAutoPageSize={true}
+            enableCellTextSelection={true}
+            />
         </div>
         }
         </div>

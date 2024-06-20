@@ -171,6 +171,7 @@ function AgencyForm() {
         pagination={true}
         paginationAutoPageSize={true}
         onGridReady={(event)=>{setGridApi(event.api)}}
+        enableCellTextSelection={true}
       />
     </div>
     </div>
