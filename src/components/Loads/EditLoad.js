@@ -663,7 +663,7 @@ function EditLoad() {
               color="success"
               sx={{ width: "20%" }}
               onClick={handleDelete}
-              disabled={!obj.isEditable && userRole === 2}
+              disabled={!obj.isEditable && userRole === 2 && data?.paymentStatusId!==1}
             >
               {" "}
               DELETE LOAD{" "}

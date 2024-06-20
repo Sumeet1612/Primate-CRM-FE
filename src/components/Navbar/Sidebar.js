@@ -11,11 +11,13 @@ function Sidebar() {
     let userId=loggedInUserId()
     let roleId=loggedInUserRole()
     if(parseInt(roleId)===1){
-      setData(()=>{return SidebarUserData.concat(...SidebarAdminData).filter(x=>x.title!=="Login")})
+      setData(()=>{return SidebarUserData.concat(...SidebarAdminData)
+        // move logout at the end, otherwise it was coming im mid of list
+        .filter(x=>x.path!=="logout").concat(SidebarUserData.filter(x=>x.path==="logout"))})
     }
     
     else if(userId > 0){
-      setData(()=>{return SidebarUserData.filter(x=>x.title !=="Login")})
+      setData(()=>{return SidebarUserData})
     }
   },[])
 

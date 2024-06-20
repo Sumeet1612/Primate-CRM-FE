@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import "../../App.css";
-import LogoutIcon from "@mui/icons-material/Logout";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import { logOut, loggedInUserId, loggedInUserRole } from "../../api/validation";
+import {loggedInUserId, loggedInUserRole } from "../../api/validation";
 import Cards from "./Cards";
 import {
   getMarginForAdmin,
@@ -57,13 +55,6 @@ function Home() {
       nav("/Login");
     }
   }, [nav]);
-
-  const logout = () => {
-    logOut();
-    setLoggedIn(false);
-    window.location.reload();
-    alert("Logged Out");
-  };
 
   return (
     <div className="PageLayout">
@@ -167,36 +158,7 @@ function Home() {
           <br /> Please Login to Proceed <br />{" "}
         </>
       )}
-
-      <br />
-      {loggedIn ? (
-        <>
-          <LogoutIcon
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginLeft: "5%",
-            }}
-            onClick={logout}
-          />{" "}
-          <h3
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginLeft: "5%",
-            }}
-          >
-            Log Out
-          </h3>{" "}
-        </>
-      ) : (
-        <>
-          <LockOutlinedIcon onClick={() => nav("/login")} />
-          <h3>Log In</h3>{" "}
-        </>
-      )}
+      
     </div>
   );
 }

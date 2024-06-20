@@ -67,7 +67,10 @@ function ViewLoads() {
 }
 
 const getStatus=(param)=>{
-  if(param.value===1){
+  if(param.value===1 && param?.data?.invoiceDate){
+    return "Invoiced"
+  }
+  else if(param.value===1){
     return "Open"
   }
   else if(param.value===2){
@@ -145,12 +148,12 @@ const getStatus=(param)=>{
   const handleMutipleSelection=(event)=>{
     let selectedRow = event.api.getSelectedRows();
     if(selectedRow.length>0){
-    if(selectedRow.every(x=>x.paymentStatusId===1 && x.invoiceDate)){
+    if(selectedRow.every(x=>x.paymentStatusId===1 && x.invoiceDate && !x.mismatched)){
       setPaymentState((prev)=>{
         return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:2}
       });
     }
-    else if(selectedRow.every(x=>x.paymentStatusId===2)){
+    else if(selectedRow.every(x=>x.paymentStatusId===2 && !x.mismatched)){
       setPaymentState((prev)=>{
         return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:3}
       });

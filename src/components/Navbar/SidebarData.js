@@ -6,6 +6,7 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import LogoutIcon from "@mui/icons-material/Logout";
 import { loggedInUserId } from "../../api/validation";
 
 export const SidebarUserData = [
@@ -14,7 +15,7 @@ export const SidebarUserData = [
   { title: "Profile", icon: <AccountBoxIcon />, path: `profile/${loggedInUserId()}` },
   { title: "Loads", icon: <AirportShuttleIcon />, path: "viewLoads" },
   { title: "Invoices", icon: <ReceiptIcon />, path: "invoices" },
-  { title: "Login", icon: <ReceiptIcon />, path: "login" },
+  { title: "Logout", icon: <LogoutIcon />, path: "logout" },
 ];
 
 export const SidebarAdminData = [
