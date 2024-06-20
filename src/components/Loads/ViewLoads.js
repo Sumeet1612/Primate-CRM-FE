@@ -200,7 +200,7 @@ const getStatus=(param)=>{
 
   return (
     <>
-      <div className="PageLayout" style={{ height: '100%' }}>
+      <div className="PageLayout" style={{ height: '91%' }}>
       <h1
           style={{
             color: "white",
