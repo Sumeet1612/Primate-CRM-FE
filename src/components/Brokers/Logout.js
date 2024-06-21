@@ -5,15 +5,11 @@ import { logOut } from "../../api/validation";
 export default function Logout(){
     const nav= useNavigate();
     useEffect(()=>{
-        LogOutWithReload();
-        nav('/Login')
-    },[nav])
-
-    const LogOutWithReload = () => {
         logOut();
+        nav('/Login')
         window.location.reload();
         alert("Logged Out");
-      };
+    },[nav])
 
     return(
         <div>
