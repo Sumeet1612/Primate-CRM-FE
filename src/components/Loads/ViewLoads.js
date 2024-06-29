@@ -66,9 +66,29 @@ function ViewLoads() {
     }
 }
 
+const getStatus=(param)=>{
+  if(param.value===1 && param?.data?.invoiceDate){
+    return "Invoiced"
+  }
+  else if(param.value===1){
+    return "Open"
+  }
+  else if(param.value===2){
+    return "Requested"
+  }
+  else if(param.value===3){
+    return "Approved"
+  }
+  else if(param.value===4){
+    return "Paid"
+  }
+}
+
   const [columnDefs] = useState([
     { headerCheckboxSelection:true, checkboxSelection:true, field: "",  width:50, headerName:'#' },
     { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:120, headerName:'LOAD #', resizable: true },
+    { field: "paymentStatusId", sortable: true, tooltipField:'Load Status', width:120, headerName:'STATUS', resizable: true,
+  valueFormatter: params=>getStatus(params) },
     { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:200, headerName:'SHIPPER NAME', resizable: true },
     { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:150, headerName:'ORIGIN', resizable: true },
     { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:150, headerName:'DESTINATION', resizable: true },
@@ -88,7 +108,6 @@ function ViewLoads() {
     { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:150, headerName:'INVOICED ON', resizable: true ,
     valueFormatter: params=>formatDate(params) },
     { field: "mismatched", filter: true, sortable: true , resizable: true }, 
-    // { field: "createdOn", filter: 'true', sortable: true, valueFormatter: params=>formatDate(params), resizable: true  },
     { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:150, headerName:'UPDATED ON', resizable: true , 
      valueFormatter: params=>formatDate(params)}
   ]);
@@ -129,12 +148,12 @@ function ViewLoads() {
   const handleMutipleSelection=(event)=>{
     let selectedRow = event.api.getSelectedRows();
     if(selectedRow.length>0){
-    if(selectedRow.every(x=>x.paymentStatusId===1 && x.invoiceDate)){
+    if(selectedRow.every(x=>x.paymentStatusId===1 && x.invoiceDate && !x.mismatched)){
       setPaymentState((prev)=>{
         return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:2}
       });
     }
-    else if(selectedRow.every(x=>x.paymentStatusId===2)){
+    else if(selectedRow.every(x=>x.paymentStatusId===2 && !x.mismatched)){
       setPaymentState((prev)=>{
         return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:3}
       });
@@ -181,7 +200,7 @@ function ViewLoads() {
 
   return (
     <>
-      <div className="PageLayout">
+      <div className="PageLayout" style={{ height: '91%' }}>
       <h1
           style={{
             color: "white",
@@ -215,7 +234,7 @@ function ViewLoads() {
         {isloading ? (
            <LinearProgress />
         ) : (
-          <div className="ag-theme-alpine" style={{ height: 550, width: '98%' }}>
+          <div className="ag-theme-alpine" style={{ height: "90%" , width: '98%' }}>
           {paymentState.status=== 0 ? <></>:
             <Button
                 variant="contained"
@@ -236,6 +255,7 @@ function ViewLoads() {
               rowSelection="multiple"
               onSelectionChanged={handleMutipleSelection}
               onGridReady={(event)=>{setGridApi(event.api)}}
+              enableCellTextSelection={true}
             />
           </div>
         )}

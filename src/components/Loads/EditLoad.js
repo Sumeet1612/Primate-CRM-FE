@@ -614,7 +614,7 @@ function EditLoad() {
               <Button
                 name="admin resolve mismatch"
                 variant="contained"
-                sx={{ width: "40%" }}
+                sx={{ width: "18%" }}
                 onClick={handleAdminResolve}
                 disabled={!obj.isEditable && userRole === 2}
               >
@@ -625,7 +625,7 @@ function EditLoad() {
               <Button
                 name="broker resolve mismatch"
                 variant="contained"
-                sx={{ width: "40%" }}
+                sx={{ width: "18%" }}
                 onClick={handleBrokerResolve}
                 disabled={!obj.isEditable && userRole === 2}
               >
@@ -663,7 +663,7 @@ function EditLoad() {
               color="success"
               sx={{ width: "20%" }}
               onClick={handleDelete}
-              disabled={!obj.isEditable && userRole === 2}
+              disabled={!obj.isEditable && userRole === 2 && data?.paymentStatusId!==1}
             >
               {" "}
               DELETE LOAD{" "}

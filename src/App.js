@@ -19,6 +19,7 @@ import EditShippers from "./components/Shippers/EditShippers";
 import ViewBrokers from "./components/Brokers/ViewBrokers";
 import ViewInvoices from "./components/Invoice/ViewInvoices";
 import InvoiceLayout from "./components/Invoice/InvoiceLayout";
+import Logout from "./components/Brokers/Logout";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
               <Route path="invoices" element={<ViewInvoices />} />
               <Route path="manageBrokers" element={<ViewBrokers/>}/>
               <Route path="invoice/:invoiceNumber" element={<InvoiceLayout/>}/>
+              <Route path="logout" element={<Logout/>}/>
             </Route>
           </Routes>
         </BrowserRouter>
