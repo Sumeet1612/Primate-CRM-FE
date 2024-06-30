@@ -127,9 +127,9 @@ function Home() {
               >
                 <Cards
                   title="Monthly Sale"
-                  value={"$ " + margin?.currentMonthMargin}
+                  value={"$ " + Number(margin?.currentMonthMargin).toFixed(2)}
                 />
-                <Cards title="Gross Sale" value={"$ " + margin?.totalMargin} />
+                <Cards title="Gross Sale" value={"$ " + Number(margin?.totalMargin).toFixed(2)} />
               </div>
               <div
                 className="Row2"
@@ -142,11 +142,11 @@ function Home() {
               >
                 <Cards
                   title="Sale After Last Invoice"
-                  value={"$ " + margin?.invoicedMargin}
+                  value={"$ " + Number(margin?.invoicedMargin).toFixed(2)}
                 />
                 <Cards
                   title="Last Payout"
-                  value={"₹ " + margin?.lastInvoicedAmount}
+                  value={"₹ " + Number(margin?.lastInvoicedAmount).toFixed(2)}
                 />
               </div>
             </div>

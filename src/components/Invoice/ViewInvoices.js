@@ -20,10 +20,14 @@ function ViewInvoices(){
         {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true },
         {field: "payableUsd" , filter: true, sortable: true, resizable: true },
         {field: "phoneBillUsd" , filter: true, sortable: true, resizable: true },
-        {field: "grossInr" , filter: true, sortable: true, resizable: true },
+        {field: "grossInr" , filter: true, sortable: true, resizable: true,  valueFormatter:params=>{
+            return Number(params?.value).toFixed(2)
+        } },
         {field: "deductionInr" , filter: true, sortable: true, resizable: true },
         {field: "tds" , filter: true, sortable: true, resizable: true },
-        {field: "netPayable" , filter: true, sortable: true, resizable: true },
+        {field: "netPayable" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+            return Number(params?.value).toFixed(2)
+        } },
         {field: "invoiceDate" , filter: true, sortable: true, resizable: true, valueFormatter: params=>{
             let date= new Date(params.value.toString())
             return date.toLocaleDateString('en-US');

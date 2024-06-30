@@ -19,10 +19,20 @@ function ViewLoads() {
     status:0,
     selectedLoad:[]
   });
+  const [userData, setUserData]= useState({
+    broker:0,
+    role:0
+  })
 
   useEffect(() => {
     let brokerId = loggedInUserId();
     let roleId= loggedInUserRole();
+
+    setUserData({
+      broker: brokerId,
+      role:roleId
+    });
+
     if (brokerId > 0) {
       setIsLoading(true);
       if(roleId===2){
@@ -148,17 +158,20 @@ const getStatus=(param)=>{
   const handleMutipleSelection=(event)=>{
     let selectedRow = event.api.getSelectedRows();
     if(selectedRow.length>0){
+      //paymentStatusId 1- None ; 2- Requested, 3- Approved   
     if(selectedRow.every(x=>x.paymentStatusId===1 && x.invoiceDate && !x.mismatched)){
       setPaymentState((prev)=>{
         return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:2}
       });
     }
+    //give permission to approve or reject only to Admin
     else if(selectedRow.every(x=>x.paymentStatusId===2 && !x.mismatched)){
       setPaymentState((prev)=>{
         return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:3}
       });
     }
     else{
+      //setting status as 0 if all selected loads are not in same payment state
       setPaymentState((prev)=>{
         return {selectedLoad: selectedRow.map(x=>x.loadNumber), status:0}
       });
@@ -170,9 +183,13 @@ const getStatus=(param)=>{
     });
   }
   }
-  const handlePayment=()=>{
+  const handlePayment=(state)=>{
+    let paymentStatus= paymentState?.status;
     if(paymentState?.status>0){
-      updatePaymentState(paymentState?.selectedLoad, paymentState?.status)
+      if(state==='reject'){
+        paymentStatus=1;
+      }
+      updatePaymentState(paymentState?.selectedLoad, paymentStatus)
       .then((res)=>{
         if(res?.status===200){
           if(paymentState?.status===2 && res?.data){
@@ -235,17 +252,40 @@ const getStatus=(param)=>{
            <LinearProgress />
         ) : (
           <div className="ag-theme-alpine" style={{ height: "90%" , width: '98%' }}>
-          {paymentState.status=== 0 ? <></>:
-            <Button
+            {/* if selected loads are ready for payment  request*/}
+          {paymentState?.status=== 2  ? <Button
                 variant="contained"
                 color="success"
                 sx={{ width: "40%" }}
                 onClick={handlePayment}
               >
                 {" "}
-                {paymentState.status === 2 ? "Request Payment": "Approve Payment"}{" "}
-              </Button>
+                 Request Payment {" "}
+              </Button>: <></>
               }
+              {paymentState?.status===3 && userData?.role===1 ? 
+            <>
+            <Button
+                variant="contained"
+                color="success"
+                sx={{ width: "40%" }}
+                onClick={handlePayment}
+            >
+                {" "}
+                 Approve Payment {" "}
+            </Button> &nbsp;
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ width: "40%" }}
+              onClick={()=>handlePayment('reject')}
+            >
+              {" "}
+                Reject Payment {" "}
+            </Button>
+            </> 
+            : <></> 
+            }
             <AgGridReact
               rowData={filteredloads}
               columnDefs={columnDefs}
