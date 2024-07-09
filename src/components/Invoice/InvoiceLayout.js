@@ -107,7 +107,7 @@ function InvoiceLayout() {
                 </tr>
 
                 <tr>
-                  <td>Paymnet Terms:</td>
+                  <td>Payment Terms:</td>
                   <td>NET 15</td>
                 </tr>
 

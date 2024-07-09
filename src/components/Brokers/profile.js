@@ -9,10 +9,8 @@ import { useEffect, useState } from "react";
 import {
   editBroker,
   getBrokerOnId,
-  getCurrency,
   handleApiError,
 } from "../../api/api";
-import { MenuItem, Select } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 import PasswordChangeModal from "./PasswordChangeModal";
@@ -57,7 +55,6 @@ function Profile() {
       updatedOn: "",
     },
   ]);
-  const [currency, setCurrency] = useState([]);
 
   const [others, setOthers] = useState({
     exchangeRate: "0",
@@ -86,17 +83,7 @@ function Profile() {
     let currencyData=[];
     if(loggedInBrokerId > 0 && (user===parseInt(loggedInBrokerId) || others.userRole===1)){
 
-    //get currency list
-    getCurrency()
-    .then((res)=>{
-      if(res.status===200){
-        setCurrency(res.data);
-        currencyData=res.data;
-      }
-    })
-    .catch((err)=>{
-      handleApiError(err);
-    })
+
 
         // get broker details
         getBrokerOnId(loggedInBrokerId)
@@ -162,13 +149,6 @@ function Profile() {
     setBroker((state) => {
       return { ...state, [fname]: value };
     });
-    if (fname === "currencyId") {
-      let updatedExchangeRate = currency?.filter((x) => x.id === value)[0]
-        ?.exchangeRate;
-      setOthers((prev) => {
-        return { ...prev, exchangeRate: updatedExchangeRate };
-      });
-    }
   };
 
   const handleAccount = (e, index) => {
@@ -637,36 +617,14 @@ function Profile() {
             onChange={handleChange}
           />
 
-          <Select
-            name="currencyId"
-            value={broker.currencyId}
-            onChange={handleChange}
-            sx={{ height:"40px", mr:"3%" }}
-          >
-            <MenuItem value="0" disabled>
-              <em>Select Currency</em>
-            </MenuItem>
-            {currency.map((cur, index) => {
-              return (
-                <MenuItem
-                  sx={{ padding:"5px" }}
-                  key={index}
-                  value={cur.id}
-                >
-                  {cur.currencyName}
-                </MenuItem>
-              );
-            })}
-          </Select>
-
           <TextField
             size="small"
             sx={{ height: "50px", width: "20%", mr: "10%", mb: "1%" }}
             type="text"
             label="Exchange Rate"
-            name="exchangeRate"
-            value={others.exchangeRate}
-            InputProps={{ readOnly: true }}
+            name="currencyId"
+            value={broker.currencyId}
+            onChange={handleChange}
           />
           <br />
 
