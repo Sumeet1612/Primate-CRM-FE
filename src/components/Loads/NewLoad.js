@@ -21,12 +21,12 @@ function NewLoad() {
   const [sendData, setSendData] = useState({
     loadNumber: "",
     shipperId: "0",
+    loadDescription: "",
     pickupLocation: "",
     deliveryLocation: "",
     bookingDate: "",
     pickupDate: "",
     deliveryDate: "",
-    loadDescription: "",
     carrierMC: "",
     carrierName: "",
     carrierPOC: "",
@@ -43,13 +43,18 @@ function NewLoad() {
   const [shippers, setShippers] = useState([]);
   const [loggedInBroker, setloggedInBroker]=useState({userName:'XXX'});
   const [additionalBrokers, setAdditionalBrokers] = useState([]);
+  const history=useNavigate();
   const [message, setMessage]=useState({
     isLoading:false,
     maxShareError:'',
     disabled:false
   })
 
-  const history = useNavigate();
+  const [validationError, setValidationError] = useState({
+    isError:false,
+    errorField:''
+  });
+  const dateFields=['bookingDate','pickupDate','deliveryDate']
 
   useEffect(() => {
     const userId= loggedInUserId();
@@ -143,6 +148,12 @@ function NewLoad() {
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
+    if(feildName === "shipperRate" || feildName === "carrierRate" || feildName==="carrierMC"){
+      if(isNaN(value)){
+        alert("Only Numbers are allowed")
+        return;
+      }
+    }
     setSendData((state) => {
       return { ...state, [feildName]: value };
     });
@@ -187,6 +198,7 @@ function NewLoad() {
   };
 
   const handleSubmit = () => {
+    console.log(sendData)
     //validate no field can be left blank
     let validationError = false;
     if(sendData['pickupDate'] > sendData['deliveryDate']){
@@ -196,8 +208,16 @@ function NewLoad() {
     Object.keys(sendData).every(sd=>{
       if((sendData[sd]==='') || (sendData[sd]==='0' && sd==='shipperId')){
         validationError= true;
+        setValidationError({isError:true, errorField:sd})
         return false;
       }
+      if(dateFields.find(x=>x===sd) && sendData[sd]==='Invalid Date'){
+        validationError= true;
+        setValidationError({isError:true, errorField:sd})
+        return false;
+      }
+      //reset error
+      setValidationError({isError:false, errorField:''})
       return true;
     })
     
@@ -281,7 +301,8 @@ function NewLoad() {
       ) : (
         <div>
           <TextField
-            required
+            error={validationError.errorField==="loadNumber"? true:false}
+            required  
             sx={{ height: "70px", width: "20%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -294,11 +315,14 @@ function NewLoad() {
 
           <Select
             name="shipperId"
-            sx={{ height: "55px", width: "30%", mr: "5%", mb:"1%" }}
+            error={validationError.errorField==="shipperId"? true:false}
+            sx={{ height: "55px", width: "30%", mr: "5%", mb:"1%" , 
+              color:validationError.errorField==="shipperId"?'red':'black'}}
             value={sendData.shipperId}
             onChange={handleChange}
+            id='shipperId'
           >
-            <MenuItem value="0">Select Shipper</MenuItem>
+            <MenuItem value="0" disabled>Select Shipper</MenuItem>
             {shippers.map((s) => {
               return (
                 <MenuItem key={s.id} value={s.id}>
@@ -307,8 +331,9 @@ function NewLoad() {
               );
             })}
           </Select>
-
+          
           <TextField
+          error={validationError.errorField==="loadDescription"? true:false}
             required
             sx={{ height: "70px", width: "30%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
@@ -322,6 +347,7 @@ function NewLoad() {
           <br />
 
           <TextField
+          error={validationError.errorField==="pickupLocation"? true:false}
             required
             sx={{ height: "70px", width: "40%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
@@ -334,6 +360,7 @@ function NewLoad() {
           />
 
           <TextField
+          error={validationError.errorField==="deliveryLocation"? true:false}
             required
             sx={{ height: "70px", width: "40%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
@@ -347,6 +374,7 @@ function NewLoad() {
           <br />
 
           <DatePicker
+          error={validationError.errorField==="bookingDate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             required
             id="bookingDate"
@@ -364,6 +392,7 @@ function NewLoad() {
           />
 
           <DatePicker
+          error={validationError.errorField==="pickupDate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             required
             id="pickupDate"
@@ -381,6 +410,7 @@ function NewLoad() {
           />
 
           <DatePicker
+          error={validationError.errorField==="deliveryDate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "10%", mb:"1%" }}
             required
             id="deliveryDate"
@@ -397,8 +427,15 @@ function NewLoad() {
             }}
           />
           <br />
+          {validationError.isError && dateFields.find(x=>x===validationError.errorField) ? 
+          <p style={{color:'red'}}>{validationError.errorField
+            .replace(/([a-z])([A-Z])/g, '$1 $2') 
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+            .replace(/^./, str => str.toUpperCase())} canot be empty</p>: <></>}
+          <br/>
 
           <TextField
+            error={validationError.errorField==="brokerId"? true:false}
             required
             sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
@@ -419,6 +456,7 @@ function NewLoad() {
           >
             Add
           </Button>
+          <br/>
           <i
             style={{
               marginLeft: "15px",
@@ -426,7 +464,7 @@ function NewLoad() {
               wordWrap: "break-word",
             }}
           >
-            Click the button to add Additional Broker and shared Commission Percentage
+            Click the button to add Additional Broker (if other than you) and share Commission Percentage
           </i>
           <br />
 
@@ -481,7 +519,9 @@ function NewLoad() {
           ) : (
             <br />
           )}
+          <br/>
           <TextField
+          error={validationError.errorField==="carrierMC"? true:false}
             required
             sx={{ height: "70px", width: "20%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
@@ -495,6 +535,7 @@ function NewLoad() {
 
           <TextField
             required
+            error={validationError.errorField==="carrierName"? true:false}
             sx={{ height: "70px", width: "30%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -507,6 +548,7 @@ function NewLoad() {
 
           <TextField
             required
+            error={validationError.errorField==="carrierPOC"? true:false}
             sx={{ height: "70px", width: "30%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -519,6 +561,7 @@ function NewLoad() {
           <br />
 
           <TextField
+            error={validationError.errorField==="carrierContact"? true:false}
             required
             sx={{ height: "70px", width: "30%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
@@ -532,6 +575,7 @@ function NewLoad() {
 
           <TextField
             required
+            error={validationError.errorField==="carrierEmail"? true:false}
             sx={{ height: "70px", width: "55%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="email"
@@ -545,6 +589,7 @@ function NewLoad() {
 
           <TextField
             required
+            error={validationError.errorField==="shipperRate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -557,6 +602,7 @@ function NewLoad() {
 
           <TextField
             required
+            error={validationError.errorField==="carrierRate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
