@@ -176,7 +176,7 @@ function Invoice() {
           sx={{ height: "70px", width: "53%", mr: "10%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value="Primate Outsorcing Ltd"
+          value="Primate Outsourcing PVT. LTD."
         />
         <DatePicker
           label="Invoiced On"

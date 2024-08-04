@@ -17,7 +17,7 @@ import * as dayjs from "dayjs";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 
 function NewLoad() {
-
+const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER ==="Disable"?true:false;
   const [sendData, setSendData] = useState({
     loadNumber: "",
     shipperId: "0",
@@ -281,6 +281,86 @@ function NewLoad() {
     }
   };
 
+  const AdditionalBrokerHTML=()=>{
+    return (<>
+    {disableAdditionalBroker? <>
+      <Button
+        variant="contained"
+        color="success"
+        onClick={manageBrokers}
+        endIcon={<AddIcon />}
+        sx={{ width: "10%", mb:"1%" }}
+      >
+        Add
+      </Button>
+      <br/>
+      <i
+        style={{
+          marginLeft: "15px",
+          fontSize: "15px",
+          wordWrap: "break-word",
+        }}
+      >
+        Click the button to add Additional Broker (if other than you) and share Commission Percentage
+      </i>
+      <br />
+
+      {additionalBrokers ? (<div>
+        {additionalBrokers.map((additionalBroker, index) => {
+          return (
+            <div key={index}>
+              <Select
+                sx={{ height: "55px", width: "20%", mr: "4.5%", mb:"1%"}}
+                name="brokerId"
+                value={additionalBroker.brokerId}
+                onChange={(e) => handleMultipleBrokers(e, index)}
+              >
+                <MenuItem value="">Select an option</MenuItem>
+                {availableBrokers.map((availableBroker) => {
+                  return (
+                    <MenuItem
+                      key={availableBroker.id}
+                      value={availableBroker.id}
+                    >
+                      {availableBroker.brokerAlias}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <TextField
+                required
+                sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
+                type="text"
+                id="sharedPercentage"
+                label="Shared Percentage"
+                name="sharedPercentage"
+                value={additionalBroker.sharedPercentage}
+                onChange={(e) => handleMultipleBrokers(e, index)}
+              />
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  undoBroker(index);
+                }}
+              >
+                {" "}
+                X{" "}
+              </Button>
+              <br />
+            </div>
+          );
+        })}
+        <h6 color="Red">{message.maxShareError}</h6>
+        </div>
+      ) : (
+        <br />
+      )}
+      </>:<></>}
+      <br/>
+    </>)
+   
+  }
 
   return (
     <div className="PageLayout">
@@ -447,79 +527,7 @@ function NewLoad() {
             readOnly
           />
 
-          <Button
-            variant="contained"
-            color="success"
-            onClick={manageBrokers}
-            endIcon={<AddIcon />}
-            sx={{ width: "10%", mb:"1%" }}
-          >
-            Add
-          </Button>
-          <br/>
-          <i
-            style={{
-              marginLeft: "15px",
-              fontSize: "15px",
-              wordWrap: "break-word",
-            }}
-          >
-            Click the button to add Additional Broker (if other than you) and share Commission Percentage
-          </i>
-          <br />
-
-          {additionalBrokers ? (<div>
-            {additionalBrokers.map((additionalBroker, index) => {
-              return (
-                <div key={index}>
-                  <Select
-                    sx={{ height: "55px", width: "20%", mr: "4.5%", mb:"1%"}}
-                    name="brokerId"
-                    value={additionalBroker.brokerId}
-                    onChange={(e) => handleMultipleBrokers(e, index)}
-                  >
-                    <MenuItem value="">Select an option</MenuItem>
-                    {availableBrokers.map((availableBroker) => {
-                      return (
-                        <MenuItem
-                          key={availableBroker.id}
-                          value={availableBroker.id}
-                        >
-                          {availableBroker.brokerAlias}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                  <TextField
-                    required
-                    sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
-                    type="text"
-                    id="sharedPercentage"
-                    label="Shared Percentage"
-                    name="sharedPercentage"
-                    value={additionalBroker.sharedPercentage}
-                    onChange={(e) => handleMultipleBrokers(e, index)}
-                  />
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                      undoBroker(index);
-                    }}
-                  >
-                    {" "}
-                    X{" "}
-                  </Button>
-                  <br />
-                </div>
-              );
-            })}
-            <h6 color="Red">{message.maxShareError}</h6>
-            </div>
-          ) : (
-            <br />
-          )}
-          <br/>
+{AdditionalBrokerHTML()}
           <TextField
           error={validationError.errorField==="carrierMC"? true:false}
             required

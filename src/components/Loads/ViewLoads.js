@@ -23,6 +23,7 @@ function ViewLoads() {
     broker:0,
     role:0
   })
+  const [view, setview]=useState("0"); 
 
   useEffect(() => {
     let brokerId = loggedInUserId();
@@ -63,6 +64,7 @@ function ViewLoads() {
           setIsLoading(false);
         });
       }
+      setview("0")
     }
   }, [reload]);
 
@@ -133,6 +135,7 @@ const getStatus=(param)=>{
 
   const handleViewChange = (viewId) => {
     if(loads?.length>0){
+      setview(viewId);
       setPaymentState({
         status:0,
         selectedLoad:[]
@@ -192,15 +195,21 @@ const getStatus=(param)=>{
       updatePaymentState(paymentState?.selectedLoad, paymentStatus)
       .then((res)=>{
         if(res?.status===200){
-          if(paymentState?.status===2 && res?.data){
+          if(paymentStatus===2 && res?.data){
             alert("Payment Requested !!")
             setReload((prev)=>{return prev+1});
             setPaymentState((prev)=>{
               return {selectedLoad:[], status:0}
             });
           }
-          else if(paymentState?.status===3 && res?.data){
+          else if(paymentStatus===3 && res?.data){
             alert("Payment Approved !!")
+            setReload((prev)=>{return prev+1});
+            setPaymentState((prev)=>{
+              return {selectedLoad:[], status:0}
+            });
+          }else if(paymentStatus===1 && res?.data){
+            alert("Payment Rejected !!")
             setReload((prev)=>{return prev+1});
             setPaymentState((prev)=>{
               return {selectedLoad:[], status:0}
@@ -231,7 +240,7 @@ const getStatus=(param)=>{
           Manage Loads
         </h1>
         <label> Select View</label> <>   </>
-        <select onChange={(event) => handleViewChange(event.target.value)}>
+        <select value={view} onChange={(event) => handleViewChange(event.target.value)}>
           <option value="0">All Loads</option>
           <option value="1">Invoiced Loads & Payment not Requested</option>
           <option value="2">Loads with Payment Requested</option>

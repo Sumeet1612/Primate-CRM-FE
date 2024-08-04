@@ -16,10 +16,18 @@ function ViewInvoices(){
     const [cols]=useState([
         {field: "invoiceNumber" , filter: true, sortable: true, resizable: true },
         {field: "brokerAlias" , filter: true, sortable: true, resizable: true },
-        {field: "grossUsd" , filter: true, sortable: true, resizable: true },
-        {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true },
-        {field: "payableUsd" , filter: true, sortable: true, resizable: true },
-        {field: "phoneBillUsd" , filter: true, sortable: true, resizable: true },
+        {field: "grossUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+            return Number(params?.value).toFixed(2)
+        } },
+        {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+            return Number(params?.value).toFixed(2)
+        } },
+        {field: "payableUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+            return Number(params?.value).toFixed(2)
+        } },
+        {field: "phoneBillUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+            return Number(params?.value).toFixed(2)
+        } },
         {field: "grossInr" , filter: true, sortable: true, resizable: true,  valueFormatter:params=>{
             return Number(params?.value).toFixed(2)
         } },
