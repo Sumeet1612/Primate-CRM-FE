@@ -98,12 +98,12 @@ const getStatus=(param)=>{
 
   const [columnDefs] = useState([
     { headerCheckboxSelection:true, checkboxSelection:true, field: "",  width:50, headerName:'#' },
-    { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:120, headerName:'LOAD #', resizable: true },
-    { field: "paymentStatusId", sortable: true, tooltipField:'Load Status', width:120, headerName:'STATUS', resizable: true,
+    { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:100, headerName:'LOAD #', resizable: true },
+    { field: "paymentStatusId", sortable: true, tooltipField:'Load Status', width:100, headerName:'STATUS', resizable: true,
   valueFormatter: params=>getStatus(params) },
     { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:200, headerName:'SHIPPER NAME', resizable: true },
-    { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:150, headerName:'ORIGIN', resizable: true },
-    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:150, headerName:'DESTINATION', resizable: true },
+    { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:120, headerName:'ORIGIN', resizable: true },
+    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:140, headerName:'DESTINATION', resizable: true },
     { field: "pickupDate", filter: 'true', sortable: true, tooltipField:'pickupDate', width:150, headerName:'PICKUP DATE', resizable: true ,
     valueFormatter: params=>formatDate(params)},
     { field: "deliveryDate", filter: 'true', sortable: true, tooltipField:'deliveryDate', width:150, headerName:'DELIVERY DATE', resizable: true ,
@@ -119,7 +119,8 @@ const getStatus=(param)=>{
     { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:120, headerName:'MARGIN' , resizable: true },
     { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:150, headerName:'INVOICED ON', resizable: true ,
     valueFormatter: params=>formatDate(params) },
-    { field: "mismatched", filter: true, sortable: true , resizable: true }, 
+    { field: "invoiceNumber", filter: 'true', sortable: true, tooltipField:'invoiceNumber', width:175, headerName:'INVOICE NUMBER', resizable: true },
+    { field: "mismatched", filter: true, sortable: true , resizable: true, width:130 }, 
     { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:150, headerName:'UPDATED ON', resizable: true , 
      valueFormatter: params=>formatDate(params)}
   ]);
@@ -298,7 +299,8 @@ const getStatus=(param)=>{
             <AgGridReact
               rowData={filteredloads}
               columnDefs={columnDefs}
-              onCellClicked={(x) => handleCell(x)}
+              onCellDoubleClicked={(x) => handleCell(x)}
+              onCellClicked={(e)=>navigator.clipboard.writeText(e?.value)}
               pagination={true}
               paginationAutoPageSize={true}
               rowSelection="multiple"
