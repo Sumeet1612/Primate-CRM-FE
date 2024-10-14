@@ -193,14 +193,6 @@ export const getBrokerProfile=(brokerId)=>{
   })
 }
 
-export const getCurrency=()=>{
-  return axios({
-    method:'get',
-    url:`${baseApiUrl}/admin/currencies`,
-    headers:headers()
-  })
-}
-
 export const getAllLoads=()=>{
   return axios({
     method:'get',
