@@ -23,6 +23,7 @@ function Invoice() {
     phoneBillUsd: '',
     grossInr: '',
     deductionInr: '',
+    deductionUsd: '',
     tds: '',
     netPayable: '',
     brokerProfile:{
@@ -33,7 +34,15 @@ function Invoice() {
         pan:'',
         ifsc:'',
         bank:''
+      }],
+      brokerCharges:[{
+        id:0,
+        typeId:0,
+        description:'',
+        amount:0,
+        brokerId:0
       }]
+    
     },
     paidToAccount:'0',
     description:''
@@ -224,14 +233,7 @@ function Invoice() {
           InputProps={{readOnly:true}}
           value={Number(preInvoice.adjustmentDeduction).toFixed(2)}
         />
-        <TextField
-          label="Payable USD"
-          type="text"
-          sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
-          InputLabelProps={{ style: { fontSize: 15 } }}
-          InputProps={{readOnly:true}}
-          value={Number(preInvoice.payableUsd).toFixed(2)}
-        />
+        
         <TextField
           label="Phone Bill (USD)"
           type="text"
@@ -239,6 +241,23 @@ function Invoice() {
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
           value={Number(preInvoice.phoneBillUsd).toFixed(2)}
+        />
+        <TextField
+          label="Deduction (USD)"
+          type="text"
+          sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
+          InputLabelProps={{ style: { fontSize: 15 } }}
+          InputProps={{readOnly:true}}
+          value={Number(-preInvoice.deductionUsd).toFixed(2)}
+        />
+
+        <TextField
+          label="Payable USD"
+          type="text"
+          sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
+          InputLabelProps={{ style: { fontSize: 15 } }}
+          InputProps={{readOnly:true}}
+          value={Number(preInvoice.payableUsd).toFixed(2)}
         />
 
         <TextField
@@ -251,12 +270,21 @@ function Invoice() {
         />
 
         <TextField
-          label="Deductions (if any)"
+          label="Deduction INR"
           type="text"
-          sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
+          sx={{ height: "70px", width: "16%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={Number(preInvoice.deductionInr).toFixed(2)}
+          value={Number(-preInvoice.deductionInr).toFixed(2)}
+        />
+
+        <TextField
+          label="Payable INR"
+          type="text"
+          sx={{ height: "70px", width: "16%", mr: "3.5%", mb: "1%" }}
+          InputLabelProps={{ style: { fontSize: 15 } }}
+          InputProps={{readOnly:true}}
+          value={Number(preInvoice.grossInr+preInvoice.deductionInr).toFixed(2)}
         />
 
         <TextField
@@ -265,7 +293,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={Number(preInvoice.tds/100 * (preInvoice.grossInr-preInvoice.deductionInr)).toFixed(3)}
+          value={Number(preInvoice.tds/100 * (preInvoice.grossInr+preInvoice.deductionInr)).toFixed(3)}
         />
 
         <TextField
@@ -287,6 +315,74 @@ function Invoice() {
           onChange={handleChange}
         />
         <br/>
+        <h2
+            style={{
+              color: "white",
+              backgroundColor: "black",
+              marginBottom: "2%",
+              padding: "0.5%",
+              width: "93%",
+              fontSize: "15px",
+            }}
+          >
+            Additional Charges Details{" "}
+          </h2>
+        <div>
+              {preInvoice?.brokerProfile?.brokerCharges?.length>0 ?(<>
+              {preInvoice?.brokerProfile?.brokerCharges?.map((ch, index)=>{
+                return (<div key={index}>
+                  {ch?.typeId===1? <TextField
+                    size="small"
+                    sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+                    type="text"
+                    label="Type"
+                    value="USD Deduction"
+                    disabled
+                  />: ch.typeId===2?
+                  <TextField
+                  size="small"
+                  sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+                  type="text"
+                  label="Type"
+                  value="USD Addition"
+                  disabled
+                  />: ch?.typeId===3?
+                  <TextField
+                  size="small"
+                  sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+                  type="text"
+                  label="Type"
+                  value="INR Deduction"
+                  disabled
+                />: ch?.typeId===4? <TextField
+              size="small"
+              sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+              type="text"
+              label="Type"
+              value="INR Addition"
+              disabled
+            />: <></>}
+                  <TextField
+                    size="small"
+                    sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+                    type="text"
+                    label="Description"
+                    name="description"
+                    value={ch.description}
+                  />
+                  <TextField
+                    size="small"
+                    sx={{ height: "50px", width: "20%", mr: "3%", mb: "2%" }}
+                    type="text"
+                    label="Amount"
+                    name="amount"
+                    value={ch.amount}
+                  />
+                </div>)
+              })}
+              </>)
+              :<></>}
+            </div>
 
         <Button variant="contained" color="info" 
         style={{height:"50px", width:"30%"}}

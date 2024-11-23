@@ -14,38 +14,46 @@ function ViewInvoices(){
     const [invoices, setInvoices]= useState([])
 
     const [cols]=useState([
-        {field: "invoiceNumber" , filter: true, sortable: true, resizable: true },
-        {field: "brokerAlias" , filter: true, sortable: true, resizable: true },
+        {field: "invoiceNumber" , filter: true, sortable: true, resizable: true, width:150 },
+        {field: "brokerAlias" , filter: true, sortable: true, resizable: true, width:130 },
         {field: "grossUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
             return Number(params?.value).toFixed(2)
-        } },
-        {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+        },headerName:"Gross USD", width:130  },
+        {field: "adjustmentDeduction" , filter: true, sortable: true, resizable: true, width:130, valueFormatter:params=>{
             return Number(params?.value).toFixed(2)
-        } },
-        {field: "payableUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
-            return Number(params?.value).toFixed(2)
-        } },
+        }, headerName:"Adjustment" },
         {field: "phoneBillUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
             return Number(params?.value).toFixed(2)
-        } },
+        }, headerName:"PhoneBill (USD)", width:150 },
+        {field: "deductionUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+            return -Number(params?.value).toFixed(2)
+        }, headerName:"Deductions (USD)", width:165 },
+        {field: "payableUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+            return Number(params?.value).toFixed(2)
+        },headerName:"Payable (USD)", width:150 },
+        
         {field: "grossInr" , filter: true, sortable: true, resizable: true,  valueFormatter:params=>{
             return Number(params?.value).toFixed(2)
+        },headerName:"Gross INR", width:130  },
+        {field: "deductionInr" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
+            return -Number(params?.value).toFixed(2) 
+        }, headerName:"Deductions (INR)", width:165 },
+        {field: "tds" , filter: true, sortable: true, resizable: true, width:100, valueFormatter:params=>{
+            return params?.value + "%"
         } },
-        {field: "deductionInr" , filter: true, sortable: true, resizable: true },
-        {field: "tds" , filter: true, sortable: true, resizable: true },
         {field: "netPayable" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
             return Number(params?.value).toFixed(2)
-        } },
-        {field: "invoiceDate" , filter: true, sortable: true, resizable: true, valueFormatter: params=>{
+        },headerName:"Net Payable (INR)", width:175  },
+        {field: "invoiceDate" , filter: true, sortable: true, resizable: true, width:140, valueFormatter: params=>{
             let date= new Date(params.value.toString())
             return date.toLocaleDateString('en-US');
           } },
-        {field: "dueDate" , filter: true, sortable: true, resizable: true, valueFormatter: params=>{
+        {field: "dueDate" , filter: true, sortable: true, resizable: true, width:110, valueFormatter: params=>{
             let date= new Date(params.value.toString())
             return date.toLocaleDateString('en-US');
           } },
-        {field: "paidToAccount" , filter: true, sortable: true, resizable: true },
-        {field: "updatedOn" , filter: true, sortable: true, resizable: true,
+        {field: "paidToAccount" , filter: true, sortable: true, resizable: true, width:170 },
+        {field: "updatedOn" , filter: true, sortable: true, resizable: true, width:150,
         valueFormatter: params=>{
             let date= new Date(params.value.toString())
             return date.toLocaleDateString('en-US');

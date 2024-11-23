@@ -88,3 +88,14 @@
     opacity: 0.65;
 }
 
+.headerStyle{
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 4px;
+    font-weight: bold;
+  }
+
+.cellStyle{
+  border: 1px solid #ddd;
+  padding: 4px;
+};
