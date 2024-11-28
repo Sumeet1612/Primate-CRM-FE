@@ -157,7 +157,7 @@ function InvoiceLayout() {
                   {"₹ " +
                     Number(
                       (invoices.tds / 100) *
-                        (invoices.grossInr + invoices.deductionInr)
+                        (invoices.grossInr - invoices.deductionInr)
                     )?.toFixed(2)}
                 </td>
               </tr>

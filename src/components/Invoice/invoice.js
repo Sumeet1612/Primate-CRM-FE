@@ -248,7 +248,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={Number(-preInvoice.deductionUsd).toFixed(2)}
+          value={Number(preInvoice.deductionUsd).toFixed(2)}
         />
 
         <TextField
@@ -275,7 +275,7 @@ function Invoice() {
           sx={{ height: "70px", width: "16%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={Number(-preInvoice.deductionInr).toFixed(2)}
+          value={Number(preInvoice.deductionInr).toFixed(2)}
         />
 
         <TextField
@@ -284,7 +284,7 @@ function Invoice() {
           sx={{ height: "70px", width: "16%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={Number(preInvoice.grossInr+preInvoice.deductionInr).toFixed(2)}
+          value={Number(preInvoice.grossInr-preInvoice.deductionInr).toFixed(2)}
         />
 
         <TextField
@@ -293,7 +293,7 @@ function Invoice() {
           sx={{ height: "70px", width: "15%", mr: "3.5%", mb: "1%" }}
           InputLabelProps={{ style: { fontSize: 15 } }}
           InputProps={{readOnly:true}}
-          value={Number(preInvoice.tds/100 * (preInvoice.grossInr+preInvoice.deductionInr)).toFixed(3)}
+          value={Number(preInvoice.tds/100 * (preInvoice.grossInr-preInvoice.deductionInr)).toFixed(3)}
         />
 
         <TextField

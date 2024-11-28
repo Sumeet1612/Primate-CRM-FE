@@ -26,7 +26,7 @@ function ViewInvoices(){
             return Number(params?.value).toFixed(2)
         }, headerName:"PhoneBill (USD)", width:150 },
         {field: "deductionUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
-            return -Number(params?.value).toFixed(2)
+            return Number(params?.value).toFixed(2)
         }, headerName:"Deductions (USD)", width:165 },
         {field: "payableUsd" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
             return Number(params?.value).toFixed(2)
@@ -36,7 +36,7 @@ function ViewInvoices(){
             return Number(params?.value).toFixed(2)
         },headerName:"Gross INR", width:130  },
         {field: "deductionInr" , filter: true, sortable: true, resizable: true, valueFormatter:params=>{
-            return -Number(params?.value).toFixed(2) 
+            return Number(params?.value).toFixed(2) 
         }, headerName:"Deductions (INR)", width:165 },
         {field: "tds" , filter: true, sortable: true, resizable: true, width:100, valueFormatter:params=>{
             return params?.value + "%"
