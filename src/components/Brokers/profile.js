@@ -5,7 +5,6 @@ import Avatar from "../../img/Avatar.jpg";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useEffect, useState } from "react";
@@ -19,6 +18,7 @@ import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 import PasswordChangeModal from "./PasswordChangeModal";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
+import { showNotification } from "../../api/Notification";
 
 function Profile() {
   const [broker, setBroker] = useState({
@@ -149,7 +149,7 @@ function Profile() {
             handleApiError(err);
           });
       } else {
-        alert("Unauthorized Access");
+        showNotification("Unauthorized Access","error");
       }
     }
   }, [loggedInBrokerId, nav, others.userRole, others.refresh]);
@@ -220,7 +220,7 @@ function Profile() {
     })
   }
   else{
-    alert("Select Deduction or Addition with currency")
+    showNotification("Select Deduction or Addition with currency","warning")
   }
   }
 
@@ -278,7 +278,7 @@ function Profile() {
       editBroker(broker.id, payload)
         .then((res) => {
           if (res.status === 200 && res.data === true) {
-            alert("Profile Updated");
+            showNotification("Profile Updated");
             setinit(broker);
             setOthers((prev) => {
               return { ...prev, refresh: prev.refresh++ };

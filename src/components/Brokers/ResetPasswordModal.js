@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useState } from "react";
 import { handleApiError, resetPassword, sendOtp } from "../../api/api";
+import { showNotification } from "../../api/Notification";
 
 function ResetPasswordModal(props){
     const [form,setForm]=useState({
@@ -30,10 +31,10 @@ function ResetPasswordModal(props){
         .then((res)=>{
             if(res.status===200){
                 if(res.data?.message==='User does not exists OR is not Active'){
-                    alert("User does not exists OR Is not Active");
+                    showNotification("User does not exists OR Is not Active","error");
                 }
                 else if(res.data?.message==='Some issue occurred. Please retry again'){
-                    alert('Error while sending OTP');
+                    showNotification('Error while sending OTP',"error");
                 }
                 else{
                     setForm((prev)=>{
@@ -59,7 +60,7 @@ function ResetPasswordModal(props){
         });
 
         if(form.password?.length < 8){
-            alert("Password should be atleast 8 character long");
+            showNotification("Password should be atleast 8 character long","error");
             setForm((prev)=>{
                 return {...prev, loading:false}
             }); 
@@ -67,7 +68,7 @@ function ResetPasswordModal(props){
         }
 
         if(form.newPassword!==form.confirmNewPassword){
-            alert("Password and NewPassword does not matches");
+            showNotification("Password and NewPassword does not matches","error");
             setForm((prev)=>{
                 return {...prev, loading:false}
             }); 
@@ -85,15 +86,15 @@ function ResetPasswordModal(props){
         .then((res)=>{
             if(res.status===200){
                 if(res.data?.message==="Invalid OTP"){
-                    alert("OTP Expired or Invalid OTP. Please retry");
+                    showNotification("OTP Expired or Invalid OTP. Please retry","warning");
                 }
                 else if(res.data?.message==="Password Updated Successfully"){
-                    alert("Password Changed. Please login to proceed!!");
+                    showNotification("Password Changed. Please login to proceed!!");
                     props.closeDialog();
                 }
             }
             else{
-                alert("Oops !! Something went wrong...")
+                showNotification("Oops !! Something went wrong...","error")
             }
             setForm((prev)=>{
                 return {...prev, loading:false}

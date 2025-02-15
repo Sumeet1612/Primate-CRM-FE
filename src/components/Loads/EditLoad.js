@@ -17,6 +17,7 @@ import {
   checkPermissionToNavigation,
   loggedInUserRole,
 } from "../../api/validation";
+import { showNotification } from "../../api/Notification";
 
 function EditLoad() {
   const [data, setData] = useState({
@@ -76,15 +77,15 @@ function EditLoad() {
             });
           }
           if(!checkPermissionToNavigation(res.data)){
-            alert("You don't have the permission to view/edit the requested Load")
+            showNotification("You don't have the permission to view/edit the requested Load","error")
             nav('/viewLoads')
           }
         } else if (res.status === 204) {
-          alert("Load Not Found");
+          showNotification("Load Not Found","error");
           nav("/viewLoads");
         }
         else if(res.status===204){
-          alert('Load Not Found');
+          showNotification('Load Not Found',"error");
           nav('/viewLoads')
         }
         setObj((prev)=>{return {...prev, isLoading:false}})
@@ -112,8 +113,8 @@ function EditLoad() {
     });
 
     if (blankField !== "") {
-      alert(
-        `Error: All fileds are mandatory to submit your changes. ${blankField} is blank.`
+      showNotification(
+        `Error: All fileds are mandatory to submit your changes. ${blankField} is blank.`,"error"
       );
       return;
     }
@@ -133,7 +134,7 @@ function EditLoad() {
       editLoad(init.loadNumber, payload)
         .then((res) => {
           if (res.data === true) {
-            alert("Load updated !!");
+            showNotification("Load updated !!");
             setInit(data);
           }
         })
@@ -162,16 +163,16 @@ function EditLoad() {
         const res = await resolveMismatchByBroker(data?.loadNumber);
         if (res?.status === 200) {
           if (res?.data === 1) {
-            alert(
-              "Cannot request for payment as there is a mismatch of rates with Agency System"
+            showNotification(
+              "Cannot request for payment as there is a mismatch of rates with Agency System","error"
             );
             setObj((prev) => {
               return { ...prev, isLoading: false, refresh: prev.refresh + 1 };
             });
             return;
           } else if (res?.data === 2) {
-            alert(
-              `Cannot scan changes. Contact admin and report error code : ${2}`
+            showNotification(
+              `Cannot scan changes. Contact admin and report error code : ${2}`,"error"
             );
             setObj((prev) => {
               return { ...prev, isLoading: false };
@@ -179,8 +180,8 @@ function EditLoad() {
             return;
           }
         } else {
-          alert(
-            `Something went wrong. Report error status code: ${res?.status} to Admin`
+          showNotification(
+            `Something went wrong. Report error status code: ${res?.status} to Admin`,"error"
           );
           setObj((prev) => {
             return { ...prev, isLoading: false };
@@ -201,18 +202,18 @@ function EditLoad() {
       .then((res) => {
         if (res?.status === 200 && res?.data === true) {
           if (statusId === 2) {
-            alert("Payment Requested !!");
+            showNotification("Payment Requested !!");
           } else if (statusId === 1) {
-            alert("Payment Rejected !!");
+            showNotification("Payment Rejected !!");
           } else if (statusId === 3) {
-            alert("Payment Approved !!");
+            showNotification("Payment Approved !!");
             nav("/viewLoads");
           }
           else if(statusId===1){
-            alert("Payment Rejected !!")
+            showNotification("Payment Rejected !!")
           }
           else if(statusId===3){
-            alert("Payment Approved !!")
+            showNotification("Payment Approved !!")
             nav('/viewLoads')
           }
           setInit(data);
@@ -239,14 +240,14 @@ function EditLoad() {
     .then((res)=>{
       if(res.status===200){
         if(res.data.message==='Load Deleted: True'){
-          alert('Load Deleted !!')
+          showNotification('Load Deleted !!')
           nav('/viewLoads')
         }
         else if(res.data?.message==='Cannot Delete Load as it is already proceesed for payment'){
-          alert(res.data.message);
+          showNotification(res.data.message,"warning");
         }
         else{
-          alert('Some went wrong. Please retry.')
+          showNotification('Some went wrong. Please retry.',"error")
         }
       }})
       .catch((err) => {
@@ -281,10 +282,10 @@ function EditLoad() {
             setObj((prev) => {
               return { ...prev, refresh: prev.refresh + 1 };
             });
-            alert("Mismatch of rates with Agency system is resolved");
+            showNotification("Mismatch of rates with Agency system is resolved");
           } else {
-            alert(
-              "There is mismatch of rates with Agency System. Please recheck rates or contact admin"
+            showNotification(
+              "There is mismatch of rates with Agency System. Please recheck rates or contact admin","error"
             );
           }
         }
@@ -307,7 +308,7 @@ function EditLoad() {
       .then((res) => {
         if (res?.status === 200) {
           if (res?.data === true) {
-            alert("Mismatch resolved");
+            showNotification("Mismatch resolved");
           }
         }
       })

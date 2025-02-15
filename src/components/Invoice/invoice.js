@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { generateInvoice, getPrepInvoice, handleApiError } from "../../api/api";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 import { useNavigate } from "react-router-dom";
+import { showNotification } from "../../api/Notification";
 
 function Invoice() {
 
@@ -86,7 +87,7 @@ function Invoice() {
 
   const handleInvoiceCreation=()=>{
     if(preInvoice.description==="" || preInvoice.description===null){
-      alert("Please provide invoice description")
+      showNotification("Please provide invoice description","error")
       return;
     }
 
@@ -94,7 +95,7 @@ function Invoice() {
     .then((res)=>{
       if(res.status===200){
         setOthers((prev)=>{return({...prev,refresh:!prev.refresh})});
-        alert("invoice generated")
+        showNotification("invoice generated")
         history("/invoices")
       }
     })

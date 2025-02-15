@@ -4,6 +4,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { AgGridReact } from "ag-grid-react";
+import { showNotification } from "../api/Notification";
 
 function AgencyForm() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -63,7 +64,7 @@ function AgencyForm() {
           setLoading(false);
           if (res.status === 200) {
             setUpload(true);
-            alert("File Uploaded. Proceed with Scanning Load Entries");
+            showNotification("File Uploaded. Proceed with Scanning Load Entries");
           }
         })
         .catch((err) => {
@@ -71,7 +72,7 @@ function AgencyForm() {
           handleApiError(err);
         });
     } else {
-      alert("No files selected");
+      showNotification("No files selected","warning");
     }
   };
 
@@ -81,7 +82,7 @@ function AgencyForm() {
       .then((res) => {
         setLoading(false);
         if (res.status === 200) {
-          alert("Data Processed successfully");
+          showNotification("Data Processed successfully");
           setReload(reload+1);
         }
       })

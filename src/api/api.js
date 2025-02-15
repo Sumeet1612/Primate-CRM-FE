@@ -1,5 +1,6 @@
 import axios from "axios";
 import { logOut } from "./validation";
+import { showNotification } from "./Notification";
 const baseApiUrl = process.env.REACT_APP_BASE_URL_API;
 const apiKey = process.env.REACT_APP_API_KEY
 
@@ -13,13 +14,13 @@ const headers=()=>{
 export const handleApiError=(err)=>{
   console.log(err);
     if (err?.response?.status === 401) {
-        alert("Your current Session is expired. Please login to continue");
+        showNotification("Your current Session is expired. Please login to continue","warning");
         logOut();
         window.location.href="/login"
       } else if (err?.response?.status === 417) {
-        alert("Server error");
+        showNotification("Server error","error");
       } else {
-        alert("Some error occurred. Please retry. If issue persists please contact the Admin");
+        showNotification("Some error occurred. Please retry. If issue persists please contact the Admin","error");
       }
 }
 

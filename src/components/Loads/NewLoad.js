@@ -15,6 +15,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
+import { showNotification } from "../../api/Notification";
 
 function NewLoad() {
 const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER ==="Disable"?true:false;
@@ -150,7 +151,7 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
     let feildName = e.target.name;
     if(feildName === "shipperRate" || feildName === "carrierRate" || feildName==="carrierMC"){
       if(isNaN(value)){
-        alert("Only Numbers are allowed")
+        showNotification("Only Numbers are allowed","warning")
         return;
       }
     }
@@ -185,6 +186,7 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
     });
   };
 
+  //TODO: Can be removed.
   const manageBrokers = () => {
     setAdditionalBrokers((state) => {
       return [
@@ -198,29 +200,37 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
   };
 
   const handleSubmit = () => {
-    console.log(sendData)
     //validate no field can be left blank
     let validationError = false;
+    setValidationError({isError:false, errorField:""})
     if(sendData['pickupDate'] > sendData['deliveryDate']){
-      alert("Pickup Date cannot be after Booking Date")
+      showNotification("Pickup Date cannot be after Delivery Date","error")
+      setValidationError({isError:true, errorField:'pickupDate'})
       validationError=true;
     }
-    Object.keys(sendData).every(sd=>{
-      if((sendData[sd]==='') || (sendData[sd]==='0' && sd==='shipperId')){
-        validationError= true;
-        setValidationError({isError:true, errorField:sd})
-        return false;
-      }
-      if(dateFields.find(x=>x===sd) && sendData[sd]==='Invalid Date'){
-        validationError= true;
-        setValidationError({isError:true, errorField:sd})
-        return false;
-      }
-      //reset error
-      setValidationError({isError:false, errorField:''})
-      return true;
-    })
+
+    if(sendData['loadNumber']===""){
+      showNotification("Load Number cannot be left blank","error")
+      setValidationError({isError:true, errorField:'loadNumber'})
+      validationError=true;
+    }
+    if(sendData['shipperRate']===""){
+      showNotification("Shipper Rate cannot be empty","error")
+      setValidationError({isError:true, errorField:'shipperRate'})
+      validationError=true;
+    }
+    if(sendData['carrierRate']===""){
+      showNotification("Carrier Rate cannot be empty","error")
+      setValidationError({isError:true, errorField:'carrierRate'})
+      validationError=true;
+    }
+    if(sendData['shipperId']==="0"){
+      showNotification("Cannot create load with Shipper","error")
+      setValidationError({isError:true, errorField:'shipperId'})
+      validationError=true;
+    }
     
+    //TODO: Can be removed, if additional broker is removed from requirement:
     if(sendData.additionalBroker.length>0){
       sendData.additionalBroker.forEach(ab=>{
         Object.keys(ab).every(k=>{
@@ -239,14 +249,14 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
         .then((res) => {
           if (res.status === 200) {
             if(res.data?.validationMessage ==='Load already exists with the same Load Number'){
-              alert('Load already exists with the same Load Number. LoadNumber cannot be duplicate')
+              showNotification('Load already exists with the same Load Number. LoadNumber cannot be duplicate',"error")
             }
             else if (res.data?.loadCreated) {
               if(res.data?.additionalBrokersCreated){
-                alert("Load created successfully");
+                showNotification("Load created successfully");
               }
               else{
-                alert('Load is created without Brokerage Share');
+                showNotification('Load is created without Brokerage Share');
               }
               setSendData({
                 loadNumber: "",
@@ -277,7 +287,7 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
         });
     }
     else{
-      alert('Please complete the form to create your Load.')
+      showNotification('Please complete the form to create your Load',"warning")
     }
   };
 
@@ -413,7 +423,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           </Select>
           
           <TextField
-          error={validationError.errorField==="loadDescription"? true:false}
             required
             sx={{ height: "70px", width: "30%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
@@ -427,8 +436,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           <br />
 
           <TextField
-          error={validationError.errorField==="pickupLocation"? true:false}
-            required
             sx={{ height: "70px", width: "40%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -440,8 +447,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           />
 
           <TextField
-          error={validationError.errorField==="deliveryLocation"? true:false}
-            required
             sx={{ height: "70px", width: "40%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -454,9 +459,7 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           <br />
 
           <DatePicker
-          error={validationError.errorField==="bookingDate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
-            required
             id="bookingDate"
             label="Booking Date"
             name="bookingDate"
@@ -474,7 +477,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           <DatePicker
           error={validationError.errorField==="pickupDate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
-            required
             id="pickupDate"
             name="pickupDate"
             label="Pickup Date"
@@ -490,9 +492,7 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           />
 
           <DatePicker
-          error={validationError.errorField==="deliveryDate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "10%", mb:"1%" }}
-            required
             id="deliveryDate"
             label="Delivery Date"
             name="deliveryDate"
@@ -515,8 +515,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           <br/>
 
           <TextField
-            error={validationError.errorField==="brokerId"? true:false}
-            required
             sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -529,8 +527,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
 
 {AdditionalBrokerHTML()}
           <TextField
-          error={validationError.errorField==="carrierMC"? true:false}
-            required
             sx={{ height: "70px", width: "20%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -543,7 +539,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
 
           <TextField
             required
-            error={validationError.errorField==="carrierName"? true:false}
             sx={{ height: "70px", width: "30%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -555,8 +550,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           />
 
           <TextField
-            required
-            error={validationError.errorField==="carrierPOC"? true:false}
             sx={{ height: "70px", width: "30%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -569,8 +562,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           <br />
 
           <TextField
-            error={validationError.errorField==="carrierContact"? true:false}
-            required
             sx={{ height: "70px", width: "30%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -582,8 +573,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           />
 
           <TextField
-            required
-            error={validationError.errorField==="carrierEmail"? true:false}
             sx={{ height: "70px", width: "55%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="email"

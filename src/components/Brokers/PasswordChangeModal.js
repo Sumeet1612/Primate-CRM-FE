@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 import { callLogin, editBroker, handleApiError, sendOtp, validateOtp } from "../../api/api";
 import LinearProgress from "@mui/material/LinearProgress";
+import { showNotification } from "../../api/Notification";
 
 function PasswordChangeModal(props){
 
@@ -26,7 +27,7 @@ function PasswordChangeModal(props){
         let validationError=false;
         Object.keys(form).every(val=>{
             if(form[val]==="" && val!=="otp"){
-                alert(`${val} cannot be empty`)
+                showNotification(`${val} cannot be empty`,"error")
                 validationError=true;
                 return false;
             }
@@ -34,14 +35,14 @@ function PasswordChangeModal(props){
         })
         if(!validationError){
             if(form?.newPassword?.length < 8){
-                alert("Password should be atleast 8 character long");
+                showNotification("Password should be atleast 8 character long","error");
                 setObj((prev)=>{
                     return {...prev, loading:false}
                 })
                 return;
             }
             if(form.newPassword!==form.confirmNewPassword){
-                alert("Password And Confirm Password Does Not Matches. Please re-try !! ")
+                showNotification("Password And Confirm Password Does Not Matches. Please re-try!!","error")
                 setObj((prev)=>{
                     return {...prev, loading:false}
                 })
@@ -59,7 +60,7 @@ function PasswordChangeModal(props){
                             })
                         }
                         else{
-                            alert("OTP Service failure. Please retry or contact Admin")
+                            showNotification("OTP Service failure. Please retry or contact Admin","error")
                         }
                         setObj((prev)=>{
                             return {...prev, loading:false}
@@ -73,7 +74,7 @@ function PasswordChangeModal(props){
                     })
                 }
                 else{
-                    alert("Incorrect Credential !!")
+                    showNotification("Incorrect Credential !!","error")
                 }
             })
             .catch((err)=>{
@@ -103,7 +104,7 @@ function PasswordChangeModal(props){
                 editBroker(props.brokerId,payload)
                 .then((brokerRes)=>{
                     if(brokerRes.status===200){
-                        alert("Password Changed!!")
+                        showNotification("Password Changed!!")
                         props.dialog();
                     }
                     setObj((prev)=>{
@@ -118,7 +119,7 @@ function PasswordChangeModal(props){
                 })
             }
             else{
-                alert("Incorrect OTP")
+                showNotification("Incorrect OTP","error")
                 setObj((prev)=>{
                     return {...prev, loading:false}
                 })

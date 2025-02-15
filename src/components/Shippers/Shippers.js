@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
+import { showNotification } from "../../api/Notification";
 
 function Shippers() {
   const brokerId= loggedInUserId();
@@ -111,9 +112,9 @@ function Shippers() {
       addShipper(shipperData)
         .then((res) => {
           if (res.status === 208) {
-            alert("The Shipper already exists!!");
+            showNotification("The Shipper already exists!!","warning");
           } else if (res.status === 200) {
-            alert("Shipper Added !!");
+            showNotification("Shipper Added !!");
 
             setShipperData({
               brokerId:brokerId,
@@ -133,7 +134,7 @@ function Shippers() {
         });
     }
     else{
-      alert('Please Complete the form to proceed')
+      showNotification('Please Complete the form to proceed',"error")
     }
   };
 

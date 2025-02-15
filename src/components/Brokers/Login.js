@@ -12,6 +12,7 @@ import { callLogin, handleApiError } from '../../api/api';
 import { setUserAndRole } from '../../api/validation';
 import ResetPasswordModal from './ResetPasswordModal';
 import logo from "../../img/poLogo.png";
+import { showNotification } from '../../api/Notification';
 
 const defaultTheme = createTheme();
 
@@ -36,17 +37,17 @@ export default function SignIn() {
       .then((res)=>{
         if (res.status === 200) {
             if (res.data?.id !== -1) {
-              alert("Successfully Logged In !!");
+              showNotification("Successfully Logged In !!");
               setUserAndRole(res.data?.jwtToken)
               history("/");
               window.location.reload();
             } else {
               if (res.data?.isActive === false) {
-                alert(
-                  "You no longer have the access. Please contact your Admin."
+                showNotification(
+                  "You no longer have the access. Please contact your Admin.","error"
                 );
               } else {
-                alert("Incorrect Credentials.");
+                showNotification("Incorrect Credentials.","error");
               }
             }
           }

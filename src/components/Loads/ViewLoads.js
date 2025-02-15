@@ -7,6 +7,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllLoads, getLoadForBroker, handleApiError, updatePaymentState } from "../../api/api";
 import { useNavigate } from "react-router";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
+import { showNotification } from "../../api/Notification";
 
 function ViewLoads() {
   const nav = useNavigate();
@@ -24,10 +25,11 @@ function ViewLoads() {
     role:0
   })
   const [view, setview]=useState("0"); 
+  const roleId=loggedInUserRole();
 
   useEffect(() => {
     let brokerId = loggedInUserId();
-    let roleId= loggedInUserRole();
+    //let roleId= loggedInUserRole();
 
     setUserData({
       broker: brokerId,
@@ -66,7 +68,7 @@ function ViewLoads() {
       }
       setview("0")
     }
-  }, [reload]);
+  }, [reload, roleId]);
 
   const formatDate=(params)=>{
     if(params?.value?.toString().slice(0,10) === undefined){
@@ -100,7 +102,15 @@ const getStatus=(param)=>{
     { headerCheckboxSelection:true, checkboxSelection:true, field: "",  width:50, headerName:'#' },
     { field: "loadNumber", filter: true, sortable: true, tooltipField:'loadNumber', width:100, headerName:'LOAD #', resizable: true },
     { field: "paymentStatusId", sortable: true, tooltipField:'Load Status', width:100, headerName:'STATUS', resizable: true,
-  valueFormatter: params=>getStatus(params) },
+      valueFormatter: params=>getStatus(params) },
+    { field: "brokerName", filter: true, sortable: true, width:120, headerName:'BROKER', resizable: true , hide: roleId===2 },
+    { field: "shipperRate", filter: true, sortable: true, tooltipField:'shipperRate', width:150, headerName:'SHIPPER RATE', resizable: true  },
+    { field: "carrierRate", filter: true, sortable: true, tooltipField:'carrierRate', width:150, headerName:'CARRIER RATE' , resizable: true },
+    { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:120, headerName:'MARGIN' , resizable: true },  
+    { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:150, headerName:'INVOICED ON', resizable: true ,
+      valueFormatter: params=>formatDate(params) },
+      { field: "invoiceNumber", filter: 'true', sortable: true, tooltipField:'invoiceNumber', width:175, headerName:'INVOICE NUMBER', resizable: true },
+      { field: "mismatched", filter: true, sortable: true , resizable: true, width:130}, 
     { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:200, headerName:'SHIPPER NAME', resizable: true },
     { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:120, headerName:'ORIGIN', resizable: true },
     { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:140, headerName:'DESTINATION', resizable: true },
@@ -108,29 +118,19 @@ const getStatus=(param)=>{
     valueFormatter: params=>formatDate(params)},
     { field: "deliveryDate", filter: 'true', sortable: true, tooltipField:'deliveryDate', width:150, headerName:'DELIVERY DATE', resizable: true ,
     valueFormatter: params=>formatDate(params)},
-    { field: "brokerName", filter: true, sortable: true, width:120, headerName:'BROKER', resizable: true  }, // We need to display Broker to the Admin, but this coulmn will no be needed in the User section.
     { field: "carrierMC", filter: true, sortable: true, tooltipField:'carrierMC', width:135, headerName:'CARRIER MC', resizable: true  },
     { field: "carrierName", filter: true, sortable: true, tooltipField:'carrierName', width:200, headerName:'CARRIER NAME', resizable: true  },
     { field: "carrierPOC", filter: true, sortable: true, tooltipField:'carrierPOC', width:150, headerName:'CARRIER POC' , resizable: true },
     { field: "carrierContact", filter: true, sortable: true, tooltipField:'carrierContact', width:150, headerName:'CARRIER PHONE #' , resizable: true },
     { field: "carrierEmail", filter: true, sortable: true, tooltipField:'carrierEmail', width:250, headerName:'CARRIER EMAIL', resizable: true  },
-    { field: "shipperRate", filter: true, sortable: true, tooltipField:'shipperRate', width:150, headerName:'SHIPPER RATE', resizable: true  },
-    { field: "carrierRate", filter: true, sortable: true, tooltipField:'carrierRate', width:150, headerName:'CARRIER RATE' , resizable: true },
-    { field: "margin", filter: true, sortable: true, tooltipField:'margin', width:120, headerName:'MARGIN' , resizable: true },
-    { field: "invoiceDate", filter: 'true', sortable: true, tooltipField:'invoiceDate', width:150, headerName:'INVOICED ON', resizable: true ,
-    valueFormatter: params=>formatDate(params) },
-    { field: "invoiceNumber", filter: 'true', sortable: true, tooltipField:'invoiceNumber', width:175, headerName:'INVOICE NUMBER', resizable: true },
-    { field: "mismatched", filter: true, sortable: true , resizable: true, width:130 }, 
     { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:150, headerName:'UPDATED ON', resizable: true , 
-     valueFormatter: params=>formatDate(params)}
+     valueFormatter: params=>formatDate(params), hide: roleId===2}
   ]);
 
   const handleCell = (cellEvent) => {
     let loadId = cellEvent?.data?.loadNumber;
     if (cellEvent?.colDef?.field === "loadNumber") {
-      if (window.confirm("Do you want to View/Edit the Load?")) {
         nav(`/editLoad/${loadId}`);
-      }
     }
   };
 
@@ -197,20 +197,20 @@ const getStatus=(param)=>{
       .then((res)=>{
         if(res?.status===200){
           if(paymentStatus===2 && res?.data){
-            alert("Payment Requested !!")
+            showNotification("Payment Requested !!")
             setReload((prev)=>{return prev+1});
             setPaymentState((prev)=>{
               return {selectedLoad:[], status:0}
             });
           }
           else if(paymentStatus===3 && res?.data){
-            alert("Payment Approved !!")
+            showNotification("Payment Approved !!")
             setReload((prev)=>{return prev+1});
             setPaymentState((prev)=>{
               return {selectedLoad:[], status:0}
             });
           }else if(paymentStatus===1 && res?.data){
-            alert("Payment Rejected !!")
+            showNotification("Payment Rejected !!")
             setReload((prev)=>{return prev+1});
             setPaymentState((prev)=>{
               return {selectedLoad:[], status:0}
