@@ -31,6 +31,14 @@ function InvoiceLayout() {
     description: "",
     createdOn: "",
     updatedOn: "",
+    invoiceCharges:[{
+      id: 0,
+      typeId: 0,
+      amount: 0,
+      invoiceNumber: '',
+      description: '',
+      updatedOn: ''
+    }]
   });
 
   const [bankDetails, setBankDetaiks] = useState({
@@ -40,7 +48,7 @@ function InvoiceLayout() {
     OwnerName: "",
     Pan: "",
   });
-
+  
     useEffect(()=>{
         if(isNaN(brokerId) || isNaN(userRole)){
             history("/login")
@@ -107,7 +115,7 @@ function InvoiceLayout() {
                 </tr>
 
                 <tr>
-                  <td>Paymnet Terms:</td>
+                  <td>Payment Terms:</td>
                   <td>NET 15</td>
                 </tr>
 
@@ -175,7 +183,63 @@ function InvoiceLayout() {
             <p>PAN Number: {bankDetails?.Pan}</p>
           </div>
           <br/>
-          <p style={{color:'#000053'}}>Phone Bill Charged: ${invoices.phoneBillUsd}</p>
+          
+          {invoices?.invoiceCharges?.length>0?
+            <>
+              <h2
+                style={{
+                  color: "white",
+                  backgroundColor: "black",
+                  marginBottom: "2%",
+                  padding: "0.5%",
+                  width: "93%",
+                  fontSize: "15px",
+                }}
+              >
+              Additional Charges Details{" "}
+            </h2>
+            <table
+        style={{
+          width: "90%",
+          borderCollapse: "collapse",
+          fontSize: "14px",
+          textAlign: "center",
+        }}
+      >
+        <thead>
+          <tr>
+            <th className="headerStyle">Charge Type</th>
+            <th className="headerStyle">Description</th>
+            <th className="headerStyle">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {invoices.invoiceCharges.map((charge, index) => (
+            <tr key={index}>
+              <td className="cellStyle">
+                {charge.typeId === 1
+                  ? "Deduction (USD)"
+                  : charge.typeId === 2
+                  ? "Added (USD)"
+                  : charge.typeId === 3
+                  ? "Deduction (INR)"
+                  : charge.typeId === 4
+                  ? "Added (INR)"
+                  : "xxx"}
+              </td>
+              <td className="cellStyle">{charge.description}</td>
+              <td className="cellStyle">{charge.amount}</td>
+            </tr>
+          ))}
+          <tr>
+            <td className="cellStyle">Deduction (USD)</td>
+            <td className="cellStyle">Phone Bill</td>
+            <td className="cellStyle">{invoices?.phoneBillUsd}</td>
+          </tr>
+        </tbody>
+      </table>
+          </>
+          :<p style={{color:'#000053'}}>Phone Bill Charged: ${invoices.phoneBillUsd}</p>}
         </div>
       </div>
       <div className="downloadButton">

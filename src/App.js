@@ -20,6 +20,7 @@ import ViewBrokers from "./components/Brokers/ViewBrokers";
 import ViewInvoices from "./components/Invoice/ViewInvoices";
 import InvoiceLayout from "./components/Invoice/InvoiceLayout";
 import Logout from "./components/Brokers/Logout";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
             </Route>
           </Routes>
         </BrowserRouter>
+        <ToastContainer/> 
       </LocalizationProvider>
     </div>
   );

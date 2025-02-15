@@ -14,6 +14,7 @@ import { InputLabel } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { handleApiError, register } from "../../api/api";
 import logo from "../../img/poLogo.png";
+import { showNotification } from "../../api/Notification";
 
 const theme = createTheme();
 
@@ -43,19 +44,19 @@ export default function SignUp() {
     });
 
     if (validationError) {
-      alert("All fields are mandatory for broker registeration");
+      showNotification("All fields are mandatory for broker registeration","error");
       return;
     }
 
     if (registerObj.password?.length < 8) {
-      alert("Password should be atleast 8 character long");
+      showNotification("Password should be atleast 8 character long","error");
       return;
     }
     //API Call
     register(registerObj)
       .then((res) => {
         if (res.status === 200) {
-          alert("New Broker Added");
+          showNotification("New Broker Added");
           event.target.reset();
         }
       })

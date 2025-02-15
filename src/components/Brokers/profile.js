@@ -5,19 +5,20 @@ import Avatar from "../../img/Avatar.jpg";
 import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import { useEffect, useState } from "react";
 import {
   editBroker,
   getBrokerOnId,
-  getCurrency,
   handleApiError,
 } from "../../api/api";
-import { MenuItem, Select } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 import PasswordChangeModal from "./PasswordChangeModal";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
+import { showNotification } from "../../api/Notification";
 
 function Profile() {
   const [broker, setBroker] = useState({
@@ -39,10 +40,10 @@ function Profile() {
     phoneBill: "",
     whatsAppNumber: "",
     tds: "",
-    deductionInr: "",
     updatedOn: "",
     createdOn: "",
     accountDetails: [],
+    brokerCharges:[]
   });
   const [init, setinit] = useState({});
   const [account, setAccount] = useState([
@@ -57,7 +58,15 @@ function Profile() {
       updatedOn: "",
     },
   ]);
-  const [currency, setCurrency] = useState([]);
+
+  const [charges, setCharges]= useState([{
+    id:'',
+    typeId:'',
+    amount:'',
+    description:'',
+    brokerId:'',
+    updatedOn:''
+  }]);
 
   const [others, setOthers] = useState({
     exchangeRate: "0",
@@ -65,6 +74,7 @@ function Profile() {
     dialogOpen: false,
     profileCompletionPercentage: 0,
     refresh: 0,
+    chargeDropDown:0
   });
 
   const { loggedInBrokerId } = useParams();
@@ -85,19 +95,6 @@ function Profile() {
     else{
     let currencyData=[];
     if(loggedInBrokerId > 0 && (user===parseInt(loggedInBrokerId) || others.userRole===1)){
-
-    //get currency list
-    getCurrency()
-    .then((res)=>{
-      if(res.status===200){
-        setCurrency(res.data);
-        currencyData=res.data;
-      }
-    })
-    .catch((err)=>{
-      handleApiError(err);
-    })
-
         // get broker details
         getBrokerOnId(loggedInBrokerId)
           .then((res) => {
@@ -133,6 +130,7 @@ function Profile() {
               // set state
               setBroker(res.data);
               setAccount(res.data?.accountDetails);
+              setCharges(res?.data?.brokerCharges);
               setinit(res.data);
               const exchangeRate = currencyData.filter(
                 (x) => x.id === res.data?.currencyId
@@ -151,7 +149,7 @@ function Profile() {
             handleApiError(err);
           });
       } else {
-        alert("Unauthorized Access");
+        showNotification("Unauthorized Access","error");
       }
     }
   }, [loggedInBrokerId, nav, others.userRole, others.refresh]);
@@ -162,13 +160,6 @@ function Profile() {
     setBroker((state) => {
       return { ...state, [fname]: value };
     });
-    if (fname === "currencyId") {
-      let updatedExchangeRate = currency?.filter((x) => x.id === value)[0]
-        ?.exchangeRate;
-      setOthers((prev) => {
-        return { ...prev, exchangeRate: updatedExchangeRate };
-      });
-    }
   };
 
   const handleAccount = (e, index) => {
@@ -213,6 +204,64 @@ function Profile() {
     });
   };
 
+  const handleNewCharge=()=>{
+    if(others?.chargeDropDown>0){
+    setCharges((prev)=>{
+      return [
+        ...prev,{
+          id:0,
+          typeId:others?.chargeDropDown,
+          amount:0,
+          description:'',
+          brokerId:broker.id,
+          updatedOn:''
+        }
+      ]
+    })
+  }
+  else{
+    showNotification("Select Deduction or Addition with currency","warning")
+  }
+  }
+
+  const handleChargesChange = (e, index) => {
+    let fname = e.target.name;
+    let fValue = e.target.value;
+    let additionalCharges = [...charges];
+    additionalCharges[index][fname] = fValue;
+    setCharges(() => {
+      return additionalCharges;
+    });
+    setBroker((b) => {
+      return {
+        ...b,
+        brokerCharges: additionalCharges,
+      };
+    });
+  };
+
+  const handleNewChargeDropdown=(e)=>{
+    setOthers((prev)=>{
+      return {
+        ...prev,
+        chargeDropDown:e.target.value
+      }
+    })
+  }
+
+  const removeCharge=(id, index)=>{
+    let charge=[...charges];
+    if(id===0){
+      charge.splice(index,1)
+      setCharges(charge)
+    }
+    else{
+      charge= charge.filter(x=>x.id!==id);
+      setCharges(charge)
+    }
+    setBroker((prev)=>{return {...prev, brokerCharges:charge}})
+  }
+
   const handleSave = () => {
     const payload = [];
     Object.keys(broker).forEach((e) => {
@@ -229,7 +278,7 @@ function Profile() {
       editBroker(broker.id, payload)
         .then((res) => {
           if (res.status === 200 && res.data === true) {
-            alert("Profile Updated");
+            showNotification("Profile Updated");
             setinit(broker);
             setOthers((prev) => {
               return { ...prev, refresh: prev.refresh++ };
@@ -637,36 +686,14 @@ function Profile() {
             onChange={handleChange}
           />
 
-          <Select
-            name="currencyId"
-            value={broker.currencyId}
-            onChange={handleChange}
-            sx={{ height:"40px", mr:"3%" }}
-          >
-            <MenuItem value="0" disabled>
-              <em>Select Currency</em>
-            </MenuItem>
-            {currency.map((cur, index) => {
-              return (
-                <MenuItem
-                  sx={{ padding:"5px" }}
-                  key={index}
-                  value={cur.id}
-                >
-                  {cur.currencyName}
-                </MenuItem>
-              );
-            })}
-          </Select>
-
           <TextField
             size="small"
             sx={{ height: "50px", width: "20%", mr: "10%", mb: "1%" }}
             type="text"
             label="Exchange Rate"
-            name="exchangeRate"
-            value={others.exchangeRate}
-            InputProps={{ readOnly: true }}
+            name="currencyId"
+            value={broker.currencyId}
+            onChange={handleChange}
           />
           <br />
 
@@ -679,19 +706,116 @@ function Profile() {
             value={broker.tds}
             onChange={handleChange}
           />
-
-          <TextField
-            size="small"
-            sx={{ height: "50px", width: "25%", mr: "10%", mb: "1%" }}
-            type="text"
-            label="INR Deductions"
-            name="deductionInr"
-            value={broker.deductionInr}
-            onChange={handleChange}
-          />
           <br />
          
         </div>
+
+        <div hidden={others.userRole !== 1}>
+          <h2
+            style={{
+              color: "white",
+              backgroundColor: "black",
+              marginBottom: "2%",
+              padding: "0.5%",
+              width: "93%",
+              fontSize: "15px",
+            }}
+          >
+            Additional Charges Details{" "}
+          </h2>
+
+          <Select
+            labelId="select-charge-label"
+            id="select-charge-label-select"
+            sx={{width:"35%", mb:"3%"}}
+            value={others?.chargeDropDown}
+            onChange={handleNewChargeDropdown}
+          >
+            <MenuItem value={0} disabled>Select Deduction/Addition</MenuItem>
+            <MenuItem value={1}>Deduct from Invoice in USD</MenuItem>
+            <MenuItem value={2}>Add to Invoice in USD</MenuItem>
+            <MenuItem value={3}>Deduct from Invoice in INR</MenuItem>
+            <MenuItem value={4}>Add to Invoice in INR</MenuItem>
+          </Select>
+            <Button
+              variant="contained"
+              color="success"
+              size="large"
+              endIcon={<AddIcon />}
+              sx={{ mb: "3%", width: "15%" }}
+              onClick={handleNewCharge}
+            >
+              Add
+            </Button>
+            <div>
+              {charges?.length>0 ?(<>
+              {charges.map((ch, index)=>{
+                return (<div key={index}>
+                  {ch?.typeId===1? <TextField
+                    size="small"
+                    sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+                    type="text"
+                    label="Type"
+                    value="USD Deduction"
+                    disabled
+                  />: ch.typeId===2?
+                  <TextField
+                  size="small"
+                  sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+                  type="text"
+                  label="Type"
+                  value="USD Addition"
+                  disabled
+                  />: ch?.typeId===3?
+                  <TextField
+                  size="small"
+                  sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+                  type="text"
+                  label="Type"
+                  value="INR Deduction"
+                  disabled
+                />: ch?.typeId===4? <TextField
+              size="small"
+              sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+              type="text"
+              label="Type"
+              value="INR Addition"
+              disabled
+            />: <></>}
+                  <TextField
+                    size="small"
+                    sx={{ height: "50px", width: "20%", mr: "2%", mb: "2%" }}
+                    type="text"
+                    label="Description"
+                    name="description"
+                    value={ch.description}
+                    onChange={(e) => handleChargesChange(e, index)}
+                  />
+                  <TextField
+                    size="small"
+                    sx={{ height: "50px", width: "20%", mr: "3%", mb: "2%" }}
+                    type="text"
+                    label="Amount"
+                    name="amount"
+                    value={ch.amount}
+                    onChange={(e) => handleChargesChange(e, index)}
+                  />
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => removeCharge(ch.id, index)}
+                  >
+                    X
+                  </Button>
+                </div>)
+              })}
+              </>)
+              :<></>}
+            </div>
+
+
+          </div>
+
 
         <Button
           variant="contained"

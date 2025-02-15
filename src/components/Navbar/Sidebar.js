@@ -33,6 +33,13 @@ function Sidebar() {
     nav(`editLoad/${loadNum}`);
     setLoadNum("");
   };
+
+  const handleSearchOnEnter=(e)=>{
+    if(e.key==="Enter" && loadNum){
+      handleSearch();
+    }
+  }
+
   return (
     <div className="Sidebar">
       <div
@@ -59,6 +66,7 @@ function Sidebar() {
           type="number"
           onChange={(e) => setLoadNum(e.target.value)}
           value={loadNum}
+          onKeyDown={handleSearchOnEnter}
         />
         <SearchIcon sx={{ fontSize: "30px" }} onClick={handleSearch} />
       </div>

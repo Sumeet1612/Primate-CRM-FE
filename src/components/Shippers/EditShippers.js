@@ -14,6 +14,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { checkPermissionToNavigation } from "../../api/validation";
+import { showNotification } from "../../api/Notification";
 
 function EditShippers() {
   const { id } = useParams();
@@ -208,12 +209,12 @@ function EditShippers() {
         setShipperData(res.data);
         setInit(res.data);
         if(!checkPermissionToNavigation(res.data)){
-          alert("You don't have the permission to view/edit the requested Shipper")
+          showNotification("You don't have the permission to view/edit the requested Shipper","error")
             nav('/shippers')
         }
       }
       else if(res.status===204){
-        alert('Shipper Not Found');
+        showNotification('Shipper Not Found',"error");
         nav('/shippers')
       }
     })
@@ -247,14 +248,14 @@ function EditShippers() {
     .then((res)=>{
       if(res.status===200){
         if((res.data.message==='Deleted Status : True')){
-          alert('Shipper Deleted !!')
+          showNotification('Shipper Deleted !!')
           nav('/shippers')
         }
         else if(res.data?.message==='Cannot Delete Shipper as it is associated with some load'){
-          alert('Cannot delete shipper as it is used in some load')
+          showNotification('Cannot delete shipper as it is used in some load',"warning")
         }
         else{
-          alert('Something went Wrong. Please retry.')
+          showNotification('Something went Wrong. Please retry.',"error")
         }
       }
     })
@@ -274,7 +275,7 @@ function EditShippers() {
     });
 
     if (blankField !== "") {
-      alert("Error: All fields are Mandatory to submit your changes");
+      showNotification("Error: All fields are Mandatory to submit your changes","error");
       return;
     }
 
@@ -293,7 +294,7 @@ function EditShippers() {
       editShipper(id, payload)
         .then((res) => {
           if (res.status === 200 && res.data === true) {
-            alert("Shipper Modified successfully !!");
+            showNotification("Shipper Modified successfully !!");
             setInit(shipperData);
           }
         })

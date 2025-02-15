@@ -15,18 +15,19 @@ import AddIcon from "@mui/icons-material/Add";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as dayjs from "dayjs";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
+import { showNotification } from "../../api/Notification";
 
 function NewLoad() {
-
+const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER ==="Disable"?true:false;
   const [sendData, setSendData] = useState({
     loadNumber: "",
     shipperId: "0",
+    loadDescription: "",
     pickupLocation: "",
     deliveryLocation: "",
     bookingDate: "",
     pickupDate: "",
     deliveryDate: "",
-    loadDescription: "",
     carrierMC: "",
     carrierName: "",
     carrierPOC: "",
@@ -43,13 +44,18 @@ function NewLoad() {
   const [shippers, setShippers] = useState([]);
   const [loggedInBroker, setloggedInBroker]=useState({userName:'XXX'});
   const [additionalBrokers, setAdditionalBrokers] = useState([]);
+  const history=useNavigate();
   const [message, setMessage]=useState({
     isLoading:false,
     maxShareError:'',
     disabled:false
   })
 
-  const history = useNavigate();
+  const [validationError, setValidationError] = useState({
+    isError:false,
+    errorField:''
+  });
+  const dateFields=['bookingDate','pickupDate','deliveryDate']
 
   useEffect(() => {
     const userId= loggedInUserId();
@@ -143,6 +149,12 @@ function NewLoad() {
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
+    if(feildName === "shipperRate" || feildName === "carrierRate" || feildName==="carrierMC"){
+      if(isNaN(value)){
+        showNotification("Only Numbers are allowed","warning")
+        return;
+      }
+    }
     setSendData((state) => {
       return { ...state, [feildName]: value };
     });
@@ -174,6 +186,7 @@ function NewLoad() {
     });
   };
 
+  //TODO: Can be removed.
   const manageBrokers = () => {
     setAdditionalBrokers((state) => {
       return [
@@ -189,18 +202,35 @@ function NewLoad() {
   const handleSubmit = () => {
     //validate no field can be left blank
     let validationError = false;
+    setValidationError({isError:false, errorField:""})
     if(sendData['pickupDate'] > sendData['deliveryDate']){
-      alert("Pickup Date cannot be after Booking Date")
+      showNotification("Pickup Date cannot be after Delivery Date","error")
+      setValidationError({isError:true, errorField:'pickupDate'})
       validationError=true;
     }
-    Object.keys(sendData).every(sd=>{
-      if((sendData[sd]==='') || (sendData[sd]==='0' && sd==='shipperId')){
-        validationError= true;
-        return false;
-      }
-      return true;
-    })
+
+    if(sendData['loadNumber']===""){
+      showNotification("Load Number cannot be left blank","error")
+      setValidationError({isError:true, errorField:'loadNumber'})
+      validationError=true;
+    }
+    if(sendData['shipperRate']===""){
+      showNotification("Shipper Rate cannot be empty","error")
+      setValidationError({isError:true, errorField:'shipperRate'})
+      validationError=true;
+    }
+    if(sendData['carrierRate']===""){
+      showNotification("Carrier Rate cannot be empty","error")
+      setValidationError({isError:true, errorField:'carrierRate'})
+      validationError=true;
+    }
+    if(sendData['shipperId']==="0"){
+      showNotification("Cannot create load with Shipper","error")
+      setValidationError({isError:true, errorField:'shipperId'})
+      validationError=true;
+    }
     
+    //TODO: Can be removed, if additional broker is removed from requirement:
     if(sendData.additionalBroker.length>0){
       sendData.additionalBroker.forEach(ab=>{
         Object.keys(ab).every(k=>{
@@ -219,14 +249,14 @@ function NewLoad() {
         .then((res) => {
           if (res.status === 200) {
             if(res.data?.validationMessage ==='Load already exists with the same Load Number'){
-              alert('Load already exists with the same Load Number. LoadNumber cannot be duplicate')
+              showNotification('Load already exists with the same Load Number. LoadNumber cannot be duplicate',"error")
             }
             else if (res.data?.loadCreated) {
               if(res.data?.additionalBrokersCreated){
-                alert("Load created successfully");
+                showNotification("Load created successfully");
               }
               else{
-                alert('Load is created without Brokerage Share');
+                showNotification('Load is created without Brokerage Share');
               }
               setSendData({
                 loadNumber: "",
@@ -257,10 +287,90 @@ function NewLoad() {
         });
     }
     else{
-      alert('Please complete the form to create your Load.')
+      showNotification('Please complete the form to create your Load',"warning")
     }
   };
 
+  const AdditionalBrokerHTML=()=>{
+    return (<>
+    {disableAdditionalBroker? <>
+      <Button
+        variant="contained"
+        color="success"
+        onClick={manageBrokers}
+        endIcon={<AddIcon />}
+        sx={{ width: "10%", mb:"1%" }}
+      >
+        Add
+      </Button>
+      <br/>
+      <i
+        style={{
+          marginLeft: "15px",
+          fontSize: "15px",
+          wordWrap: "break-word",
+        }}
+      >
+        Click the button to add Additional Broker (if other than you) and share Commission Percentage
+      </i>
+      <br />
+
+      {additionalBrokers ? (<div>
+        {additionalBrokers.map((additionalBroker, index) => {
+          return (
+            <div key={index}>
+              <Select
+                sx={{ height: "55px", width: "20%", mr: "4.5%", mb:"1%"}}
+                name="brokerId"
+                value={additionalBroker.brokerId}
+                onChange={(e) => handleMultipleBrokers(e, index)}
+              >
+                <MenuItem value="">Select an option</MenuItem>
+                {availableBrokers.map((availableBroker) => {
+                  return (
+                    <MenuItem
+                      key={availableBroker.id}
+                      value={availableBroker.id}
+                    >
+                      {availableBroker.brokerAlias}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <TextField
+                required
+                sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
+                type="text"
+                id="sharedPercentage"
+                label="Shared Percentage"
+                name="sharedPercentage"
+                value={additionalBroker.sharedPercentage}
+                onChange={(e) => handleMultipleBrokers(e, index)}
+              />
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  undoBroker(index);
+                }}
+              >
+                {" "}
+                X{" "}
+              </Button>
+              <br />
+            </div>
+          );
+        })}
+        <h6 color="Red">{message.maxShareError}</h6>
+        </div>
+      ) : (
+        <br />
+      )}
+      </>:<></>}
+      <br/>
+    </>)
+   
+  }
 
   return (
     <div className="PageLayout">
@@ -281,7 +391,8 @@ function NewLoad() {
       ) : (
         <div>
           <TextField
-            required
+            error={validationError.errorField==="loadNumber"? true:false}
+            required  
             sx={{ height: "70px", width: "20%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -294,11 +405,14 @@ function NewLoad() {
 
           <Select
             name="shipperId"
-            sx={{ height: "55px", width: "30%", mr: "5%", mb:"1%" }}
+            error={validationError.errorField==="shipperId"? true:false}
+            sx={{ height: "55px", width: "30%", mr: "5%", mb:"1%" , 
+              color:validationError.errorField==="shipperId"?'red':'black'}}
             value={sendData.shipperId}
             onChange={handleChange}
+            id='shipperId'
           >
-            <MenuItem value="0">Select Shipper</MenuItem>
+            <MenuItem value="0" disabled>Select Shipper</MenuItem>
             {shippers.map((s) => {
               return (
                 <MenuItem key={s.id} value={s.id}>
@@ -307,7 +421,7 @@ function NewLoad() {
               );
             })}
           </Select>
-
+          
           <TextField
             required
             sx={{ height: "70px", width: "30%", mr: "10%", mb:"1%" }}
@@ -322,7 +436,6 @@ function NewLoad() {
           <br />
 
           <TextField
-            required
             sx={{ height: "70px", width: "40%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -334,7 +447,6 @@ function NewLoad() {
           />
 
           <TextField
-            required
             sx={{ height: "70px", width: "40%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -348,7 +460,6 @@ function NewLoad() {
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
-            required
             id="bookingDate"
             label="Booking Date"
             name="bookingDate"
@@ -364,8 +475,8 @@ function NewLoad() {
           />
 
           <DatePicker
+          error={validationError.errorField==="pickupDate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
-            required
             id="pickupDate"
             name="pickupDate"
             label="Pickup Date"
@@ -382,7 +493,6 @@ function NewLoad() {
 
           <DatePicker
             sx={{ height: "70px", width: "27%", mr: "10%", mb:"1%" }}
-            required
             id="deliveryDate"
             label="Delivery Date"
             name="deliveryDate"
@@ -397,9 +507,14 @@ function NewLoad() {
             }}
           />
           <br />
+          {validationError.isError && dateFields.find(x=>x===validationError.errorField) ? 
+          <p style={{color:'red'}}>{validationError.errorField
+            .replace(/([a-z])([A-Z])/g, '$1 $2') 
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+            .replace(/^./, str => str.toUpperCase())} canot be empty</p>: <></>}
+          <br/>
 
           <TextField
-            required
             sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -410,79 +525,8 @@ function NewLoad() {
             readOnly
           />
 
-          <Button
-            variant="contained"
-            color="success"
-            onClick={manageBrokers}
-            endIcon={<AddIcon />}
-            sx={{ width: "10%", mb:"1%" }}
-          >
-            Add
-          </Button>
-          <i
-            style={{
-              marginLeft: "15px",
-              fontSize: "15px",
-              wordWrap: "break-word",
-            }}
-          >
-            Click the button to add Additional Broker and shared Commission Percentage
-          </i>
-          <br />
-
-          {additionalBrokers ? (<div>
-            {additionalBrokers.map((additionalBroker, index) => {
-              return (
-                <div key={index}>
-                  <Select
-                    sx={{ height: "55px", width: "20%", mr: "4.5%", mb:"1%"}}
-                    name="brokerId"
-                    value={additionalBroker.brokerId}
-                    onChange={(e) => handleMultipleBrokers(e, index)}
-                  >
-                    <MenuItem value="">Select an option</MenuItem>
-                    {availableBrokers.map((availableBroker) => {
-                      return (
-                        <MenuItem
-                          key={availableBroker.id}
-                          value={availableBroker.id}
-                        >
-                          {availableBroker.brokerAlias}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                  <TextField
-                    required
-                    sx={{ height: "70px", width: "20%", mr: "3%", mb:"1%" }}
-                    type="text"
-                    id="sharedPercentage"
-                    label="Shared Percentage"
-                    name="sharedPercentage"
-                    value={additionalBroker.sharedPercentage}
-                    onChange={(e) => handleMultipleBrokers(e, index)}
-                  />
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                      undoBroker(index);
-                    }}
-                  >
-                    {" "}
-                    X{" "}
-                  </Button>
-                  <br />
-                </div>
-              );
-            })}
-            <h6 color="Red">{message.maxShareError}</h6>
-            </div>
-          ) : (
-            <br />
-          )}
+{AdditionalBrokerHTML()}
           <TextField
-            required
             sx={{ height: "70px", width: "20%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -506,7 +550,6 @@ function NewLoad() {
           />
 
           <TextField
-            required
             sx={{ height: "70px", width: "30%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -519,7 +562,6 @@ function NewLoad() {
           <br />
 
           <TextField
-            required
             sx={{ height: "70px", width: "30%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -531,7 +573,6 @@ function NewLoad() {
           />
 
           <TextField
-            required
             sx={{ height: "70px", width: "55%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="email"
@@ -545,6 +586,7 @@ function NewLoad() {
 
           <TextField
             required
+            error={validationError.errorField==="shipperRate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -557,6 +599,7 @@ function NewLoad() {
 
           <TextField
             required
+            error={validationError.errorField==="carrierRate"? true:false}
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"

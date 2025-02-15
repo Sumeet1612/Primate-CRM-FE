@@ -89,6 +89,11 @@ li {
   padding: 5px;
   justify-content: center;
 }
+.ag-theme-alpine .ag-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
