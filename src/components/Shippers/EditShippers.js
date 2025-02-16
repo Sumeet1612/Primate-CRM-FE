@@ -307,9 +307,7 @@ function EditShippers() {
   const handleOpenLoad = (cellEvent) => {
     let loadId = cellEvent?.data?.loadNumber;
     if (cellEvent?.colDef?.field === "loadNumber") {
-      if (window.confirm("Do you want to View/Edit the Load?")) {
         nav(`/editLoad/${loadId}`);
-      }
     }
   };
 
@@ -433,7 +431,8 @@ function EditShippers() {
               columnDefs={columnDefs}
               pagination={true}
               paginationAutoPageSize={true}
-              onCellClicked={(x) => handleOpenLoad(x)}
+              onCellDoubleClicked={(x) => handleOpenLoad(x)}
+              onCellClicked={(e)=>navigator.clipboard.writeText(e?.value)}
             />
           </div>
         </div>
