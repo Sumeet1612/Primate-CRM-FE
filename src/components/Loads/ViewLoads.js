@@ -1,16 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllLoads, getLoadForBroker, handleApiError, updatePaymentState } from "../../api/api";
+import { getAllFilteredLoads, getAllLoads, getLoadForBroker, getLoadForBrokerPaged, handleApiError, updatePaymentState } from "../../api/api";
 import { useNavigate } from "react-router";
 import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 import { showNotification } from "../../api/Notification";
 
 function ViewLoads() {
   const nav = useNavigate();
+  const effectRan = useRef(false); 
   const [loads, setLoads] = useState([]);
   const [filteredloads, setFilteredLoads] = useState([]);
   const [isloading, setIsLoading] = useState(false);
@@ -22,43 +23,92 @@ function ViewLoads() {
   });
 
   const [view, setview]=useState("0"); 
+  const [fullLoaded, setFullLoad]= useState(false);
   const roleId = useMemo(() => loggedInUserRole(), []);
   const brokerId = useMemo(() => loggedInUserId(), []);
 
   useEffect(() => {
+    if (effectRan.current) return;
+    setFullLoad(false);
+    const controller = new AbortController(); // Create an AbortController
+    const signal = controller.signal;
     if (brokerId > 0) {
       setIsLoading(true);
       if(roleId===2){
-      getLoadForBroker(brokerId)
-        .then((res) => {
-          if(res.status===200){
-            setLoads(res.data);
-            setFilteredLoads(res.data);
+        const loadsForBroker = async () => {
+          let page = 1;
+          let totalLoaded = 0;
+          let totalLoad = 1;
+          setIsLoading(false);
+          while (totalLoad > totalLoaded && !signal.aborted) {
+            try {
+              const res = await getLoadForBrokerPaged(brokerId,page, 0);
+              if (res?.status === 200 && res?.data?.length > 0) {
+                totalLoad = res?.data[0]?.loadCount; 
+                totalLoaded += res?.data.length;
+                if (page === 1) {
+                  setLoads(res.data);
+                  setFilteredLoads(res.data);
+                } else {
+                  setLoads((prev) => [...prev, ...res.data]); 
+                  setFilteredLoads((prev) => [...prev, ...res.data]);
+                }
+                page++;
+              } else {
+                break;
+              }
+            } catch (error) {
+              handleApiError(error);
+              setIsLoading(false);
+              break; 
+            }
           }
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          handleApiError(err);
-          setIsLoading(false);
-        });
+          setFullLoad(true);
+        };
+        loadsForBroker();
       }
       else if(roleId===1){
-        getAllLoads(brokerId)
-        .then((res) => {
-          if(res.status===200){
-            setLoads(res.data);
-            setFilteredLoads(res.data);
+        const loadForAdmin = async () => {
+          let page = 1;
+          let totalLoaded = 0;
+          let totalLoad = 1;
+          setIsLoading(false);
+          while (totalLoad > totalLoaded && !signal.aborted) {
+            try {
+              const res = await getAllFilteredLoads(page, 0);
+      
+              if (res?.status === 200 && res?.data?.length > 0) {
+                totalLoad = res?.data[0]?.loadCount; 
+                totalLoaded += res?.data.length;
+                if (page === 1) {
+                  setLoads(res.data);
+                  setFilteredLoads(res.data);
+                } else {
+                  setLoads((prev) => [...prev, ...res.data]); 
+                  setFilteredLoads((prev) => [...prev, ...res.data]);
+                }
+                page++;
+              } else {
+                break;
+              }
+            } catch (error) {
+              handleApiError(error);
+              setIsLoading(false);
+              break;
+            }
           }
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          handleApiError(err);
-          setIsLoading(false);
-        });
+          setFullLoad(true);
+        };
+        loadForAdmin();
+       }
       }
-      setview("0")
-    }
-  }, [reload, roleId, brokerId]);
+      setview("0");
+
+      return () => {
+        controller.abort(); // Cancel the API call when the component unmounts or dependency changes
+      };
+
+    }, [reload, roleId, brokerId]);
 
   const formatDate=(params)=>{
     if(params?.value?.toString().slice(0,10) === undefined){
@@ -71,12 +121,13 @@ function ViewLoads() {
 }
 
 useEffect(() => {
+  if (effectRan.current) return;
   const savedView = sessionStorage.getItem("selectedView");
-  if (savedView) {
+  if (savedView && fullLoaded) {
     setview(savedView);
-    handleViewChange({ target: { value: savedView } });
+    handleViewChange(savedView);
   }
-}, []);
+}, [fullLoaded]);
 
 const getStatus=(param)=>{
   if(param.value===1 && param?.data?.invoiceDate){
@@ -247,8 +298,8 @@ const getStatus=(param)=>{
           <option value="2">Loads with Payment Requested</option>
           <option value="3">Loads with Payment Processed</option>
           <option value="4">Not Invoiced Load</option>
-          <option value="6">Next Payout</option>
           <option value="5">Loads with Rate Discrepancy</option>
+          <option value="6">Next Payout</option>
         </select> 
         <Button
         variant="contained"

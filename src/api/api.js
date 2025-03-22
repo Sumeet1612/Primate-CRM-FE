@@ -91,6 +91,14 @@ export const getLoadForBroker =(brokerId)=>{
   })
 }
 
+export const getLoadForBrokerPaged =(brokerId,  page, viewId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/loads/ForBrokerPaged/${brokerId}?page=${page}&viewId=${viewId}`,
+    headers:headers()
+  })
+}
+
 export const uploadAgencyData=(data)=>{
   return axios({
     method:'post',
@@ -198,6 +206,14 @@ export const getAllLoads=()=>{
   return axios({
     method:'get',
     url:`${baseApiUrl}/admin/allLoads`,
+    headers:headers()
+  })
+}
+
+export const getAllFilteredLoads=(page, viewId)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/admin/allFilteredLoads?page=${page}&viewId=${viewId}`,
     headers:headers()
   })
 }
