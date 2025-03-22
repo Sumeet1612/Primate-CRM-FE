@@ -25,9 +25,9 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
     loadDescription: "",
     pickupLocation: "",
     deliveryLocation: "",
-    bookingDate: "",
-    pickupDate: "",
-    deliveryDate: "",
+    bookingDate: new Date(),
+    pickupDate: new Date(),
+    deliveryDate: new Date(),
     carrierMC: "",
     carrierName: "",
     carrierPOC: "",
@@ -423,7 +423,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           </Select>
           
           <TextField
-            required
             sx={{ height: "70px", width: "30%", mr: "10%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"
@@ -538,7 +537,6 @@ const disableAdditionalBroker= process.env.REACT_APP_DISABLE_ADDITIONAL_BROKER =
           />
 
           <TextField
-            required
             sx={{ height: "70px", width: "30%", mr: "5%", mb:"1%" }}
             InputLabelProps={{ style: { fontSize: 15 } }}
             type="text"

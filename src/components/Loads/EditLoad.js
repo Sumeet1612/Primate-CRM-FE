@@ -99,25 +99,6 @@ function EditLoad() {
   }, [id, nav, obj.refresh]);
 
   const handleSubmit = () => {
-    let blankField = "";
-    Object.keys(data).every((sd) => {
-      if (
-        data[sd] === "" &&
-        sd !== "additionalBroker" &&
-        sd !== "invoiceDate"
-      ) {
-        blankField = sd;
-        return false;
-      }
-      return true;
-    });
-
-    if (blankField !== "") {
-      showNotification(
-        `Error: All fileds are mandatory to submit your changes. ${blankField} is blank.`,"error"
-      );
-      return;
-    }
 
     let payload = [];
     Object.keys(data).forEach((e) => {
