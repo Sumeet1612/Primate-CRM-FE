@@ -6,7 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 function ViewBrokers(){
 
-    const [broker,setBroker]=useState([]);
+    const [broker,setBroker]=useState({
+      activeBrokers:[],
+      inactiveBrokers:[]
+    });
       const [others,setOthers]=useState({
         loading:false
       })
@@ -51,7 +54,12 @@ function ViewBrokers(){
         loadAllBrokers()
         .then((res)=>{
             if(res.status===200){
-                setBroker(res.data)
+                setBroker(()=>{
+                  return {
+                    activeBrokers:res?.data?.filter(b=>b.isActive),
+                    inactiveBrokers:res?.data?.filter(b=>!b.isActive)
+                  }
+                })
             }
             setOthers((prev)=>{
                 return {...prev, loading:false}
@@ -75,11 +83,24 @@ function ViewBrokers(){
 
     return(
         <div className="profile PageLayout" style={{ height: '100%' }}>
-            <h1>Manage All Brokers</h1>
+            <h1>Active Brokers</h1>
             {others.loading ? <LinearProgress/>:
             <div className="ag-theme-alpine" style={{ height: '90%', width: '90%' }}>
           <AgGridReact 
-            rowData={broker} 
+            rowData={broker?.activeBrokers} 
+            columnDefs={colDef} 
+            onCellClicked={(x)=>handleCell(x)}
+            pagination={true}
+            paginationAutoPageSize={true}
+            enableCellTextSelection={true}
+            />
+        </div>
+        }
+        <h1>Inactive Brokers</h1>
+            {others.loading ? <LinearProgress/>:
+            <div className="ag-theme-alpine" style={{ height: '90%', width: '90%' }}>
+          <AgGridReact 
+            rowData={broker?.inactiveBrokers} 
             columnDefs={colDef} 
             onCellClicked={(x)=>handleCell(x)}
             pagination={true}
