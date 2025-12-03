@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
@@ -20,22 +20,12 @@ function ViewLoads() {
     status:0,
     selectedLoad:[]
   });
-  const [userData, setUserData]= useState({
-    broker:0,
-    role:0
-  })
+
   const [view, setview]=useState("0"); 
-  const roleId=loggedInUserRole();
+  const roleId = useMemo(() => loggedInUserRole(), []);
+  const brokerId = useMemo(() => loggedInUserId(), []);
 
   useEffect(() => {
-    let brokerId = loggedInUserId();
-    //let roleId= loggedInUserRole();
-
-    setUserData({
-      broker: brokerId,
-      role:roleId
-    });
-
     if (brokerId > 0) {
       setIsLoading(true);
       if(roleId===2){
@@ -68,7 +58,7 @@ function ViewLoads() {
       }
       setview("0")
     }
-  }, [reload, roleId]);
+  }, [reload, roleId, brokerId]);
 
   const formatDate=(params)=>{
     if(params?.value?.toString().slice(0,10) === undefined){
@@ -79,6 +69,14 @@ function ViewLoads() {
      return date.toLocaleDateString('en-US')
     }
 }
+
+useEffect(() => {
+  const savedView = sessionStorage.getItem("selectedView");
+  if (savedView) {
+    setview(savedView);
+    handleViewChange({ target: { value: savedView } });
+  }
+}, []);
 
 const getStatus=(param)=>{
   if(param.value===1 && param?.data?.invoiceDate){
@@ -136,6 +134,7 @@ const getStatus=(param)=>{
 
   const handleViewChange = (viewId) => {
     if(loads?.length>0){
+      sessionStorage.setItem("selectedView", viewId);
       setview(viewId);
       setPaymentState({
         status:0,
@@ -187,6 +186,7 @@ const getStatus=(param)=>{
     });
   }
   }
+
   const handlePayment=(state)=>{
     let paymentStatus= paymentState?.status;
     if(paymentState?.status>0){
@@ -273,7 +273,7 @@ const getStatus=(param)=>{
                  Request Payment {" "}
               </Button>: <></>
               }
-              {paymentState?.status===3 && userData?.role===1 ? 
+              {paymentState?.status===3 && roleId===1 ? 
             <>
             <Button
                 variant="contained"
