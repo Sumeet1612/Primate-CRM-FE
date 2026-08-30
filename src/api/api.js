@@ -51,6 +51,23 @@ export const createLoad = (data) => {
   });
 };
 
+export const createAggregateLoads = (data) => {
+  return axios({
+    method: "post",
+    url: `${baseApiUrl}/users/addLoadsFromFile`,
+    data,
+    headers:headers()
+  });
+};
+
+export const getFailedAggregateLoads = (brokerId) => {
+  return axios({
+    method: "get",
+    url: `${baseApiUrl}/users/failedLoadsFromFile?brokerId=${brokerId}`,
+    headers:headers()
+  });
+};
+
 export const loadActiveBrokers=()=>{
     return axios({
         method:"get",

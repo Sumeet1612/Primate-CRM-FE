@@ -12,6 +12,7 @@ import Shippers from "./components/Shippers/Shippers";
 import Login from "./components/Brokers/Login";
 import SearchLoad from "./components/Loads/SearchLoad";
 import ViewLoads from "./components/Loads/ViewLoads";
+import AggregateLoads from "./components/Loads/AggregateLoads";
 import SignUp from "./components/Brokers/SignUp";
 import AgencyForm from "./components/AgencyForm";
 import "./App.css";
@@ -39,6 +40,7 @@ function App() {
                 element={<SignUp />}
               />
               <Route path="new" element={<NewLoad />} />
+              <Route path="aggregateLoads" element={<AggregateLoads />} />
               <Route
                 path="editLoad/:id"
                 element={<EditLoad />}

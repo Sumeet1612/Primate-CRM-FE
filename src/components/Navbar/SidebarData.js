@@ -14,6 +14,7 @@ export const SidebarUserData = [
   { title: "Shippers", icon: <EngineeringIcon />, path: "shippers" },
   { title: "Profile", icon: <AccountBoxIcon />, path: `profile/${loggedInUserId()}` },
   { title: "Loads", icon: <AirportShuttleIcon />, path: "viewLoads" },
+  { title: "Add Loads", icon: <FileUploadIcon />, path: "aggregateLoads" },
   { title: "Invoices", icon: <ReceiptIcon />, path: "invoices" },
   { title: "Logout", icon: <LogoutIcon />, path: "logout" },
 ];

@@ -110,17 +110,6 @@ const getStatus=(param)=>{
       { field: "invoiceNumber", filter: 'true', sortable: true, tooltipField:'invoiceNumber', width:175, headerName:'INVOICE NUMBER', resizable: true },
       { field: "mismatched", filter: true, sortable: true , resizable: true, width:130}, 
     { field: "shipperName", filter: true, sortable: true, tooltipField:'shipperName', width:200, headerName:'SHIPPER NAME', resizable: true },
-    { field: "pickupLocation", filter: true, sortable: true, tooltipField:'pickupLocation', width:120, headerName:'ORIGIN', resizable: true },
-    { field: "deliveryLocation", filter: true, sortable: true, tooltipField:'deliveryLocation', width:140, headerName:'DESTINATION', resizable: true },
-    { field: "pickupDate", filter: 'true', sortable: true, tooltipField:'pickupDate', width:150, headerName:'PICKUP DATE', resizable: true ,
-    valueFormatter: params=>formatDate(params)},
-    { field: "deliveryDate", filter: 'true', sortable: true, tooltipField:'deliveryDate', width:150, headerName:'DELIVERY DATE', resizable: true ,
-    valueFormatter: params=>formatDate(params)},
-    { field: "carrierMC", filter: true, sortable: true, tooltipField:'carrierMC', width:135, headerName:'CARRIER MC', resizable: true  },
-    { field: "carrierName", filter: true, sortable: true, tooltipField:'carrierName', width:200, headerName:'CARRIER NAME', resizable: true  },
-    { field: "carrierPOC", filter: true, sortable: true, tooltipField:'carrierPOC', width:150, headerName:'CARRIER POC' , resizable: true },
-    { field: "carrierContact", filter: true, sortable: true, tooltipField:'carrierContact', width:150, headerName:'CARRIER PHONE #' , resizable: true },
-    { field: "carrierEmail", filter: true, sortable: true, tooltipField:'carrierEmail', width:250, headerName:'CARRIER EMAIL', resizable: true  },
     { field: "updatedOn", filter: 'true', sortable: true, tooltipField:'updatedOn', width:150, headerName:'UPDATED ON', resizable: true , 
      valueFormatter: params=>formatDate(params), hide: roleId===2}
   ]);

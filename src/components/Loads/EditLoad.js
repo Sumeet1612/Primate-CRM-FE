@@ -23,16 +23,7 @@ function EditLoad() {
   const [data, setData] = useState({
     loadNumber: "",
     shipperName: "",
-    pickupLocation: "",
-    deliveryLocation: "",
-    pickupDate: "",
-    deliveryDate: "",
     loadDescription: "",
-    carrierMC: "",
-    carrierName: "",
-    carrierPOC: "",
-    carrierContact: "",
-    carrierEmail: "",
     shipperRate: 0,
     carrierRate: 0,
     margin: "",
@@ -42,7 +33,6 @@ function EditLoad() {
     adjustmentAmount: 0,
     createdOn: "",
     mismatched: true,
-    additionalBroker: [],
   });
   const [init, setInit] = useState([]);
   const userRole = loggedInUserRole();
@@ -347,124 +337,7 @@ function EditLoad() {
             onChange={handleEdit}
             InputProps={{ readOnly: !obj.isEditable && userRole !== 1}}
           />
-
-          <TextField
-            sx={{ height: "70px", width: "40%", mr: "10%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="text"
-            label="Pickup City and State"
-            name="pickupLocation"
-            value={data.pickupLocation}
-            onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable && userRole !== 1}}
-          />
-
-          <TextField
-            sx={{ height: "70px", width: "40%", mr: "10%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="text"
-            label="Delivery City and State"
-            name="deliveryLocation"
-            value={data.deliveryLocation}
-            onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable && userRole !== 1}}
-          />
-
-          <DatePicker
-            sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
-            label="Booking Date"
-            name="createdOn"
-            value={dayjs(data.createdOn)}
-            readOnly={true}
-          />
-
-          <DatePicker
-            sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
-            label="Pickup Date"
-            name="pickupDate"
-            value={dayjs(data.pickupDate)}
-            onChange={(date) =>
-              setData((prev) => {
-                return {
-                  ...prev,
-                  pickupDate: dayjs(date).format("MM/DD/YYYY"),
-                };
-              })
-            }
-            readOnly={!obj.isEditable && userRole !== 1}
-          />
-
-          <DatePicker
-            sx={{ height: "70px", width: "27%", mr: "10%", mb: "1%" }}
-            label="Delivery Date"
-            name="deliveryDate"
-            value={dayjs(data.deliveryDate)}
-            onChange={(date) =>
-              setData((prev) => {
-                return {
-                  ...prev,
-                  deliveryDate: dayjs(date).format("MM/DD/YYYY"),
-                };
-              })
-            }
-            readOnly={!obj.isEditable && userRole !== 1}
-          />
-
-          <TextField
-            sx={{ height: "70px", width: "20%", mr: "5%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="text"
-            label="Carrier MC Number"
-            name="carrierMC"
-            value={data.carrierMC}
-            onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
-          />
-
-          <TextField
-            sx={{ height: "70px", width: "30%", mr: "5%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="text"
-            label="Carrier Name"
-            name="carrierName"
-            value={data.carrierName}
-            onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
-          />
-
-          <TextField
-            sx={{ height: "70px", width: "30%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="text"
-            label="Carrier POC"
-            name="carrierPOC"
-            value={data.carrierPOC}
-            onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
-          />
-
-          <TextField
-            sx={{ height: "70px", width: "30%", mr: "5%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="text"
-            label="Carrier Contact Number"
-            name="carrierContact"
-            value={data.carrierContact}
-            onChange={handleEdit}
-            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
-          />
-
-          <TextField
-            sx={{ height: "70px", width: "55%", mb: "1%" }}
-            InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
-            type="email"
-            label="Carrier Email Address"
-            name="carrierEmail"
-            value={data.carrierEmail}
-            InputProps={{ readOnly: !obj.isEditable && userRole !== 1 }}
-            onChange={handleEdit}
-          />
-
+          
           <TextField
             sx={{ height: "70px", width: "27%", mr: "4.5%", mb: "1%" }}
             InputLabelProps={{ style: { fontSize: 15, fontWeight: "bold" } }}
@@ -539,50 +412,6 @@ function EditLoad() {
             />
           ) : (
             <></>
-          )}
-
-          {data.additionalBroker ? (
-            data.additionalBroker.map((d, index) => {
-              return (
-                <div key={index}>
-                  <TextField
-                    sx={{ height: "55px", width: "20%", mr: "4.5%", mb: "1%" }}
-                    InputLabelProps={{
-                      style: { fontSize: 15, fontWeight: "bold" },
-                    }}
-                    type="text"
-                    name="sharedWithName"
-                    label="Shared With"
-                    value={d.brokerName}
-                    InputProps={{ readOnly: true }}
-                  />
-                  <TextField
-                    sx={{ height: "70px", width: "20%", mr: "3%", mb: "1%" }}
-                    InputLabelProps={{
-                      style: { fontSize: 15, fontWeight: "bold" },
-                    }}
-                    type="text"
-                    label="Shared Percentage"
-                    name="sharedWithPercentage"
-                    value={d.sharedPercentage}
-                    InputProps={{ readOnly: true }}
-                  />
-                  <TextField
-                    sx={{ height: "70px", width: "20%", mr: "3%", mb: "1%" }}
-                    InputLabelProps={{
-                      style: { fontSize: 15, fontWeight: "bold" },
-                    }}
-                    type="text"
-                    label="Invoiced In"
-                    name="additionalBrokerInvoiceIn"
-                    value={d.invoiceNumber}
-                    InputProps={{ readOnly: true }}
-                  />
-                </div>
-              );
-            })
-          ) : (
-            <br />
           )}
 
           {data?.mismatched ? (
