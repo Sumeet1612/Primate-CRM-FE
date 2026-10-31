@@ -54,16 +54,16 @@ export const createLoad = (data) => {
 export const createAggregateLoads = (data) => {
   return axios({
     method: "post",
-    url: `${baseApiUrl}/users/addLoadsFromFile`,
+    url: `${baseApiUrl}/admin/createBulkLoads`,
     data,
     headers:headers()
   });
 };
 
-export const getFailedAggregateLoads = (brokerId) => {
+export const getFailedAggregateLoads = () => {
   return axios({
     method: "get",
-    url: `${baseApiUrl}/users/failedLoadsFromFile?brokerId=${brokerId}`,
+    url: `${baseApiUrl}/admin/invalidLoad`,
     headers:headers()
   });
 };
@@ -90,6 +90,14 @@ export const getLoadOnId=(loadNumber)=>{
         url:`${baseApiUrl}/users/load/${loadNumber}`,
         headers:headers()
     });
+}
+
+export const getLoadHistory=(loadNumber)=>{
+  return axios({
+    method:'get',
+    url:`${baseApiUrl}/users/load/${loadNumber}/history`,
+    headers:headers()
+  });
 }
 
 export const getBrokerOnId=(brokerId)=>{

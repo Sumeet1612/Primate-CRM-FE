@@ -14,13 +14,12 @@ export const SidebarUserData = [
   { title: "Shippers", icon: <EngineeringIcon />, path: "shippers" },
   { title: "Profile", icon: <AccountBoxIcon />, path: `profile/${loggedInUserId()}` },
   { title: "Loads", icon: <AirportShuttleIcon />, path: "viewLoads" },
-  { title: "Add Loads", icon: <FileUploadIcon />, path: "aggregateLoads" },
   { title: "Invoices", icon: <ReceiptIcon />, path: "invoices" },
   { title: "Logout", icon: <LogoutIcon />, path: "logout" },
 ];
 
 export const SidebarAdminData = [
+  { title: "Add Loads", icon: <FileUploadIcon />, path: "aggregateLoads" },
   { title: "Brokers", icon: <AccountBoxIcon />, path: "manageBrokers" },
   { title: "Register", icon: <GroupAddIcon />, path: "register" },
-  { title: "Agency System", icon: <FileUploadIcon />, path: "agency" }
 ];

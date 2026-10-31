@@ -92,14 +92,6 @@ function Home() {
                 variant="contained"
                 color="primary"
                 sx={{ width: "25%", padding: "12px 0px" }}
-                onClick={() => nav("/new")}
-              >
-                Add New Load
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ width: "25%", padding: "12px 0px" }}
                 onClick={() => nav("/shippers")}
               >
                 Shippers

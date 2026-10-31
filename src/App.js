@@ -14,7 +14,6 @@ import SearchLoad from "./components/Loads/SearchLoad";
 import ViewLoads from "./components/Loads/ViewLoads";
 import AggregateLoads from "./components/Loads/AggregateLoads";
 import SignUp from "./components/Brokers/SignUp";
-import AgencyForm from "./components/AgencyForm";
 import "./App.css";
 import EditShippers from "./components/Shippers/EditShippers";
 import ViewBrokers from "./components/Brokers/ViewBrokers";
@@ -39,7 +38,6 @@ function App() {
                 path="register"
                 element={<SignUp />}
               />
-              <Route path="new" element={<NewLoad />} />
               <Route path="aggregateLoads" element={<AggregateLoads />} />
               <Route
                 path="editLoad/:id"
@@ -52,7 +50,6 @@ function App() {
               />
               <Route path="Shippers" element={<Shippers />} />
               <Route path="Shippers/:id" element={<EditShippers />} />
-              <Route path="agency" element={<AgencyForm />} />
               <Route path="profile/:loggedInBrokerId" element={<Profile />} />
               <Route path="invoice/generate" element={<Invoice />} />
               <Route path="invoices" element={<ViewInvoices />} />

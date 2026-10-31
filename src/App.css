@@ -195,6 +195,10 @@ li {
   align-items: center;
 }
 
+.center-header .ag-header-cell-label {
+  justify-content: center;
+}
+
 input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;

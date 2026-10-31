@@ -10,6 +10,7 @@ import {
 } from "../../api/api";
 import { Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
+import { FormControlLabel, Checkbox } from '@mui/material';
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -26,6 +27,7 @@ function EditShippers() {
     poc: "",
     contact: "",
     email: "",
+    isActive: true,
     website: "",
   });
 
@@ -155,6 +157,9 @@ function EditShippers() {
   const handleChange = (e) => {
     let value = e.target.value;
     let feildName = e.target.name;
+    if(feildName==="isActive"){
+      value = e.target.checked;
+    }
     setShipperData((state) => {
       return { ...state, [feildName]: value };
     });
@@ -299,13 +304,26 @@ function EditShippers() {
             />
 
             <TextField
-              sx={{ height: "70px", width: "55%", mr: "10%" }}
+              sx={{ height: "70px", width: "45%", mr: "5%" }}
               InputLabelProps={{ style: { fontSize: 15 } }}
               type="email"
               label="Email"
               name="email"
               value={shipperData.email}
               onChange={handleChange}
+            />
+
+            <FormControlLabel
+              sx={{ height: "70px", width: "10%", mr: "5%" }}
+              control={
+                <Checkbox 
+                  checked={shipperData.isActive} 
+                  name="isActive"
+                  onChange={handleChange} 
+                  color="primary"
+                />
+              }
+              label="Active"
             />
 
             <div

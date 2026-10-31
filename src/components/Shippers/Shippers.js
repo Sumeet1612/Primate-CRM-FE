@@ -21,6 +21,7 @@ function Shippers() {
     poc: "",
     contact: "",
     email: "",
+    isActive: true,
     website:"",
   });
 
@@ -45,6 +46,7 @@ function Shippers() {
     { field: "poc", filter: true, sortable: true, width:150, tooltipField:'poc', headerName:"POC" , resizable: true},
     { field: "contact", filter: true, sortable: true, width:150, tooltipField:'contact', headerName:"PHONE #" , resizable: true},
     { field: "email", filter: true, sortable: true,width:250, tooltipField:'email', headerName:"EMAIL" , resizable: true},
+    { field: "isActive", filter: true, sortable: true,width:125, tooltipField:'isActive', headerName:"ACTIVE" , resizable: true},
     { field: "updatedOn", filter: true, sortable: true, width:150, headerName:"UPDATED ON", resizable: true,
     valueFormatter: params=>{
       let date= new Date(params.value.toString())
@@ -112,7 +114,7 @@ function Shippers() {
       addShipper(shipperData)
         .then((res) => {
           if (res.status === 208) {
-            showNotification("The Shipper already exists!!","warning");
+            showNotification("The Shipper already exists!! Contact the administrator.","warning");
           } else if (res.status === 200) {
             showNotification("Shipper Added !!");
 
@@ -123,6 +125,7 @@ function Shippers() {
               poc: "",
               contact: "",
               email: "",
+              isActive: true,
               website:"",
             });
 

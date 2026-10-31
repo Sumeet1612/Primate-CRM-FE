@@ -94,6 +94,9 @@ const getStatus=(param)=>{
   else if(param.value===4){
     return "Paid"
   }
+  else if(param.value===5){
+    return "Adjustment Paid"
+  }
 }
 
   const [columnDefs] = useState([
@@ -129,20 +132,19 @@ const getStatus=(param)=>{
         status:0,
         selectedLoad:[]
       })
+      
       if (viewId === "0") {
         setFilteredLoads(loads);
       } else if (viewId === "1") {
-        setFilteredLoads(loads?.filter((x) => x.invoiceDate !== null && x.paymentStatusId===1));
+        setFilteredLoads(loads?.filter((x) => x.paymentStatusId===3));
       } else if (viewId === "2") {
-        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 2));
+        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 4 && x.adjustmentAmount !==0));
       } else if (viewId === "3") {
-        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 3));
+        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 4 && x.adjustmentAmount ===0));
       } else if (viewId === "4") {
-        setFilteredLoads(loads?.filter((x) => x.invoiceDate === null));
+        setFilteredLoads(loads?.filter((x) => x.paymentStatusId === 5));
       } else if (viewId === "5") {
         setFilteredLoads(loads?.filter((x) => x.mismatched));
-      }else if(viewId==="6"){
-        setFilteredLoads(loads?.filter((x)=>x.invoiceNumber===null && x.paymentStatusId===3))
       }
     }
   };
@@ -232,12 +234,11 @@ const getStatus=(param)=>{
         <label> Select View</label> <>   </>
         <select value={view} onChange={(event) => handleViewChange(event.target.value)}>
           <option value="0">All Loads</option>
-          <option value="1">Invoiced Loads & Payment not Requested</option>
-          <option value="2">Loads with Payment Requested</option>
-          <option value="3">Loads with Payment Processed</option>
-          <option value="4">Not Invoiced Load</option>
-          <option value="6">Next Payout</option>
-          <option value="5">Loads with Rate Discrepancy</option>
+          <option value="1">Invoiced Loads but Payment not Processed</option>
+          <option value="2">Loads with Adjustment Invoiced but Payment not Processed</option>
+          <option value="3">Paid Loads</option>
+          <option value="4">Loads with Adjustment Paid</option>
+          <option value="5">Flagged Loads</option>
         </select> 
         <Button
         variant="contained"

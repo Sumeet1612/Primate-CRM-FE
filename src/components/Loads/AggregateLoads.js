@@ -18,8 +18,9 @@ import {
   getFailedAggregateLoads,
   handleApiError,
 } from "../../api/api";
-import { loggedInUserId, loggedInUserRole } from "../../api/validation";
 import { showNotification } from "../../api/Notification";
+import { loggedInUserRole } from "../../api/validation";
+import { useNavigate } from "react-router-dom";
 
 const acceptedFileTypes = [".csv", ".xls", ".xlsx"];
 
@@ -34,37 +35,38 @@ function AggregateLoads() {
   const [failedLoadGridApi, setFailedLoadGridApi] = useState(null);
   const [reloadFailedLoads, setReloadFailedLoads] = useState(0);
   const [failedLoadColumnDefs] = useState([
-    { field: "loadNumber", filter: true, sortable: true, resizable: true, headerName: "LOAD #" },
-    { field: "shipperName", filter: true, sortable: true, resizable: true, headerName: "SHIPPER" },
-    { field: "shipperRate", filter: true, sortable: true, resizable: true, headerName: "SHIPPER RATE" },
-    { field: "carrierRate", filter: true, sortable: true, resizable: true, headerName: "CARRIER RATE" },
+    { field: "loadNumber", filter: true, sortable: true, resizable: true, headerName: "LOAD #", headerClass: "center-header" },
     {
-      headerName: "FAILURE REASON",
+      field: "errorMessage",
+      headerName: "ERROR MESSAGE",
       filter: true,
       sortable: true,
       resizable: true,
-      minWidth: 240,
-      valueGetter: (params) =>
-        params.data?.failureReason ||
-        params.data?.errorMessage ||
-        params.data?.validationMessage ||
-        params.data?.remarks ||
-        "",
+      minWidth: 500,
+      headerClass: "center-header",
     },
-    { field: "uploadedOn", filter: true, sortable: true, resizable: true, headerName: "UPLOADED ON" },
+    {
+      field: "uploadedOn",
+      filter: true,
+      sortable: true,
+      resizable: true,
+      headerName: "UPLOADED ON",
+      headerClass: "center-header",
+      valueFormatter: (params) =>
+        params.value ? new Date(params.value).toLocaleString() : "",
+    },
   ]);
-
+  const nav = useNavigate();
   useEffect(() => {
-    const userId = loggedInUserId();
     const userRole = loggedInUserRole();
-
-    if (isNaN(userId) || isNaN(userRole)) {
-      window.location.href = "/login";
+    if(userRole !== 1) {
+      //only admin can upload aggregate loads, so if the user is not an admin, redirect them to the home page
+      showNotification("You do not have permission to access this page", "error");
+      nav("/");
       return;
     }
-
     setIsFailedLoadsLoading(true);
-    getFailedAggregateLoads(userId)
+    getFailedAggregateLoads()
       .then((res) => {
         if (res.status === 200) {
           setFailedLoadRows(res.data || []);
@@ -115,22 +117,13 @@ function AggregateLoads() {
   };
 
   const handleSubmit = () => {
-    const userId = loggedInUserId();
-    const userRole = loggedInUserRole();
-
-    if (isNaN(userId) || isNaN(userRole)) {
-      window.location.href = "/login";
-      return;
-    }
-
     if (!selectedFile) {
       showNotification("No file selected", "warning");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", selectedFile);
-    formData.append("brokerId", userId);
+    formData.append("loadFile", selectedFile, selectedFile.name);
 
     setIsLoading(true);
     createAggregateLoads(formData)
@@ -307,7 +300,7 @@ function AggregateLoads() {
             <></>
           )}
         </Box>
-        <div className="ag-theme-alpine failed-loads-grid">
+        <div className="ag-theme-alpine failed-loads-grid" style={{ height: "50vh", width: "80%" }}>
           <AgGridReact
             rowData={failedLoadRows}
             columnDefs={failedLoadColumnDefs}
